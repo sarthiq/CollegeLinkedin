@@ -1,6 +1,24 @@
-.App {
-  text-align: center;
+/* App.css - Base styling for College LinkedIn */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
+body {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f3f2ef;
+  color: #191919;
+  line-height: 1.5;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+/* Add Font Awesome for icons */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 
 .App-logo {
   height: 40vmin;
