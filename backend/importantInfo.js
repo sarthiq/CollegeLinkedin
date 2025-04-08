@@ -1,4 +1,4 @@
 
 
 exports.baseDir=__dirname;
-exports.googleDriveCredentials = require('./google-drive.json');
+exports.sequelize = require("./database");
