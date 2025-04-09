@@ -19,9 +19,8 @@ exports.setupModels = async () => {
   User.hasMany(UserActivity);
   UserActivity.belongsTo(User);
 
-
-  User.belongsToMany(Pages, { through: 'followers' });
-  Pages.belongsToMany(User, { through: 'followers' });
+  User.belongsToMany(Pages, { through: "followers" });
+  Pages.belongsToMany(User, { through: "followers" });
 
   User.hasMany(Feeds);
   Feeds.belongsTo(User);
@@ -29,8 +28,6 @@ exports.setupModels = async () => {
   Pages.hasMany(Feeds);
   Feeds.belongsTo(Pages);
 
-  
-  
   Feeds.hasMany(Likes);
   Likes.belongsTo(Feeds);
 
@@ -42,15 +39,4 @@ exports.setupModels = async () => {
 
   User.hasMany(Comments);
   Comments.belongsTo(User);
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
 };
