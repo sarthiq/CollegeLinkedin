@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Header.css';
 
 const Header = ({ onLogout }) => {
@@ -6,6 +7,7 @@ const Header = ({ onLogout }) => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
+  const navigate = useNavigate();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -18,17 +20,22 @@ const Header = ({ onLogout }) => {
     }
   };
 
+  const handleHomeClick = () => {
+    navigate('/home');
+  };
+
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
+
   return (
     <header className="header">
       <div className="header-left">
         <div className="header-logo">
-          <h1>CollegeLinkedIn</h1>
+          <h1>SarthiQ</h1>
         </div>
         <div className="header-search">
           <form onSubmit={handleSearch}>
-            <div className="search-icon">
-              <i className="fas fa-search"></i>
-            </div>
             <input
               type="text"
               placeholder="Search"
@@ -41,25 +48,33 @@ const Header = ({ onLogout }) => {
 
       <div className="header-right">
         <nav className="header-nav">
-          <div className="nav-item active">
+          <div className="nav-item" onClick={handleHomeClick}>
             <i className="fas fa-home"></i>
             <span>Home</span>
           </div>
           <div className="nav-item">
-            <i className="fas fa-user-friends"></i>
-            <span>My Network</span>
+            <i className="fas fa-book"></i>
+            <span>Articles</span>
+          </div>
+          <div className="nav-item">
+            <i className="fas fa-users"></i>
+            <span>People</span>
+          </div>
+          <div className="nav-item">
+            <i className="fas fa-graduation-cap"></i>
+            <span>Learning</span>
           </div>
           <div className="nav-item">
             <i className="fas fa-briefcase"></i>
             <span>Jobs</span>
           </div>
           <div className="nav-item">
-            <i className="fas fa-comment-dots"></i>
-            <span>Messaging</span>
+            <i className="fas fa-gamepad"></i>
+            <span>Games</span>
           </div>
           <div className="nav-item">
-            <i className="fas fa-bell"></i>
-            <span>Notifications</span>
+            <i className="fas fa-mobile-alt"></i>
+            <span>Get the app</span>
           </div>
           <div className="nav-item profile-menu" onClick={() => setShowProfileMenu(!showProfileMenu)}>
             <div className="profile-image">
@@ -80,7 +95,7 @@ const Header = ({ onLogout }) => {
                   </div>
                 </div>
                 <div className="dropdown-divider"></div>
-                <div className="dropdown-item">
+                <div className="dropdown-item" onClick={handleProfileClick}>
                   <i className="fas fa-user"></i>
                   <span>View Profile</span>
                 </div>
