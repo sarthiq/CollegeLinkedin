@@ -9,6 +9,10 @@ const Feeds = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    UserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
     feedData: {
       type: Sequelize.JSON,
       allowNull: false,

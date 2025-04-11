@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sequelize } = require("../../../database");
 const { Op } = require("sequelize");
+const { JWT_SECRET_KEY, UserTokenExpiresIn } = require("../../../importantInfo");
 
 exports.userSignUp = async (req, res, next) => {
   try {
@@ -68,12 +69,11 @@ exports.userLogin = async (req, res, next) => {
       return res.status(401).json({ error: "Invalid Password" });
     }
 
-    // Step 4: Generate a JWT token
-    const expiresIn = process.env.NODE_ENV === "testing" ? "30d" : "7d";
+    
     const token = jwt.sign(
       { name: user.name, id: user.id },
-      process.env.JWT_SECRET_KEY,
-      { expiresIn }
+      JWT_SECRET_KEY,
+      { expiresIn: UserTokenExpiresIn }
     );
 
     // Step 8: Return the response

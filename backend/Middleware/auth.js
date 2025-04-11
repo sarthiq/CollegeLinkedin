@@ -1,7 +1,10 @@
 const jwt = require("jsonwebtoken");
 const Admin = require("../Models/User/admins");
 const { JWT_SECRET_KEY, DEVELOPER_USERNAME } = require("../importantInfo");
+const User = require("../Models/User/users");
 
+
+//adminAuthentication 
 exports.adminAuthentication = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
@@ -89,6 +92,8 @@ exports.SSAAdminAuthentication = async (req, res, next) => {
   next();
 };
 
+
+//developerAuthentication 
 exports.developerAuthentication = async (req, res, next) => {
   try {
     const token = req.headers.authorization;
@@ -110,6 +115,65 @@ exports.developerAuthentication = async (req, res, next) => {
     next();
   } catch (err) {
     return res.status(503).json({ error: "Invalid Signature!" });
+  }
+};
+
+
+// User Authentication Middleware
+exports.userAuthentication = async (req, res, next) => {
+  try {
+    // Get token from header
+    const token = req.header("Authorization");
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required. Please login.",
+      });
+    }
+
+    // Verify token
+    const decoded = jwt.verify(token, JWT_SECRET_KEY);
+
+    // Find user
+    const user = await User.findByPk(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found. Please login again.",
+      });
+    }
+
+    // Check if user is blocked
+    if (user.isBlocked) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been blocked. Please contact support.",
+      });
+    }
+
+    // Attach user to request
+    req.user = user;
+    next();
+  } catch (error) {
+    if (error.name === "JsonWebTokenError") {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid token. Please login again.",
+      });
+    }
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({
+        success: false,
+        message: "Token expired. Please login again.",
+      });
+    }
+    res.status(500).json({
+      success: false,
+      message: "Authentication failed",
+      error: error.message,
+    });
   }
 };
 
