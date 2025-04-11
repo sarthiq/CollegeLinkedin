@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Home.css';
+import Header from '../Header/Header';
 
 const Home = ({ onLogout }) => {
   const [posts, setPosts] = useState([
@@ -63,166 +64,169 @@ const Home = ({ onLogout }) => {
   };
 
   return (
-    <div className="home-container">
-      <div className="home-left">
-        <div className="profile-card">
-          <div className="profile-background"></div>
-          <div className="profile-info">
-            <img src="https://randomuser.me/api/portraits/men/4.jpg" alt="Profile" className="profile-image" />
-            <h2>Your Name</h2>
-            <p>Computer Science Student</p>
-            <p>University of Technology</p>
-            <div className="profile-stats">
-              <div className="stat">
-                <span className="stat-value">500+</span>
-                <span className="stat-label">Connections</span>
-              </div>
-              <div className="stat">
-                <span className="stat-value">15</span>
-                <span className="stat-label">Posts</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="sidebar-card">
-          <h3>Recent</h3>
-          <ul className="sidebar-list">
-            <li>Your Profile</li>
-            <li>My Network</li>
-            <li>Jobs</li>
-            <li>Messaging</li>
-            <li>Notifications</li>
-          </ul>
-        </div>
-        
-        <div className="sidebar-card">
-          <h3>Groups</h3>
-          <ul className="sidebar-list">
-            <li>Computer Science Majors</li>
-            <li>Data Science Enthusiasts</li>
-            <li>Startup Founders</li>
-            <li>Research Opportunities</li>
-          </ul>
-        </div>
-        
-        <div className="sidebar-card">
-          <button className="logout-btn" onClick={handleLogout}>
-            <i className="fas fa-sign-out-alt"></i> Sign Out
-          </button>
-        </div>
-      </div>
-      
-      <div className="home-main">
-        <div className="post-form-card">
-          <div className="post-form-header">
-            <img src="https://randomuser.me/api/portraits/men/4.jpg" alt="Profile" className="post-form-image" />
-            <form onSubmit={handlePostSubmit}>
-              <input 
-                type="text" 
-                placeholder="Start a post..." 
-                value={newPost}
-                onChange={(e) => setNewPost(e.target.value)}
-                className="post-input"
-              />
-            </form>
-          </div>
-          <div className="post-form-actions">
-            <button className="post-action-btn">
-              <i className="fas fa-image"></i> Photo
-            </button>
-            <button className="post-action-btn">
-              <i className="fas fa-video"></i> Video
-            </button>
-            <button className="post-action-btn">
-              <i className="fas fa-calendar"></i> Event
-            </button>
-            <button className="post-action-btn post-submit-btn" onClick={handlePostSubmit}>
-              Post
-            </button>
-          </div>
-        </div>
-        
-        <div className="posts-container">
-          {posts.map(post => (
-            <div key={post.id} className="post-card">
-              <div className="post-header">
-                <img src={post.authorImage} alt={post.author} className="post-author-image" />
-                <div className="post-author-info">
-                  <h3>{post.author}</h3>
-                  <p>{post.authorTitle}</p>
-                  <span className="post-timestamp">{post.timestamp}</span>
+    <>
+      <Header onLogout={handleLogout} />
+      <div className="home-container" style={{ marginTop: '72px' }}>
+        <div className="home-left">
+          <div className="profile-card">
+            <div className="profile-background"></div>
+            <div className="profile-info">
+              <img src="https://randomuser.me/api/portraits/men/4.jpg" alt="Profile" className="profile-image" />
+              <h2>Your Name</h2>
+              <p>Computer Science Student</p>
+              <p>University of Technology</p>
+              <div className="profile-stats">
+                <div className="stat">
+                  <span className="stat-value">500+</span>
+                  <span className="stat-label">Connections</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-value">15</span>
+                  <span className="stat-label">Posts</span>
                 </div>
               </div>
-              <div className="post-content">
-                <p>{post.content}</p>
-              </div>
-              <div className="post-actions">
-                <button className="post-action">
-                  <i className="fas fa-thumbs-up"></i> Like ({post.likes})
-                </button>
-                <button className="post-action">
-                  <i className="fas fa-comment"></i> Comment ({post.comments})
-                </button>
-                <button className="post-action">
-                  <i className="fas fa-share"></i> Share
-                </button>
-              </div>
             </div>
-          ))}
-        </div>
-      </div>
-      
-      <div className="home-right">
-        <div className="sidebar-card">
-          <h3>News</h3>
-          <ul className="news-list">
-            <li>
-              <h4>New Research Grant Opportunities</h4>
-              <p>5d ago • 1,234 readers</p>
-            </li>
-            <li>
-              <h4>Upcoming Career Fair</h4>
-              <p>1w ago • 3,456 readers</p>
-            </li>
-            <li>
-              <h4>Study Abroad Programs</h4>
-              <p>2w ago • 2,789 readers</p>
-            </li>
-          </ul>
+          </div>
+          
+          <div className="sidebar-card">
+            <h3>Recent</h3>
+            <ul className="sidebar-list">
+              <li>Your Profile</li>
+              <li>My Network</li>
+              <li>Jobs</li>
+              <li>Messaging</li>
+              <li>Notifications</li>
+            </ul>
+          </div>
+          
+          <div className="sidebar-card">
+            <h3>Groups</h3>
+            <ul className="sidebar-list">
+              <li>Computer Science Majors</li>
+              <li>Data Science Enthusiasts</li>
+              <li>Startup Founders</li>
+              <li>Research Opportunities</li>
+            </ul>
+          </div>
+          
+          <div className="sidebar-card">
+            <button className="logout-btn" onClick={handleLogout}>
+              <i className="fas fa-sign-out-alt"></i> Sign Out
+            </button>
+          </div>
         </div>
         
-        <div className="sidebar-card">
-          <h3>People You May Know</h3>
-          <div className="people-list">
-            <div className="person-card">
-              <img src="https://randomuser.me/api/portraits/women/5.jpg" alt="Person" className="person-image" />
-              <div className="person-info">
-                <h4>Jessica Lee</h4>
-                <p>Biology at UCLA</p>
-              </div>
-              <button className="connect-btn">Connect</button>
+        <div className="home-main">
+          <div className="post-form-card">
+            <div className="post-form-header">
+              <img src="https://randomuser.me/api/portraits/men/4.jpg" alt="Profile" className="post-form-image" />
+              <form onSubmit={handlePostSubmit}>
+                <input 
+                  type="text" 
+                  placeholder="Start a post..." 
+                  value={newPost}
+                  onChange={(e) => setNewPost(e.target.value)}
+                  className="post-input"
+                />
+              </form>
             </div>
-            <div className="person-card">
-              <img src="https://randomuser.me/api/portraits/men/6.jpg" alt="Person" className="person-image" />
-              <div className="person-info">
-                <h4>David Wilson</h4>
-                <p>Psychology at NYU</p>
-              </div>
-              <button className="connect-btn">Connect</button>
+            <div className="post-form-actions">
+              <button className="post-action-btn">
+                <i className="fas fa-image"></i> Photo
+              </button>
+              <button className="post-action-btn">
+                <i className="fas fa-video"></i> Video
+              </button>
+              <button className="post-action-btn">
+                <i className="fas fa-calendar"></i> Event
+              </button>
+              <button className="post-action-btn post-submit-btn" onClick={handlePostSubmit}>
+                Post
+              </button>
             </div>
-            <div className="person-card">
-              <img src="https://randomuser.me/api/portraits/women/7.jpg" alt="Person" className="person-image" />
-              <div className="person-info">
-                <h4>Amanda Taylor</h4>
-                <p>Economics at Columbia</p>
+          </div>
+          
+          <div className="posts-container">
+            {posts.map(post => (
+              <div key={post.id} className="post-card">
+                <div className="post-header">
+                  <img src={post.authorImage} alt={post.author} className="post-author-image" />
+                  <div className="post-author-info">
+                    <h3>{post.author}</h3>
+                    <p>{post.authorTitle}</p>
+                    <span className="post-timestamp">{post.timestamp}</span>
+                  </div>
+                </div>
+                <div className="post-content">
+                  <p>{post.content}</p>
+                </div>
+                <div className="post-actions">
+                  <button className="post-action">
+                    <i className="fas fa-thumbs-up"></i> Like ({post.likes})
+                  </button>
+                  <button className="post-action">
+                    <i className="fas fa-comment"></i> Comment ({post.comments})
+                  </button>
+                  <button className="post-action">
+                    <i className="fas fa-share"></i> Share
+                  </button>
+                </div>
               </div>
-              <button className="connect-btn">Connect</button>
+            ))}
+          </div>
+        </div>
+        
+        <div className="home-right">
+          <div className="sidebar-card">
+            <h3>News</h3>
+            <ul className="news-list">
+              <li>
+                <h4>New Research Grant Opportunities</h4>
+                <p>5d ago • 1,234 readers</p>
+              </li>
+              <li>
+                <h4>Upcoming Career Fair</h4>
+                <p>1w ago • 3,456 readers</p>
+              </li>
+              <li>
+                <h4>Study Abroad Programs</h4>
+                <p>2w ago • 2,789 readers</p>
+              </li>
+            </ul>
+          </div>
+          
+          <div className="sidebar-card">
+            <h3>People You May Know</h3>
+            <div className="people-list">
+              <div className="person-card">
+                <img src="https://randomuser.me/api/portraits/women/5.jpg" alt="Person" className="person-image" />
+                <div className="person-info">
+                  <h4>Jessica Lee</h4>
+                  <p>Biology at UCLA</p>
+                </div>
+                <button className="connect-btn">Connect</button>
+              </div>
+              <div className="person-card">
+                <img src="https://randomuser.me/api/portraits/men/6.jpg" alt="Person" className="person-image" />
+                <div className="person-info">
+                  <h4>David Wilson</h4>
+                  <p>Psychology at NYU</p>
+                </div>
+                <button className="connect-btn">Connect</button>
+              </div>
+              <div className="person-card">
+                <img src="https://randomuser.me/api/portraits/women/7.jpg" alt="Person" className="person-image" />
+                <div className="person-info">
+                  <h4>Amanda Taylor</h4>
+                  <p>Economics at Columbia</p>
+                </div>
+                <button className="connect-btn">Connect</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
