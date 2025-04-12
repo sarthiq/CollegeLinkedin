@@ -6,7 +6,7 @@ import Landing from './Components/Landing/Landing';
 import Profile from './Components/Body/User/Profile/Profile';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
