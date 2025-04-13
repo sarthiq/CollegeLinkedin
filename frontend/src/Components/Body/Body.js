@@ -9,8 +9,8 @@ export const Body = () => {
 
   return (
     <Routes>
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/*" element={isLoggedIn ? <UserRoutes /> : <Landing />} />
+      <Route path="admin/*" element={<Admin />} />
+      <Route path="*" element={isLoggedIn ? <UserRoutes /> : <Landing />} />
     </Routes>
   );
 };
