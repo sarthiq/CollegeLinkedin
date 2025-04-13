@@ -1,0 +1,69 @@
+  /* Login Container */
+  .admin-login-container {
+    background-color: #f8f9fa;
+    padding: 15px;
+    height: 84%;
+  }
+  
+  /* Center the login form */
+  .admin-login-card {
+    border-radius: 8px;
+    background-color: white;
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+
+    min-width: 350px; /* Maximum width for larger screens */
+  }
+  
+  /* Heading Style */
+  .admin-login-title {
+    font-size: 30px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Form Field Styles */
+  .admin-login-input {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    margin-bottom: 20px;
+  }
+  
+  /* Button Style */
+  .admin-login-button {
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .admin-login-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Mobile Responsive Styles */
+  @media (max-width: 576px) {
+    .admin-login-card {
+      padding: 20px;
+    }
+  
+    .admin-login-title {
+      font-size: 26px;
+      margin-bottom: 15px;
+    }
+  }
+  
+  /* Tablet and Larger Devices */
+  @media (min-width: 577px) and (max-width: 992px) {
+    .admin-login-card {
+      padding: 25px;
+    }
+  }
+  
+  

@@ -1,0 +1,45 @@
+.question-home {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+  }
+  
+  .quiz-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #e9ecef;
+    border-radius: 5px;
+  }
+  
+  .quiz-actions {
+    text-align: right;
+  }
+  
+  .quiz-action-btn {
+    margin-left: 10px;
+  }
+  
+  .question-form {
+    margin-top: 20px;
+  }
+  
+  .question-list {
+    margin-top: 30px;
+  }
+  
+  .view-more-btn {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  
+  .view-more-btn:hover {
+    background-color: #0056b3;
+  }
+  

@@ -1,7 +1,7 @@
 import React from 'react';
 import './Landing.css';
 
-const Landing = ({ onLogin }) => {
+export const Landing = () => {
   return (
     <div className="landing-container">
       <div className="landing-header">
@@ -38,5 +38,3 @@ const Landing = ({ onLogin }) => {
     </div>
   );
 };
-
-export default Landing; 

@@ -1,0 +1,151 @@
+.admin-page {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  
+  
+  .sidebar.collapsed {
+    width: 70px;
+  }
+  
+  .tabs-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+  }
+  
+  .tab-link {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    text-decoration: none;
+    color: #fff;
+    transition: background 0.3s;
+  }
+  
+  .tab-link:hover {
+    background-color: #495057;
+  }
+  
+  .active-tab {
+    background-color: #495057;
+  }
+  
+  .tab-icon {
+    font-size: 20px;
+    margin-right: 10px;
+  }
+  
+  .sidebar.collapsed .tab-icon {
+    margin: 0;
+  }
+  
+  .sidebar.collapsed .tab-link span {
+    display: none;
+  }
+  
+  /* Toggle button styles */
+  .toggle-button {
+    position: absolute;
+    top: 50%;
+    right: -15px;
+    transform: translateY(-50%);
+    background-color: #495057;
+    border: none;
+    color: #fff;
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  }
+  
+  .toggle-button:hover {
+    background-color: #6c757d;
+  }
+  
+  /* Content section styles */
+  .content {
+    flex-grow: 1; /* Ensures the content section takes the remaining space */
+    overflow-y: auto; /* Allows vertical scrolling if content overflows */
+    padding: 20px;
+    background-color: #f8f9fa;
+    box-sizing: border-box; /* Includes padding in the width calculation */
+  }
+  
+  /*66666666666666666666*/
+
+  /* Sidebar Styling */
+.sidebar {
+    position: relative;
+   width: 250px;
+    transition: width 0.3s;
+    background-color: #343a40;
+    height: 100vh;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  
+
+  /* Tabs List */
+  .tabs-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .tab-link {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    text-decoration: none;
+    color: #ccc;
+    transition: background 0.3s, color 0.3s;
+  }
+  
+  .tab-link:hover {
+    background-color: #495057;
+    color: #fff;
+  }
+  
+  .active-tab {
+    background-color: #495057;
+    color: #00bfff;
+  }
+  
+  .tab-icon {
+    font-size: 1.5rem;
+    margin-right: 10px;
+  }
+  
+  /* Toggle Button */
+  .toggle-button {
+    position: absolute;
+    right: -15px; /* Slightly outside the sidebar */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    background-color: #495057;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  .toggle-button:hover {
+    background-color: #00bfff;
+    color: #fff;
+  }
+  
+
+  
