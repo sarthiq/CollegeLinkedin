@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Header.css';
+import { useDispatch } from 'react-redux';
+import { userLogOut } from '../../../../Store/User/auth';
 
-const Header = ({ onLogout }) => {
+
+const Header = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMessages, setShowMessages] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
@@ -15,9 +19,8 @@ const Header = ({ onLogout }) => {
   };
 
   const handleLogout = () => {
-    if (onLogout) {
-      onLogout();
-    }
+    dispatch(userLogOut());
+    navigate('/');
   };
 
   const handleHomeClick = () => {

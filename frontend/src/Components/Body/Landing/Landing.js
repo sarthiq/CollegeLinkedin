@@ -1,7 +1,23 @@
 import React from 'react';
 import './Landing.css';
+import { useDispatch } from 'react-redux';
+import { userLogin } from '../../../Store/User/auth';
+import { useNavigate } from 'react-router-dom';
 
 export const Landing = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleJoinNow = () => {
+    dispatch(userLogin());
+    navigate('/');
+  };
+
+  const handleSignIn = () => {
+    dispatch(userLogin());
+    navigate('/');
+  };
+  
   return (
     <div className="landing-container">
       <div className="landing-header">
@@ -9,8 +25,8 @@ export const Landing = () => {
           <h1>SarthiQ</h1>
         </div>
         <div className="landing-nav">
-          <button className="nav-btn">Join now</button>
-          <button className="nav-btn nav-btn-secondary">Sign in</button>
+          <button className="nav-btn" onClick={handleJoinNow}>Join now</button>
+          <button className="nav-btn nav-btn-secondary" onClick={handleSignIn}>Sign in</button>
         </div>
       </div>
 
