@@ -1,0 +1,118 @@
+.page-details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.page-header {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.page-cover {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.page-info {
+  padding: 2rem;
+  position: relative;
+}
+
+.page-avatar {
+  position: absolute;
+  top: -60px;
+  left: 2rem;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid white;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.page-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.page-details {
+  margin-left: 140px;
+}
+
+.page-name {
+  font-size: 2rem;
+  color: #0a66c2;
+  margin: 0 0 0.5rem 0;
+}
+
+.page-description {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.4;
+  margin: 0 0 1.5rem 0;
+}
+
+.page-stats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #0a66c2;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.follow-button {
+  background-color: #0a66c2;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.follow-button:hover {
+  background-color: #004182;
+}
+
+.follow-button.following {
+  background-color: #f3f2ef;
+  color: #666;
+}
+
+.follow-button.following:hover {
+  background-color: #e0e0e0;
+}
+
+.page-content {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+} 
