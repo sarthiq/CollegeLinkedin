@@ -1,7 +1,7 @@
 import React from 'react';
 import './Landing.css';
 import { useDispatch } from 'react-redux';
-import { userLogin } from '../../../Store/User/auth';
+import { userLogin } from '../../../../Store/User/auth';
 import { useNavigate } from 'react-router-dom';
 
 export const Landing = () => {

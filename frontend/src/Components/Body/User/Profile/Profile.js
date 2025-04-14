@@ -13,7 +13,9 @@ export const Profile = () => {
     followers: 1200,
     following: 850,
     image: 'https://randomuser.me/api/portraits/men/1.jpg',
-    coverImage: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+    coverImage: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+    collegeName: 'Stanford University',
+    collegeYear: '2024'
   });
 
   const coverImageInputRef = useRef(null);
@@ -114,7 +116,9 @@ export const Profile = () => {
       title: formData.get('title'),
       email: formData.get('email'),
       phone: formData.get('phone'),
-      description: formData.get('description')
+      description: formData.get('description'),
+      collegeName: formData.get('collegeName'),
+      collegeYear: formData.get('collegeYear')
     });
     setIsEditing(false);
   };
@@ -190,6 +194,10 @@ export const Profile = () => {
           <div className="profile-details">
             <h1>{profile.name}</h1>
             <p className="title">{profile.title}</p>
+            <div className="profile-college-info">
+              <span className="college-name">{profile.collegeName}</span>
+              <span className="college-year">{profile.collegeYear}</span>
+            </div>
             <div className="profile-stats">
               <div className="profile-stat-item">
                 <span className="profile-stat-value">{profile.followers}</span>
@@ -256,6 +264,24 @@ export const Profile = () => {
                 <textarea
                   name="description"
                   defaultValue={profile.description}
+                  required
+                />
+              </div>
+              <div className="profile-form-group">
+                <label>College Name</label>
+                <input
+                  type="text"
+                  name="collegeName"
+                  defaultValue={profile.collegeName}
+                  required
+                />
+              </div>
+              <div className="profile-form-group">
+                <label>College Year</label>
+                <input
+                  type="text"
+                  name="collegeYear"
+                  defaultValue={profile.collegeYear}
                   required
                 />
               </div>

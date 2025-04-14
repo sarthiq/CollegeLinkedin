@@ -120,6 +120,24 @@
   margin: 0 0 1rem 0;
 }
 
+.profile-college-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.college-name {
+  font-size: 1rem;
+  color: #0a66c2;
+  font-weight: 500;
+}
+
+.college-year {
+  font-size: 0.9rem;
+  color: #666;
+}
+
 .profile-stats {
   display: flex;
   gap: 2rem;
