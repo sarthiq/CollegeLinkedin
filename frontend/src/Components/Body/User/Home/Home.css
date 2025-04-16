@@ -1,8 +1,15 @@
 .home-container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
-  padding-top: 5rem;
+  padding: 2rem;
+  margin-top: 80px;
+}
+
+@media (max-width: 768px) {
+  .home-container {
+    padding: 1rem;
+    margin-top: 70px;
+  }
 }
 
 .feed-container {
