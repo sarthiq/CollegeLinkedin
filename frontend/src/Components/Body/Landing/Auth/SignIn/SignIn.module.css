@@ -1,0 +1,299 @@
+.pageContainer {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f3f2ef;
+}
+
+.leftSection {
+    flex: 1;
+    background-color: #0a66c2;
+    color: white;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.leftContent {
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.leftTitle {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.leftSubtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.featureList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.featureItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.featureIcon {
+    margin-right: 1rem;
+    font-size: 1.5rem;
+}
+
+.patternBackground {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.1;
+}
+
+.rightSection {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.signInContainer {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.signInTitle {
+    font-size: 24px;
+    font-weight: 600;
+    color: #0a66c2;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.formGroup {
+    margin-bottom: 1.2rem;
+}
+
+.label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #0a66c2;
+    box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.2);
+}
+
+.submitButton {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #0a66c2;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 1rem;
+}
+
+.submitButton:hover {
+    background-color: #004182;
+}
+
+.errorMessage {
+    color: #d11124;
+    font-size: 12px;
+    margin-top: 0.3rem;
+}
+
+.forgotPassword {
+    text-align: right;
+    margin-top: 0.5rem;
+}
+
+.forgotPassword a {
+    color: #0a66c2;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.forgotPassword a:hover {
+    text-decoration: underline;
+}
+
+.divider {
+    margin: 1.5rem 0;
+    border-top: 1px solid #e0e0e0;
+}
+
+.signUpLink {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.signUpLink a {
+    color: #0a66c2;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signUpLink a:hover {
+    text-decoration: underline;
+}
+
+.socialSignIn {
+    margin-top: 1.5rem;
+}
+
+.socialSignInTitle {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.socialSignInTitle::before,
+.socialSignInTitle::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background-color: #e0e0e0;
+}
+
+.socialSignInTitle::before {
+    left: 0;
+}
+
+.socialSignInTitle::after {
+    right: 0;
+}
+
+.socialButtons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.socialButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f3f2ef;
+    border: 1px solid #e0e0e0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.socialButton:hover {
+    background-color: #e0e0e0;
+}
+
+.socialIcon {
+    font-size: 1.2rem;
+}
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+    .leftTitle {
+        font-size: 2.5rem;
+    }
+    
+    .leftSubtitle {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .pageContainer {
+        flex-direction: column;
+    }
+    
+    .leftSection {
+        padding: 3rem 2rem;
+    }
+    
+    .leftTitle {
+        font-size: 2rem;
+    }
+    
+    .leftSubtitle {
+        font-size: 1.1rem;
+    }
+    
+    .rightSection {
+        padding: 1rem;
+    }
+    
+    .signInContainer {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .leftSection {
+        padding: 2rem 1rem;
+    }
+    
+    .leftTitle {
+        font-size: 1.8rem;
+    }
+    
+    .leftSubtitle {
+        font-size: 1rem;
+    }
+    
+    .featureItem {
+        font-size: 1rem;
+    }
+    
+    .signInContainer {
+        padding: 1rem;
+    }
+    
+    .input {
+        padding: 0.7rem;
+    }
+} 

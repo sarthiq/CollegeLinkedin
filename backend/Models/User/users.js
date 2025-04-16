@@ -38,10 +38,6 @@ const User = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
-    profileUrl: {
-      type: Sequelize.STRING,
-      allowNull: true,
-    },
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields
