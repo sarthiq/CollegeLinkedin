@@ -12,7 +12,7 @@ const UserProfile = require("../../../Models/User/userProfile");
 exports.userSignUp = async (req, res, next) => {
   let transaction;
   try {
-    const { name, email, phone, password, collegeName, collegeYear } = req.body;
+    const { name, email, phone, password, collegeName, collegeYear ,courseName} = req.body;
 
     if (!name || !email || !phone || !password) {
       return res
@@ -58,6 +58,7 @@ exports.userSignUp = async (req, res, next) => {
       {
         collegeName,
         collegeYear,
+        courseName,
       },
       { transaction }
     );
