@@ -11,11 +11,12 @@ export const LandingRoutes = () => {
         <div className="landing-container">
             <Header />
             <Routes>
-                <Route path="/" element={<LandingHome />} />
-                <Route path="/blogs/*" element={<div>Blogs Coming Soon</div>} />
-                <Route path="/auth/*" element={<div>Auth Component Coming Soon</div>} />
-            </Routes>
-            <Footer />
-        </div>
+        <Route path="" element={<LandingHome />} />
+        <Route path="blogs" element={<Blogs />} />
+        <Route path="auth/*" element={<AuthRoutes />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+      <Footer />
+    </div>
     );
 };
