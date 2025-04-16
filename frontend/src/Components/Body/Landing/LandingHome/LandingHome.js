@@ -8,22 +8,68 @@ export const LandingHome = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isJoinForm, setIsJoinForm] = useState(false);
+  const [signInMethod, setSignInMethod] = useState('email'); // 'email' or 'phone'
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
     fullName: '',
-    college: '',
+    email: '',
+    phoneNumber: '',
+    collegeName: '',
+    collegeYear: '',
+    password: '',
+    confirmPassword: '',
   });
+  const [formErrors, setFormErrors] = useState({});
 
   const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
+    
+    // Clear error when user starts typing
+    if (formErrors[name]) {
+      setFormErrors({
+        ...formErrors,
+        [name]: ''
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    
+    if (isJoinForm) {
+      if (!formData.fullName) errors.fullName = 'Full name is required';
+      if (!formData.email) errors.email = 'Email is required';
+      if (!formData.phoneNumber) errors.phoneNumber = 'Phone number is required';
+      if (!formData.collegeName) errors.collegeName = 'College name is required';
+      if (!formData.collegeYear || !/^\d{4}$/.test(formData.collegeYear)) {
+        errors.collegeYear = 'Enter a valid year (4 digits)';
+      }
+      if (!formData.password || formData.password.length < 8) {
+        errors.password = 'Password must be at least 8 characters long';
+      }
+      if (formData.password !== formData.confirmPassword) {
+        errors.confirmPassword = 'Passwords do not match';
+      }
+    } else {
+      if (signInMethod === 'email' && !formData.email) errors.email = 'Email is required';
+      if (signInMethod === 'phone' && !formData.phoneNumber) errors.phoneNumber = 'Phone number is required';
+      if (!formData.password) errors.password = 'Password is required';
+    }
+
+    return errors;
   };
 
   const handleSignIn = (e) => {
     e.preventDefault();
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    
     dispatch(userLogin());
     dispatch(setUserAuthToken('dummy-token'));
     localStorage.setItem('token', 'dummy-token');
@@ -32,6 +78,12 @@ export const LandingHome = () => {
 
   const handleJoinNow = (e) => {
     e.preventDefault();
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
     dispatch(userLogin());
     dispatch(setUserAuthToken('dummy-token'));
     localStorage.setItem('token', 'dummy-token');
@@ -40,12 +92,21 @@ export const LandingHome = () => {
 
   const toggleForm = () => {
     setIsJoinForm(!isJoinForm);
+    setFormErrors({});
     setFormData({
-      email: '',
-      password: '',
       fullName: '',
-      college: '',
+      email: '',
+      phoneNumber: '',
+      collegeName: '',
+      collegeYear: '',
+      password: '',
+      confirmPassword: '',
     });
+  };
+
+  const toggleSignInMethod = () => {
+    setSignInMethod(signInMethod === 'email' ? 'phone' : 'email');
+    setFormErrors({});
   };
 
   return (
@@ -65,21 +126,12 @@ export const LandingHome = () => {
                   <input
                     type="text"
                     name="fullName"
-                    placeholder="Full Name"
+                    placeholder="Enter your full name"
                     value={formData.fullName}
                     onChange={handleInputChange}
                     required
                   />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="college"
-                    placeholder="College Name"
-                    value={formData.college}
-                    onChange={handleInputChange}
-                    required
-                  />
+                  {formErrors.fullName && <span className="error-message">{formErrors.fullName}</span>}
                 </div>
                 <div className="form-group">
                   <input
@@ -90,17 +142,64 @@ export const LandingHome = () => {
                     onChange={handleInputChange}
                     required
                   />
+                  {formErrors.email && <span className="error-message">{formErrors.email}</span>}
+                </div>
+                <div className="form-group">
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    placeholder="Phone Number"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  {formErrors.phoneNumber && <span className="error-message">{formErrors.phoneNumber}</span>}
+                </div>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    name="collegeName"
+                    placeholder="College Name"
+                    value={formData.collegeName}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  {formErrors.collegeName && <span className="error-message">{formErrors.collegeName}</span>}
+                </div>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    name="collegeYear"
+                    placeholder="College Year (4 digits)"
+                    value={formData.collegeYear}
+                    onChange={handleInputChange}
+                    pattern="\d{4}"
+                    required
+                  />
+                  {formErrors.collegeYear && <span className="error-message">{formErrors.collegeYear}</span>}
                 </div>
                 <div className="form-group">
                   <input
                     type="password"
                     name="password"
-                    placeholder="Password (6+ characters)"
+                    placeholder="Create a password (min. 8 characters)"
                     value={formData.password}
                     onChange={handleInputChange}
-                    minLength="6"
+                    minLength="8"
                     required
                   />
+                  {formErrors.password && <span className="error-message">{formErrors.password}</span>}
+                </div>
+                <div className="form-group">
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Confirm Password"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  {formErrors.confirmPassword && <span className="error-message">{formErrors.confirmPassword}</span>}
                 </div>
                 <button type="submit" className="sign-in-button">
                   Join Now
@@ -108,15 +207,44 @@ export const LandingHome = () => {
               </form>
             ) : (
               <form onSubmit={handleSignIn}>
+                <div className="sign-in-toggle">
+                  <button
+                    type="button"
+                    className={`toggle-btn ${signInMethod === 'email' ? 'active' : ''}`}
+                    onClick={() => setSignInMethod('email')}
+                  >
+                    Sign in with Email
+                  </button>
+                  <button
+                    type="button"
+                    className={`toggle-btn ${signInMethod === 'phone' ? 'active' : ''}`}
+                    onClick={() => setSignInMethod('phone')}
+                  >
+                    Sign in with Phone
+                  </button>
+                </div>
                 <div className="form-group">
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                  />
+                  {signInMethod === 'email' ? (
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  ) : (
+                    <input
+                      type="tel"
+                      name="phoneNumber"
+                      placeholder="Phone Number"
+                      value={formData.phoneNumber}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  )}
+                  {formErrors.email && <span className="error-message">{formErrors.email}</span>}
+                  {formErrors.phoneNumber && <span className="error-message">{formErrors.phoneNumber}</span>}
                 </div>
                 <div className="form-group">
                   <input
@@ -127,6 +255,7 @@ export const LandingHome = () => {
                     onChange={handleInputChange}
                     required
                   />
+                  {formErrors.password && <span className="error-message">{formErrors.password}</span>}
                 </div>
                 <button type="submit" className="sign-in-button">
                   Sign in
@@ -168,20 +297,20 @@ export const LandingHome = () => {
       <section className="landing-section learning-lab">
         <h2 className="section-title">Learning Lab</h2>
         <p className="section-description">
-          Complement your academics learning with practical and future ready skills.
+          Enhance your academic journey with practical skills and future-ready knowledge
         </p>
         <div className="feature-cards">
           <div className="feature-card">
             <h3>AI Literacy</h3>
-            <p>AI for Designers, Marketing, Coding, Video & editing, etc.</p>
+            <p>Master AI tools for design, marketing, coding, and content creation. Stay ahead in the digital age.</p>
           </div>
           <div className="feature-card">
-            <h3>Basic Communication</h3>
-            <p>Basic learning modules, resume building, writing, etc.</p>
+            <h3>Communication Skills</h3>
+            <p>Build your professional identity with expert-guided resume building and communication modules.</p>
           </div>
           <div className="feature-card">
-            <h3>Cases & Assignments</h3>
-            <p>Field specific case studies and assignments to grow professionally.</p>
+            <h3>Industry Projects</h3>
+            <p>Tackle real-world case studies and assignments to develop practical expertise in your field.</p>
           </div>
         </div>
       </section>
@@ -190,20 +319,20 @@ export const LandingHome = () => {
       <section className="landing-section project-arena">
         <h2 className="section-title">Project Arena</h2>
         <p className="section-description">
-          Use your academic learning into real-world problem solving and practical learning.
+          Transform classroom knowledge into real-world solutions through hands-on projects
         </p>
         <div className="feature-cards">
           <div className="feature-card">
-            <h3>Collaborations & tie-up</h3>
-            <p>Collaboration with startups, NGOs, and other organizations for live projects for students.</p>
+            <h3>Industry Collaborations</h3>
+            <p>Work on live projects with startups and NGOs. Build your portfolio while making an impact.</p>
           </div>
           <div className="feature-card">
-            <h3>Domain Specific Projects</h3>
-            <p>Projects for all domains, engineering, business, law, arts, etc.</p>
+            <h3>Domain Excellence</h3>
+            <p>Choose from projects in engineering, business, law, arts, and more. Specialize in your field.</p>
           </div>
           <div className="feature-card">
-            <h3>Past Projects</h3>
-            <p>Past projects for students learning and reference.</p>
+            <h3>Learning Resources</h3>
+            <p>Access a rich library of past projects and case studies. Learn from successful implementations.</p>
           </div>
         </div>
       </section>
@@ -212,20 +341,20 @@ export const LandingHome = () => {
       <section className="landing-section internships">
         <h2 className="section-title">Internships</h2>
         <p className="section-description">
-          Use your learnings and skills to build your career by Interning with divers' startups.
+          Kickstart your career with meaningful internships at innovative startups
         </p>
         <div className="feature-cards">
           <div className="feature-card">
-            <h3>Internship</h3>
-            <p>Collaboration with startups, NGOs, and other organizations for live projects for students.</p>
+            <h3>Startup Experience</h3>
+            <p>Join dynamic startup teams. Gain hands-on experience in fast-paced environments.</p>
           </div>
           <div className="feature-card">
-            <h3>Competition</h3>
-            <p>Projects for all domains, engineering, business, law, arts, etc.</p>
+            <h3>Skill Challenges</h3>
+            <p>Participate in competitions and challenges. Showcase your talents to potential employers.</p>
           </div>
           <div className="feature-card">
-            <h3>Past Projects</h3>
-            <p>Past projects for students learning and reference.</p>
+            <h3>Success Stories</h3>
+            <p>Learn from successful internship experiences. Build your path to professional success.</p>
           </div>
         </div>
       </section>
@@ -234,20 +363,20 @@ export const LandingHome = () => {
       <section className="landing-section community">
         <h2 className="section-title">Community</h2>
         <p className="section-description">
-          Complement your learnings across domain, colleges and cultures to emerge a well-groomed professionals
+          Connect with peers across colleges and domains to grow together
         </p>
         <div className="feature-cards">
           <div className="feature-card">
-            <h3>Inter/Intra college</h3>
-            <p>Community across college for short term or long-term association</p>
+            <h3>College Network</h3>
+            <p>Build lasting connections with students from various colleges. Create your professional network early.</p>
           </div>
           <div className="feature-card">
-            <h3>Interest, hobby, aspiration based</h3>
-            <p>Be it coding, business, singing, performing art collab across colleges.</p>
+            <h3>Interest Groups</h3>
+            <p>Join communities based on your interests - from coding to arts. Collaborate on passion projects.</p>
           </div>
           <div className="feature-card">
-            <h3>Collab on pro with students across colleges</h3>
-            <p>If you have business idea collab with technical or business students to execute.</p>
+            <h3>Startup Collaboration</h3>
+            <p>Find the perfect team for your startup idea. Connect with technical and business minds.</p>
           </div>
         </div>
       </section>
@@ -256,8 +385,22 @@ export const LandingHome = () => {
       <section className="landing-section blogs">
         <h2 className="section-title">Blogs</h2>
         <p className="section-description">
-          Get lates updates on education, skills, industry and happing across campuses and industry to be updated.
+          Stay informed with the latest trends in education, industry, and campus life
         </p>
+        <div className="feature-cards">
+          <div className="feature-card">
+            <h3>Industry Insights</h3>
+            <p>Get expert perspectives on career trends and industry developments.</p>
+          </div>
+          <div className="feature-card">
+            <h3>Student Stories</h3>
+            <p>Read inspiring stories from fellow students and their journey to success.</p>
+          </div>
+          <div className="feature-card">
+            <h3>Campus Updates</h3>
+            <p>Stay updated with the latest happenings across college campuses.</p>
+          </div>
+        </div>
       </section>
     </main>
   );
