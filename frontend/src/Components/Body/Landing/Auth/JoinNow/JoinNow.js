@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from './JoinNow.module.css';
-
+import { Link } from 'react-router-dom';
 export const JoinNow = () => {
     const [formData, setFormData] = useState({
         name: '',
@@ -239,7 +239,7 @@ export const JoinNow = () => {
                     <div className={styles.divider}></div>
 
                     <div className={styles.loginLink}>
-                        Already have an account? <a href="/login">Sign in</a>
+                        Already have an account? <Link to="/auth/signIn">Sign in</Link>
                     </div>
                 </div>
             </div>
