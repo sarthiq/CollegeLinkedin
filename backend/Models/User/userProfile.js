@@ -9,6 +9,22 @@ const UserProfile = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    collegeName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    collegeYear: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    profileUrl: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    coverUrl: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     
   },
   {
