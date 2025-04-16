@@ -1,13 +1,16 @@
 const User = require("../../../Models/User/users");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { sequelize } = require("../../../database");
+
 const { Op } = require("sequelize");
 const {
   JWT_SECRET_KEY,
   UserTokenExpiresIn,
+  sequelize,
 } = require("../../../importantInfo");
 const UserProfile = require("../../../Models/User/userProfile");
+
+
 
 exports.userSignUp = async (req, res, next) => {
   let transaction;

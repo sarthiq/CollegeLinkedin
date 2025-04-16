@@ -19,11 +19,11 @@ const UserProfile = sequelize.define(
     },
     profileUrl: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     coverUrl: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     
   },

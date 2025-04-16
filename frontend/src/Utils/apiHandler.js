@@ -42,6 +42,7 @@ export const handleErrors = async (err, showAlert) => {
   let alertMessage = null;
   let response = null;
 
+ 
   // Check if the error has no response (network/server issue)
   if (!err.response) {
     logMessage = "Network error or server is not responding: " + err;
@@ -77,11 +78,7 @@ export const handleErrors = async (err, showAlert) => {
   // Show alert if alertMsg argument is true and alertMessage exists
 
   if (alertMessage) {
-    showAlert("error", "Error!", alertMessage, null, () => {
-      if (response && response.status && response.status === 503) {
-        window.location = "/auth";
-      }
-    });
+    showAlert(alertMessage);
   }
 
   if (response && response.status === 503) {
