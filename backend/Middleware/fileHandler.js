@@ -1,8 +1,8 @@
 const multer = require("multer");
 
-exports.setFileSizeLimit = ({ fileSizeLimit = 0.5 ,fileName=""}) => {
+exports.setFileSizeLimit = ({ fileSizeLimit = 0.5, fileNames = [] }) => {
   return (req, res, next) => {
-    req.fileName=fileName
+    req.fileNames = fileNames;
     req.fileSizeLimit = fileSizeLimit * 1024 * 1024; // Convert MB to bytes
     next();
   };
@@ -22,8 +22,8 @@ exports.checkFileSize = (req, res, next) => {
   next();
 };
 
-exports.singleFileHandler = (fileName) => {
-  const fields = [{ name: fileName, maxCount: 1 }];
+exports.multipleFileHandler = (fileNames) => {
+  const fields = fileNames.map(name => ({ name, maxCount: 1 }));
   const storage = multer.memoryStorage();
 
   return multer({
@@ -31,11 +31,11 @@ exports.singleFileHandler = (fileName) => {
   }).fields(fields);
 };
 
-
-exports.checkFileExist=(req,res,next)=>{
-  
-  if(req.fileName){
+exports.checkFileExist = (req, res, next) => {
+  return next();
+  // Check if at least one file was uploaded
+  if (req.files && Object.keys(req.files).length > 0) {
     return next();
   }
-  res.status(404).json({error:"File not Found!"})
-}
+  //res.status(404).json({ error: "No files uploaded!" });
+};

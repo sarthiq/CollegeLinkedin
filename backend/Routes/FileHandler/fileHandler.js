@@ -2,17 +2,17 @@ const express = require("express");
 const {
   setFileSizeLimit,
   checkFileSize,
-  singleFileHandler,
+  multipleFileHandler,
   checkFileExist,
 } = require("../../Middleware/fileHandler");
 
-exports.fileHandlerRouter = (fileName, fileSize) => {
+exports.fileHandlerRouter = (fileNames, fileSize) => {
   const router = express.Router();
 
   router.use(
-    setFileSizeLimit({ fileSizeLimit: fileSize,fileName:fileName }), // Corrected parameter name
+    setFileSizeLimit({ fileSizeLimit: fileSize, fileNames: fileNames }),
     checkFileSize,
-    singleFileHandler(fileName),
+    multipleFileHandler(fileNames),
     checkFileExist
   );
 

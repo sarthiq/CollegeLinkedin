@@ -69,10 +69,10 @@ export const Header = () => {
                         Blogs
                     </Link>
                 </nav>
-                <nav className="nav-buttons">
+                {/* <nav className="nav-buttons">
                     <button onClick={handleJoinNow} className="nav-btn">Join now</button>
                     <button onClick={handleSignIn} className="nav-btn nav-btn-secondary">Sign in</button>
-                </nav>
+                </nav> */}
             </div>
             {isMenuOpen && <div className="menu-overlay" onClick={toggleMenu}></div>}
         </header>

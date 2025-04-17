@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './Header.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { userLogin, setUserAuthToken } from '../../../../Store/User/auth';
+import { userLogin, setUserAuthToken, userLogOut } from '../../../../Store/User/auth';
 
 export const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,6 +27,16 @@ export const Header = () => {
         localStorage.setItem('token', 'dummy-token');
         navigate('/home');
         setIsMenuOpen(false);
+    };
+
+    const handleLogout = () => {
+        // Clear user data from localStorage
+        localStorage.removeItem('token');
+        // Reset auth state
+        dispatch(setUserAuthToken(null));
+        dispatch(userLogOut());
+        // Navigate to home page
+        navigate('/');
     };
 
     return (
@@ -69,10 +79,33 @@ export const Header = () => {
                         Blogs
                     </Link>
                 </nav>
-                <nav className="nav-buttons">
+                {/* <nav className="nav-buttons">
                     <button onClick={handleJoinNow} className="nav-btn">Join now</button>
                     <button onClick={handleSignIn} className="nav-btn nav-btn-secondary">Sign in</button>
-                </nav>
+                </nav> */}
+                
+                {/* Profile Section with Dropdown */}
+                <div className="profile-section">
+                    <div className="profile-icon">
+                        <span className="profile-avatar">👤</span>
+                        <span className="profile-text">Profile</span>
+                        <span className="dropdown-indicator">▼</span>
+                    </div>
+                    <div className="profile-dropdown">
+                        <Link to="/profile" className="dropdown-item">
+                            <span className="dropdown-icon">👤</span>
+                            My Profile
+                        </Link>
+                        <Link to="/account-settings" className="dropdown-item">
+                            <span className="dropdown-icon">⚙️</span>
+                            Account Settings
+                        </Link>
+                        <button onClick={handleLogout} className="dropdown-item logout-btn">
+                            <span className="dropdown-icon">🚪</span>
+                            Logout
+                        </button>
+                    </div>
+                </div>
             </div>
             {isMenuOpen && <div className="menu-overlay" onClick={toggleMenu}></div>}
         </header>

@@ -138,6 +138,12 @@
   color: #666;
 }
 
+.course-name {
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+}
+
 .profile-stats {
   display: flex;
   gap: 2rem;
@@ -354,4 +360,79 @@
   .profile-stats {
     gap: 1rem;
   }
+}
+
+/* Loading and Error Styles */
+.profile-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0, 119, 181, 0.1);
+  border-radius: 50%;
+  border-top-color: #0077B5;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 20px;
+}
+
+.spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.profile-error {
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 16px;
+  margin: 16px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-error button {
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.profile-error button:hover {
+  background-color: #b71c1c;
+}
+
+/* Disabled form elements */
+.profile-form-group input:disabled,
+.profile-form-group textarea:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.profile-save-button:disabled,
+.profile-cancel-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 } 

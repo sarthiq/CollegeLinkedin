@@ -62,6 +62,7 @@ exports.userSignUp = async (req, res, next) => {
         collegeName,
         collegeYear,
         courseName,
+        UserId: newUser.id,
       },
       { transaction }
     );

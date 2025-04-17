@@ -17,6 +17,28 @@ const UserProfile = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    courseName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    followers: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    following: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    bio: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     profileUrl: {
       type: DataTypes.STRING,
       allowNull: true,

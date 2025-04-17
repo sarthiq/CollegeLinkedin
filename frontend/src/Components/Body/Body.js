@@ -4,6 +4,7 @@ import { UserRoutes } from "./User/UserRoutes";
 import { useSelector } from "react-redux";
 import { Routes, Route } from "react-router-dom";
 import { LandingRoutes } from "./Landing/LandingRoutes";
+import { InfoRoutes } from "./Info/InfoRoutes";
 
 export const Body = () => {
   const isLoggedIn = useSelector((state) => state.userAuth.isLoggedIn);
@@ -11,6 +12,7 @@ export const Body = () => {
   return (
     <Routes>
       <Route path="admin/*" element={<Admin />} />
+      <Route path="info/*" element={<InfoRoutes />} />
       <Route path="*" element={isLoggedIn ? <UserRoutes /> : <LandingRoutes />} />
     </Routes>
   );

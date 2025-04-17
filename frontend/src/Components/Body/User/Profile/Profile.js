@@ -1,25 +1,73 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Feed } from '../Common/Feed/Feed';
+import { getProfileHandler, updateProfileHandler } from './profileApiHandler';
 import './Profile.css';
 
 export const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [error, setError] = useState(null);
   const [profile, setProfile] = useState({
-    name: 'John Doe',
-    title: 'Computer Science Student',
-    email: 'john.doe@example.com',
-    phone: '+1 234 567 8900',
-    description: 'Passionate about technology and software development. Currently pursuing my degree in Computer Science with a focus on web development and machine learning.',
-    followers: 1200,
-    following: 850,
-    image: 'https://randomuser.me/api/portraits/men/1.jpg',
-    coverImage: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-    collegeName: 'Stanford University',
-    collegeYear: '2024'
+    name: '',
+    title: '',
+    email: '',
+    phone: '',
+    description: '',
+    followers: 0,
+    following: 0,
+    image: '',
+    coverImage: '',
+    collegeName: '',
+    collegeYear: '',
+    courseName: ''
   });
 
   const coverImageInputRef = useRef(null);
   const profileImageInputRef = useRef(null);
+
+  // Fetch profile data on component mount
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await getProfileHandler({}, setIsLoading, (error) => {
+        setError(error);
+      });
+      
+      if (response && response.success) {
+        const profileData = response.data;
+        setProfile({
+          name: profileData.User?.name || '',
+          title: profileData.title || '',
+          email: profileData.User?.email || '',
+          phone: profileData.User?.phone || '',
+          description: profileData.bio || '',
+          followers: 0, // These would come from a different API
+          following: 0, // These would come from a different API
+          image: profileData.profileUrl 
+            ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.profileUrl}` 
+            : 'https://via.placeholder.com/150',
+          coverImage: profileData.coverUrl 
+            ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.coverUrl}` 
+            : 'https://via.placeholder.com/1200x300',
+          collegeName: profileData.collegeName || '',
+          collegeYear: profileData.collegeYear || '',
+          courseName: profileData.courseName || ''
+        });
+      } else {
+        setError('Failed to fetch profile data');
+      }
+    } catch (err) {
+      setError(err.message || 'An error occurred while fetching profile');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const [feeds, setFeeds] = useState([
     {
@@ -107,20 +155,59 @@ export const Profile = () => {
     }
   };
 
-  const handleProfileUpdate = (e) => {
+  const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    setProfile({
-      ...profile,
-      name: formData.get('name'),
-      title: formData.get('title'),
-      email: formData.get('email'),
-      phone: formData.get('phone'),
-      description: formData.get('description'),
-      collegeName: formData.get('collegeName'),
-      collegeYear: formData.get('collegeYear')
-    });
-    setIsEditing(false);
+    setIsUpdating(true);
+    setError(null);
+    
+    try {
+      const formData = new FormData();
+      
+      // Add text fields
+      formData.append('name', e.target.name.value);
+      formData.append('title', e.target.title.value);
+      formData.append('bio', e.target.description.value);
+      formData.append('collegeName', e.target.collegeName.value);
+      formData.append('collegeYear', e.target.collegeYear.value);
+      formData.append('courseName', e.target.courseName.value);
+      
+      // Add files if they were changed
+      if (profileImageInputRef.current.files.length > 0) {
+        formData.append('image', profileImageInputRef.current.files[0]);
+      }
+      
+      if (coverImageInputRef.current.files.length > 0) {
+        formData.append('coverImage', coverImageInputRef.current.files[0]);
+      }
+      
+      const response = await updateProfileHandler(formData, setIsUpdating, (error) => {
+        setError(error);
+      });
+      
+      if (response && response.success) {
+        // Update local state with new data
+        setProfile(prev => ({
+          ...prev,
+          name: e.target.name.value,
+          title: e.target.title.value,
+          description: e.target.description.value,
+          collegeName: e.target.collegeName.value,
+          collegeYear: e.target.collegeYear.value,
+          courseName: e.target.courseName.value,
+          // Image URLs will be updated after a successful fetch
+        }));
+        
+        // Refresh profile data to get updated image URLs
+        await fetchProfile();
+        setIsEditing(false);
+      } else {
+        setError('Failed to update profile');
+      }
+    } catch (err) {
+      setError(err.message || 'An error occurred while updating profile');
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   const handleCoverImageChange = (e) => {
@@ -151,19 +238,38 @@ export const Profile = () => {
     }
   };
 
+  // Show loading spinner while fetching profile
+  if (isLoading) {
+    return (
+      <div className="profile-loading">
+        <div className="spinner"></div>
+        <p>Loading profile...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="profile-container">
+      {error && (
+        <div className="profile-error">
+          <p>{error}</p>
+          <button onClick={fetchProfile}>Try Again</button>
+        </div>
+      )}
+      
       <div className="profile-header">
         <div className="profile-cover-image">
-          <img src={profile.coverImage} alt="Cover" />
-          <button 
-            className="profile-edit-cover-button"
-            onClick={() => coverImageInputRef.current.click()}
-          >
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-            </svg>
-          </button>
+          <img src={profile.coverImage || 'https://via.placeholder.com/1200x300'} alt="Cover" />
+          {isEditing && (
+            <button 
+              className="profile-edit-cover-button"
+              onClick={() => coverImageInputRef.current.click()}
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+            </button>
+          )}
           <input
             type="file"
             ref={coverImageInputRef}
@@ -174,15 +280,17 @@ export const Profile = () => {
         </div>
         <div className="profile-info">
           <div className="profile-image-container">
-            <img src={profile.image} alt={profile.name} />
-            <button 
-              className="profile-edit-image-button"
-              onClick={() => profileImageInputRef.current.click()}
-            >
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-              </svg>
-            </button>
+            <img src={profile.image || 'https://via.placeholder.com/150'} alt={profile.name} />
+            {isEditing && (
+              <button 
+                className="profile-edit-image-button"
+                onClick={() => profileImageInputRef.current.click()}
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                </svg>
+              </button>
+            )}
             <input
               type="file"
               ref={profileImageInputRef}
@@ -197,6 +305,7 @@ export const Profile = () => {
             <div className="profile-college-info">
               <span className="college-name">{profile.collegeName}</span>
               <span className="college-year">{profile.collegeYear}</span>
+              {profile.courseName && <span className="course-name">{profile.courseName}</span>}
             </div>
             <div className="profile-stats">
               <div className="profile-stat-item">
@@ -247,7 +356,7 @@ export const Profile = () => {
                   type="email"
                   name="email"
                   defaultValue={profile.email}
-                  required
+                  disabled
                 />
               </div>
               <div className="profile-form-group">
@@ -256,7 +365,7 @@ export const Profile = () => {
                   type="tel"
                   name="phone"
                   defaultValue={profile.phone}
-                  required
+                  disabled
                 />
               </div>
               <div className="profile-form-group">
@@ -285,16 +394,36 @@ export const Profile = () => {
                   required
                 />
               </div>
+              <div className="profile-form-group">
+                <label>Course Name</label>
+                <input
+                  type="text"
+                  name="courseName"
+                  defaultValue={profile.courseName}
+                />
+              </div>
               <div className="profile-form-actions">
                 <button 
                   type="button"
                   className="profile-cancel-button"
                   onClick={() => setIsEditing(false)}
+                  disabled={isUpdating}
                 >
                   Cancel
                 </button>
-                <button type="submit" className="profile-save-button">
-                  Save Changes
+                <button 
+                  type="submit" 
+                  className="profile-save-button"
+                  disabled={isUpdating}
+                >
+                  {isUpdating ? (
+                    <>
+                      <span className="spinner-small"></span>
+                      Saving...
+                    </>
+                  ) : (
+                    'Save Changes'
+                  )}
                 </button>
               </div>
             </form>

@@ -1,5 +1,6 @@
 exports.baseDir = __dirname;
 
+
 exports.AdminTokenExpiresIn = process.env.NODE_ENV === "testing" ? "7d" : "20m";
 exports.UserTokenExpiresIn = process.env.NODE_ENV === "testing" ? "7d" : "7d";
 exports.DeveloperTokenExpiresIn = process.env.NODE_ENV === "testing" ? "7d" : "2m";
