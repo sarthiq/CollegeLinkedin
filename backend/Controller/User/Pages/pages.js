@@ -25,7 +25,7 @@ exports.getAllPages = async (req, res) => {
 
     if (userPages) {
       const userId = req.user.id;
-      whereCondition.UserId = userId;
+      whereCondition.adminId = userId;
     }
     // Get pages with pagination and search
     const { count, rows: pages } = await Pages.findAndCountAll({
