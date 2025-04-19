@@ -7,6 +7,7 @@ const Pages = require("./Basic/pages");
 const Feeds = require("./Basic/feeds");
 const Likes = require("./Basic/likes");
 const Comments = require("./Basic/comments");
+const Followers = require("./Basic/followers");
 
 exports.setupModels = async () => {
   // Define associations
@@ -19,8 +20,8 @@ exports.setupModels = async () => {
   User.hasMany(UserActivity);
   UserActivity.belongsTo(User);
 
-  User.belongsToMany(Pages, { through: "followers" });
-  Pages.belongsToMany(User, { through: "followers" });
+  User.belongsToMany(Pages, { through:Followers });
+  Pages.belongsToMany(User, { through:Followers });
 
   User.hasMany(Feeds);
   Feeds.belongsTo(User);

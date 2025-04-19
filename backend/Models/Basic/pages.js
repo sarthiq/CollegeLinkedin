@@ -22,6 +22,23 @@ const Pages = sequelize.define(
       allowNull: false,
       defaultValue: 0,
     },
+    posts: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    description: {
+      type: Sequelize.TEXT,
+      allowNull: true,
+    },
+    category: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    adminId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
   },
   {
     timestamps: true,

@@ -4,22 +4,26 @@ const { Op } = require("sequelize");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const { saveFile } = require("../../../Utils/fileHandler");
-
+const Followers = require("../../../Models/Basic/followers");
+const UserProfile = require("../../../Models/User/userProfile");
+const { sequelize } = require("../../../importantInfo");
 
 // Get all pages
 exports.getAllPages = async (req, res) => {
   try {
-    const { page = 1, limit = 10, search, userPages=false } = req.body;
+    const { page = 1, limit = 10, search, userPages = false } = req.body;
     const offset = (page - 1) * limit;
 
     // Build search condition if search query exists
-    const whereCondition = search ? {
-      title: {
-        [Op.like]: `%${search}%` // Search in title field
-      }
-    } : {};
+    const whereCondition = search
+      ? {
+          title: {
+            [Op.like]: `%${search}%`, // Search in title field
+          },
+        }
+      : {};
 
-    if(userPages){
+    if (userPages) {
       const userId = req.user.id;
       whereCondition.UserId = userId;
     }
@@ -29,13 +33,12 @@ exports.getAllPages = async (req, res) => {
       include: [
         {
           model: User,
-          as: "followers", 
-          attributes: ["id", "name", "profileUrl"],
+          attributes: ["id", "name"],
         },
       ],
       limit: parseInt(limit),
       offset: parseInt(offset),
-      order: [['createdAt', 'DESC']] // Order by latest first
+      order: [["createdAt", "DESC"]], // Order by latest first
     });
 
     // Calculate pagination metadata
@@ -43,8 +46,8 @@ exports.getAllPages = async (req, res) => {
     const hasNextPage = page < totalPages;
     const hasPrevPage = page > 1;
 
-    res.status(200).json({ 
-      success: true, 
+    res.status(200).json({
+      success: true,
       data: {
         pages,
         pagination: {
@@ -53,9 +56,9 @@ exports.getAllPages = async (req, res) => {
           currentPage: parseInt(page),
           limit: parseInt(limit),
           hasNextPage,
-          hasPrevPage
-        }
-      }
+          hasPrevPage,
+        },
+      },
     });
   } catch (error) {
     console.log(error);
@@ -67,22 +70,44 @@ exports.getAllPages = async (req, res) => {
 exports.getPageById = async (req, res) => {
   try {
     const { id } = req.body;
-    const page = await Pages.findByPk(id, {
+    const page = await Pages.findByPk(id);
+
+    if (!page) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Page not found" });
+    }
+    const user = await User.findByPk(page.adminId, {
+      attributes: ["name"],
       include: [
         {
-          model: User,
-          as: "followers",
-          attributes: ["id", "name", "profileUrl"],
+          model: UserProfile,
+          attributes: ["profileUrl"],
         },
       ],
     });
 
-    if (!page) {
-      return res.status(404).json({ success: false, message: "Page not found" });
-    }
+    page.admin = user;
 
-    res.status(200).json({ success: true, data: page });
+    res.status(200).json({
+      success: true,
+      data: {
+        page,
+        admin: {
+          isAdmin: req.user.id === page.adminId,
+          name: user.name,
+          profileUrl: user.UserProfile.profileUrl,
+        },
+        isFollowing: await Followers.findOne({
+          where: {
+            UserId: req.user.id,
+            PageId: page.id,
+          },
+        }),
+      },
+    });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
@@ -92,14 +117,12 @@ exports.createPage = async (req, res) => {
   try {
     const { title } = req.body;
     const userId = req.user.id;
-    const imageFile = req.files
-      ? req.files[req.fileName]
-        ? req.files[req.fileName][0]
-        : null
-      : null;
+    const imageFile = req.files && req.files.image ? req.files.image[0] : null;
 
     if (!title) {
-      return res.status(400).json({ success: false, message: "Title is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Title is required" });
     }
 
     let imageUrl = "";
@@ -113,13 +136,18 @@ exports.createPage = async (req, res) => {
       title,
       imageUrl,
       followers: 0,
+      adminId: userId,
     });
 
     // Add the creator as a follower
-    await page.addFollower(userId);
+    await Followers.create({
+      UserId: userId,
+      PageId: page.id,
+    });
 
     res.status(201).json({ success: true, data: page });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
@@ -127,17 +155,16 @@ exports.createPage = async (req, res) => {
 // Update page
 exports.updatePage = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { title } = req.body;
-    const imageFile = req.files
-      ? req.files[req.fileName]
-        ? req.files[req.fileName][0]
-        : null
-      : null;
+    const { title, description, id } = req.body;
+    const userId = req.user.id;
 
-    const page = await Pages.findByPk(id);
+    const imageFile = req.files && req.files.image ? req.files.image[0] : null;
+
+    const page = await Pages.findOne({ where: { id: id, adminId: userId } });
     if (!page) {
-      return res.status(404).json({ success: false, message: "Page not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Page not found" });
     }
 
     let imageUrl = page.imageUrl;
@@ -150,60 +177,90 @@ exports.updatePage = async (req, res) => {
     // Update the page
     await page.update({
       title: title || page.title,
+      description: description || page.description,
       imageUrl,
     });
 
     res.status(200).json({ success: true, data: page });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
 
 // Delete page
 exports.deletePage = async (req, res) => {
+  let transaction;
   try {
-    const { id } = req.params;
+    const { id } = req.body;
+    const userId = req.user.id;
 
-    const page = await Pages.findByPk(id);
+    const page = await Pages.findOne({ where: { id: id, adminId: userId } });
     if (!page) {
-      return res.status(404).json({ success: false, message: "Page not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Page not found" });
     }
 
-    await page.destroy();
-    res.status(200).json({ success: true, message: "Page deleted successfully" });
+    transaction = await sequelize.transaction();
+
+    await Followers.destroy({ where: { PageId: id }, transaction });
+    await Pages.destroy({ where: { id: id }, transaction });
+
+    await transaction.commit();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Page deleted successfully" });
   } catch (error) {
+    if (transaction) {
+      await transaction.rollback();
+    }
+    console.log(error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
 
 // Follow/Unfollow page
 exports.toggleFollowPage = async (req, res) => {
+  let transaction;
   try {
     const { id } = req.body;
     const userId = req.user.id; // Assuming user ID is available in request
 
     const page = await Pages.findByPk(id);
     if (!page) {
-      return res.status(404).json({ success: false, message: "Page not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Page not found" });
     }
 
-    const isFollowing = await page.hasFollower(userId);
-    
+    const isFollowing = await Followers.findOne({
+      where: { UserId: userId, PageId: id },
+    });
+    transaction = await sequelize.transaction();
     if (isFollowing) {
-      await page.removeFollower(userId);
-      await page.decrement("followers");
+      await Followers.destroy({ where: { UserId: userId, PageId: id }, transaction });
+      await page.decrement("followers", { transaction });
     } else {
-      await page.addFollower(userId);
-      await page.increment("followers");
+      await Followers.create({ UserId: userId, PageId: id }, { transaction });
+      await page.increment("followers", { transaction });
     }
+
+    await transaction.commit();
 
     res.status(200).json({
       success: true,
-      message: isFollowing ? "Unfollowed successfully" : "Followed successfully",
+      message: isFollowing
+        ? "Unfollowed successfully"
+        : "Followed successfully",
       data: { followers: page.followers },
     });
   } catch (error) {
+    if (transaction) {
+      await transaction.rollback();
+    }
+    console.log(error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
-

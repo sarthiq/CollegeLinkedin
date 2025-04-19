@@ -9,6 +9,7 @@ const Followers = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    
   },
   {
     timestamps: true,

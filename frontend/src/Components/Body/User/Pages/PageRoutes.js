@@ -3,7 +3,7 @@ import { PageHome } from "./PageHome/PageHome";
 import { PageDetails } from "./PageDetails/PageDetails";
 import { PageNotFound } from "../../../UI/PageNotFound/PageNotFound";
 
-export const PagesRoutes   = () => {
+export const PagesRoutes = () => {
   return (
     <Routes>
       <Route path="" element={<PageHome />} />

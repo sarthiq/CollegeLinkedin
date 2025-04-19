@@ -1,120 +1,166 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getAllPagesHandler, createPageHandler, toggleFollowPageHandler } from '../pageApiHandler';
 import './PageHome.css';
 
 export const PageHome = () => {
   const navigate = useNavigate();
   const [showCreatePage, setShowCreatePage] = useState(false);
   const [showUserPages, setShowUserPages] = useState(false);
-  const [pages, setPages] = useState([
-    {
-      id: 1,
-      name: 'Computer Science Department',
-      description: 'Official page for Computer Science Department',
-      image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3',
-      followers: 1200,
-      posts: 45,
-      isFollowing: true,
-      category: 'Department',
-      createdBy: 'Admin',
-      lastActive: '2h ago',
-      isUserCreated: false
-    },
-    {
-      id: 2,
-      name: 'Alumni Network',
-      description: 'Connect with alumni from our college',
-      image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1',
-      followers: 2500,
-      posts: 120,
-      isFollowing: false,
-      category: 'Community',
-      createdBy: 'Alumni Association',
-      lastActive: '1d ago',
-      isUserCreated: false
-    },
-    {
-      id: 3,
-      name: 'Student Council',
-      description: 'Official student council page',
-      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f',
-      followers: 800,
-      posts: 30,
-      isFollowing: true,
-      category: 'Organization',
-      createdBy: 'Student Body',
-      lastActive: '5h ago',
-      isUserCreated: false
-    },
-    {
-      id: 4,
-      name: 'My Study Group',
-      description: 'Study group for Computer Science students',
-      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f',
-      followers: 50,
-      posts: 15,
-      isFollowing: true,
-      category: 'Study Group',
-      createdBy: 'You',
-      lastActive: '1h ago',
-      isUserCreated: true
-    }
-  ]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [pages, setPages] = useState([]);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    totalPages: 0,
+    currentPage: 1,
+    limit: 10,
+    hasNextPage: false,
+    hasPrevPage: false
+  });
 
   const [newPage, setNewPage] = useState({
-    name: '',
-    description: '',
+    title: 'title',
+    description: 'description',
     image: null,
     category: 'Department'
   });
 
   const categories = ['Department', 'Community', 'Organization', 'Club', 'Event'];
 
+  // Fetch pages on component mount and when filters change
+  useEffect(() => {
+    fetchPages();
+  }, [showUserPages, pagination.currentPage]);
+
+  const fetchPages = async () => {
+    
+      
+      setError(null);
+      
+      const response = await getAllPagesHandler(
+        { 
+          page: pagination.currentPage, 
+          limit: pagination.limit, 
+          userPages: showUserPages 
+        }, 
+        setIsLoading, 
+        (error) => setError(error)
+      );
+      console.log(response);
+      if (response && response.success) {
+        const { pages, pagination } = response.data;
+        
+        // Transform the pages data to match our component's structure
+        const transformedPages = pages.map(page => ({
+          id: page.id,
+          name: page.title,
+          description: page.description || '',
+          image: page.imageUrl 
+            ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${page.imageUrl}` 
+            : 'https://via.placeholder.com/300x200',
+          followers: page.followers || 0,
+          posts: page.posts || 0,
+          isFollowing: Array.isArray(page.followers) 
+            ? page.followers.some(follower => follower.id === localStorage.getItem('userId'))
+            : false,
+          category: page.category || 'Department',
+          createdBy: page.User?.name || 'Admin',
+          lastActive: page.updatedAt ? new Date(page.updatedAt).toLocaleDateString() : 'Never',
+          isUserCreated: page.UserId === localStorage.getItem('userId')
+        }));
+        
+        setPages(transformedPages);
+        setPagination(pagination);
+      } 
+  };
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewPage({ ...newPage, image: reader.result });
-      };
-      reader.readAsDataURL(file);
+      setNewPage({ ...newPage, image: file });
     }
   };
 
-  const handleCreatePage = (e) => {
+  const handleCreatePage = async (e) => {
     e.preventDefault();
-    if (newPage.name && newPage.description) {
-      const page = {
-        id: pages.length + 1,
-        ...newPage,
-        followers: 0,
-        posts: 0,
-        isFollowing: true,
-        createdBy: 'You',
-        lastActive: 'Just now',
-        isUserCreated: true
-      };
-      setPages([page, ...pages]);
-      setNewPage({ name: '', description: '', image: null, category: 'Department' });
-      setShowCreatePage(false);
+    if (newPage.title && newPage.description) {
+      try {
+        setIsLoading(true);
+        
+        const formData = new FormData();
+        formData.append('title', newPage.title);
+        formData.append('description', newPage.description);
+        formData.append('category', newPage.category);
+        
+        if (newPage.image) {
+          formData.append('image', newPage.image);
+        }
+        
+        const response = await createPageHandler(
+          formData, 
+          setIsLoading, 
+          (error) => setError(error)
+        );
+        
+        if (response && response.success) {
+          // Refresh the pages list
+          fetchPages();
+          
+          // Reset form and close modal
+          setNewPage({ title: '', description: '', image: null, category: 'Department' });
+          setShowCreatePage(false);
+        } else {
+          setError('Failed to create page');
+        }
+      } catch (err) {
+        setError(err.message || 'An error occurred while creating the page');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
-  const toggleFollow = (pageId) => {
-    setPages(pages.map(page => 
-      page.id === pageId 
-        ? { ...page, isFollowing: !page.isFollowing, followers: page.isFollowing ? page.followers - 1 : page.followers + 1 }
-        : page
-    ));
+  const toggleFollow = async (pageId) => {
+    try {
+      setIsLoading(true);
+      
+      const response = await toggleFollowPageHandler(
+        { id: pageId }, 
+        setIsLoading, 
+        (error) => setError(error)
+      );
+      
+      if (response && response.success) {
+        // Update the page's follow status and follower count
+        setPages(pages.map(page => 
+          page.id === pageId 
+            ? { 
+                ...page, 
+                isFollowing: !page.isFollowing, 
+                followers: page.isFollowing ? page.followers - 1 : page.followers + 1 
+              }
+            : page
+        ));
+      } else {
+        setError('Failed to update follow status');
+      }
+    } catch (err) {
+      setError(err.message || 'An error occurred while updating follow status');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleViewMore = (pageId) => {
     navigate(`/pages/details/${pageId}`);
   };
 
-  const filteredPages = showUserPages 
-    ? pages.filter(page => page.isUserCreated)
-    : pages;
+  const handlePageChange = (newPage) => {
+    setPagination(prev => ({ ...prev, currentPage: newPage }));
+  };
+
+  const filteredPages = pages;
 
   return (
     <div className="pages-container">
@@ -150,6 +196,13 @@ export const PageHome = () => {
         </div>
       </div>
 
+      {error && (
+        <div className="pages-error-message">
+          <p>{error}</p>
+          <button onClick={fetchPages}>Try Again</button>
+        </div>
+      )}
+
       {showCreatePage && (
         <div className="create-page-modal">
           <div className="create-page-content">
@@ -167,8 +220,8 @@ export const PageHome = () => {
                 <label>Page Name</label>
                 <input
                   type="text"
-                  value={newPage.name}
-                  onChange={(e) => setNewPage({ ...newPage, name: e.target.value })}
+                  value={newPage.title}
+                  onChange={(e) => setNewPage({ ...newPage, title: e.target.value })}
                   placeholder="Enter page name"
                   required
                 />
@@ -199,7 +252,7 @@ export const PageHome = () => {
                 <div className="image-upload-container">
                   {newPage.image ? (
                     <div className="image-preview">
-                      <img src={newPage.image} alt="Preview" />
+                      <img src={typeof newPage.image === 'string' ? newPage.image : URL.createObjectURL(newPage.image)} alt="Preview" />
                       <button 
                         type="button" 
                         onClick={() => setNewPage({ ...newPage, image: null })}
@@ -232,8 +285,12 @@ export const PageHome = () => {
                 >
                   Cancel
                 </button>
-                <button type="submit" className="create-button">
-                  Create Page
+                <button 
+                  type="submit" 
+                  className="create-button"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Creating...' : 'Create Page'}
                 </button>
               </div>
             </form>
@@ -241,51 +298,79 @@ export const PageHome = () => {
         </div>
       )}
 
-      <div className="pages-list">
-        {filteredPages.map(page => (
-          <div key={page.id} className="page-item">
-            <div className="page-item-content">
-              <div className="page-item-image">
-                <img src={page.image} alt={page.name} />
-                <span className="page-category">{page.category}</span>
-              </div>
-              <div className="page-item-info">
-                <div className="page-header">
-                  <h3 className="page-item-name">{page.name}</h3>
-                  <span className="page-meta">
-                    Created by {page.createdBy} • Last active {page.lastActive}
-                  </span>
-                </div>
-                <p className="page-item-description">{page.description}</p>
-                <div className="page-item-stats">
-                  <div className="stat-item">
-                    <span className="stat-value">{page.followers}</span>
-                    <span className="stat-label">Followers</span>
+      {isLoading && pages.length === 0 ? (
+        <div className="pages-loading-container">
+          <div className="pages-spinner"></div>
+          <p>Loading pages...</p>
+        </div>
+      ) : (
+        <>
+          <div className="pages-list">
+            {filteredPages.map(page => (
+              <div key={page.id} className="page-item">
+                <div className="page-item-content">
+                  <div className="page-item-image">
+                    <img src={page.image} alt={page.name} />
+                    <span className="page-category">{page.category}</span>
                   </div>
-                  <div className="stat-item">
-                    <span className="stat-value">{page.posts}</span>
-                    <span className="stat-label">Posts</span>
+                  <div className="page-item-info">
+                    <div className="page-header">
+                      <h3 className="page-item-name">{page.name}</h3>
+                      <span className="page-meta">
+                        Created by {page.createdBy} • Last active {page.lastActive}
+                      </span>
+                    </div>
+                    <p className="page-item-description">{page.description}</p>
+                    <div className="page-item-stats">
+                      <div className="stat-item">
+                        <span className="stat-value">{page.followers}</span>
+                        <span className="stat-label">Followers</span>
+                      </div>
+                      <div className="stat-item">
+                        <span className="stat-value">{page.posts}</span>
+                        <span className="stat-label">Posts</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                <div className="page-item-actions">
+                  <button 
+                    className={`follow-button ${page.isFollowing ? 'following' : ''}`}
+                    onClick={() => toggleFollow(page.id)}
+                    disabled={isLoading}
+                  >
+                    {page.isFollowing ? 'Following' : 'Follow'}
+                  </button>
+                  <button 
+                    className="view-more-button"
+                    onClick={() => handleViewMore(page.id)}
+                  >
+                    View More
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="page-item-actions">
-              <button 
-                className={`follow-button ${page.isFollowing ? 'following' : ''}`}
-                onClick={() => toggleFollow(page.id)}
-              >
-                {page.isFollowing ? 'Following' : 'Follow'}
-              </button>
-              <button 
-                className="view-more-button"
-                onClick={() => handleViewMore(page.id)}
-              >
-                View More
-              </button>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+          
+          {pagination.totalPages > 1 && (
+            <div className="pages-pagination">
+              <button 
+                onClick={() => handlePageChange(pagination.currentPage - 1)}
+                disabled={!pagination.hasPrevPage || isLoading}
+              >
+                Previous
+              </button>
+              <span>Page {pagination.currentPage} of {pagination.totalPages}</span>
+              <button 
+                onClick={() => handlePageChange(pagination.currentPage + 1)}
+                disabled={!pagination.hasNextPage || isLoading}
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };

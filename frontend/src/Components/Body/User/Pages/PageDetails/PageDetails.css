@@ -115,4 +115,293 @@
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 2rem;
+}
+
+/* Error handling styles */
+.page-details-error-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.page-details-error-container p {
+  color: #d32f2f;
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.page-details-error-container button {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  margin: 0 0.5rem;
+}
+
+.page-details-error-container button:first-of-type {
+  background-color: #e53935;
+  color: white;
+  border: none;
+}
+
+.page-details-error-container button:hover {
+  background-color: #e0e0e0;
+}
+
+.page-details-error-container button:first-of-type:hover {
+  background-color: #c62828;
+}
+
+.page-details-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin: 2rem 0;
+}
+
+.page-details-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(10, 102, 194, 0.1);
+  border-radius: 50%;
+  border-top-color: #0a66c2;
+  animation: page-details-spin 1s ease-in-out infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes page-details-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.page-details-loading-container p {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.page-meta {
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #0a66c2;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Admin actions */
+.admin-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.edit-button, .delete-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.edit-button {
+  background-color: #0a66c2;
+  color: white;
+  border: none;
+}
+
+.edit-button:hover {
+  background-color: #004182;
+}
+
+.delete-button {
+  background-color: #f3f2ef;
+  color: #d32f2f;
+  border: 1px solid #d32f2f;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+  color: white;
+}
+
+/* Edit form */
+.page-edit-form {
+  margin-top: 1rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input, .form-group textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.image-upload-container {
+  margin-top: 0.5rem;
+}
+
+.image-preview {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-image {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.image-upload-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.image-upload-button:hover {
+  border-color: #0a66c2;
+  background-color: rgba(10, 102, 194, 0.05);
+}
+
+.image-upload-button svg {
+  margin-bottom: 0.5rem;
+  color: #666;
+}
+
+.image-upload-button span {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.cancel-button, .save-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.cancel-button {
+  background-color: #f3f2ef;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+.cancel-button:hover {
+  background-color: #e0e0e0;
+}
+
+.save-button {
+  background-color: #0a66c2;
+  color: white;
+  border: none;
+}
+
+.save-button:hover {
+  background-color: #004182;
+}
+
+/* Spinner */
+.spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 } 
