@@ -78,6 +78,10 @@ export const Header = () => {
                         <span className="nav-icon">📝</span>
                         Blogs
                     </Link>
+                    <Link to="/pages" className="nav-link" onClick={toggleMenu}>
+                        <span className="nav-icon">📚</span>
+                        Pages
+                    </Link>
                 </nav>
                 {/* <nav className="nav-buttons">
                     <button onClick={handleJoinNow} className="nav-btn">Join now</button>
