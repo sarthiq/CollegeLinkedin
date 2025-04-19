@@ -47,7 +47,7 @@ export const PageHome = () => {
         setIsLoading, 
         (error) => setError(error)
       );
-      console.log(response);
+      
       if (response && response.success) {
         const { pages, pagination } = response.data;
         
@@ -61,9 +61,7 @@ export const PageHome = () => {
             : 'https://via.placeholder.com/300x200',
           followers: page.followers || 0,
           posts: page.posts || 0,
-          isFollowing: Array.isArray(page.followers) 
-            ? page.followers.some(follower => follower.id === localStorage.getItem('userId'))
-            : false,
+          isFollowing: page.isFollowing || false,
           category: page.category || 'Department',
           createdBy: page.User?.name || 'Admin',
           lastActive: page.updatedAt ? new Date(page.updatedAt).toLocaleDateString() : 'Never',
@@ -138,7 +136,7 @@ export const PageHome = () => {
             ? { 
                 ...page, 
                 isFollowing: !page.isFollowing, 
-                followers: page.isFollowing ? page.followers - 1 : page.followers + 1 
+                followers: page.followers
               }
             : page
         ));
@@ -162,6 +160,7 @@ export const PageHome = () => {
 
   const filteredPages = pages;
 
+  
   return (
     <div className="pages-container">
       <div className="pages-header">
@@ -334,13 +333,13 @@ export const PageHome = () => {
                   </div>
                 </div>
                 <div className="page-item-actions">
-                  <button 
+                  {/* <button 
                     className={`follow-button ${page.isFollowing ? 'following' : ''}`}
                     onClick={() => toggleFollow(page.id)}
                     disabled={isLoading}
                   >
                     {page.isFollowing ? 'Following' : 'Follow'}
-                  </button>
+                  </button> */}
                   <button 
                     className="view-more-button"
                     onClick={() => handleViewMore(page.id)}

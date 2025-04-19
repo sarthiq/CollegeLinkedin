@@ -46,10 +46,26 @@ exports.getAllPages = async (req, res) => {
     const hasNextPage = page < totalPages;
     const hasPrevPage = page > 1;
 
+    // Check if current user is following each page
+    const userId = req.user.id;
+    const pagesWithFollowingStatus = await Promise.all(pages.map(async (page) => {
+      const follower = await Followers.findOne({
+        where: {
+          UserId: userId,
+          PageId: page.id
+        }
+      });
+      const pageData = page.toJSON();
+      pageData.isFollowing = !!follower;
+      return pageData;
+    }));
+    console.log(pagesWithFollowingStatus);
+    console.log("--------------------------------");
+
     res.status(200).json({
       success: true,
       data: {
-        pages,
+        pages: pagesWithFollowingStatus,
         pagination: {
           total: count,
           totalPages,
