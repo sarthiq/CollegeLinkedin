@@ -129,6 +129,7 @@ exports.getAllFeeds = async (req, res) => {
           hasNextPage,
           hasPrevPage,
         },
+        userId: req.user.id,
       },
     });
   } catch (error) {

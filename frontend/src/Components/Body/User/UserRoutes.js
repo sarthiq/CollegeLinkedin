@@ -5,6 +5,7 @@ import { Footer } from "./Footer/Footer";
 import { Profile } from "./Profile/Profile";
 import { PagesRoutes } from "./Pages/PageRoutes";
 import { PageNotFound } from "../../UI/PageNotFound/PageNotFound";
+import { FeedDetails } from "./Common/FeedDetails/FeedDetails";
 
 export const UserRoutes = () => {
   return (
@@ -15,6 +16,7 @@ export const UserRoutes = () => {
           <Route path="" element={<Home />} />
           <Route path="profile" element={<Profile />} />
           <Route path="pages/*" element={<PagesRoutes />} />
+          <Route path="feed/:id" element={<FeedDetails />} />
           <Route path="*" element={<PageNotFound isAdmin={false} />} />
         </Routes>
       </main>
