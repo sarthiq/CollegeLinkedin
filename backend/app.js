@@ -30,13 +30,19 @@ app.use(
     credentials: true, // if using cookies or auth headers
   })
 );
-
+app.use((req,res,next)=>{
+  console.log("Request received phase 2");
+  next()
+})
 // Handle preflight requests explicitly
 app.options("*", cors());
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
-
+app.use((req,res,next)=>{
+  console.log("Request received phase 4");
+  next()
+})
 // Custom error handler for invalid JSON
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
@@ -82,7 +88,10 @@ const activityLogger = (req, res, next) => {
   // Continue with next middleware or response
   next();
 };
-
+app.use((req,res,next)=>{
+  console.log("Request received phase 5");
+  next()
+})
 app.use(activityLogger);
 
 app.use("/", infoRoutes);
