@@ -158,6 +158,42 @@
   margin-top: 0.25rem;
 }
 
+.feed-text {
+  position: relative;
+  transition: max-height 0.3s ease-out;
+}
+
+.feed-text.collapsed {
+  max-height: 96px; /* Approximately 4 lines */
+  overflow: hidden;
+}
+
+.feed-text.collapsed::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(transparent, white);
+  pointer-events: none;
+}
+
+.feed-show-more-btn {
+  background: none;
+  border: none;
+  color: #65676b;
+  font-weight: 600;
+  padding: 4px 0;
+  margin: 4px 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.feed-show-more-btn:hover {
+  text-decoration: underline;
+}
+
 .feed-content {
   margin-bottom: 1rem;
 }

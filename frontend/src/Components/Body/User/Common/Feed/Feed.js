@@ -18,6 +18,7 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
     hasPrevPage: false
   });
   const fileInputRef = useRef(null);
+  const [expandedFeeds, setExpandedFeeds] = useState(new Set());
 
   // Fetch feeds on component mount and when pageId or pagination changes
   useEffect(() => {
@@ -162,6 +163,18 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
     }
   };
 
+  const toggleFeedContent = (feedId) => {
+    setExpandedFeeds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(feedId)) {
+        newSet.delete(feedId);
+      } else {
+        newSet.add(feedId);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <div className="feed-container">
       {showCreatePost && (
@@ -252,7 +265,17 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
                 </div>
                 
                 <div className="feed-content">
-                  <p>{feed.content}</p>
+                  <div className={`feed-text ${!expandedFeeds.has(feed.id) ? 'collapsed' : ''}`}>
+                    <p>{feed.content}</p>
+                  </div>
+                  {feed.content.length > 200 && (
+                    <button 
+                      className="feed-show-more-btn"
+                      onClick={() => toggleFeedContent(feed.id)}
+                    >
+                      {expandedFeeds.has(feed.id) ? 'Show less' : 'Show more'}
+                    </button>
+                  )}
                   {feed.image && (
                     <div className="feed-image">
                       <img src={feed.image} alt="Post content" />
