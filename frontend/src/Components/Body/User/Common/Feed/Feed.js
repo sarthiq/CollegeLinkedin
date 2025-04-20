@@ -90,7 +90,7 @@ export const Feed = ({ pageId = null, showCreatePost = true }) => {
       setIsPosting(true);
       setError(null);
 
-      try {
+     
         const formData = new FormData();
         formData.append('feedData', JSON.stringify({ content: newPost }));
         
@@ -120,11 +120,7 @@ export const Feed = ({ pageId = null, showCreatePost = true }) => {
           }
           fetchFeeds(); // Refresh feeds after successful post
         }
-      } catch (err) {
-        setError(err.message || 'An error occurred while creating the post');
-      } finally {
-        setIsPosting(false);
-      }
+     
     }
   };
 
