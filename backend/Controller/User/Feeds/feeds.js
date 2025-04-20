@@ -6,6 +6,7 @@ const Page = require("../../../Models/Basic/pages");
 const User = require("../../../Models/User/users");
 const UserProfile = require("../../../Models/User/userProfile");
 const { sequelize } = require("../../../importantInfo");
+const Likes = require("../../../Models/Basic/likes");
 
 // Create a new feed
 exports.createFeed = async (req, res) => {
@@ -113,6 +114,20 @@ exports.getAllFeeds = async (req, res) => {
       ],
     });
 
+    // Get like status for each feed
+    const userId = req.user.id;
+    const feedsWithLikeStatus = await Promise.all(feeds.map(async (feed) => {
+      const isLiked = await Likes.findOne({
+        where: {
+          UserId: userId,
+          FeedId: feed.id
+        }
+      });
+      const feedData = feed.toJSON();
+      feedData.isLiked = !!isLiked;
+      return feedData;
+    }));
+
     const totalPages = Math.ceil(count / limit);
     const hasNextPage = page < totalPages;
     const hasPrevPage = page > 1;
@@ -120,7 +135,7 @@ exports.getAllFeeds = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        feeds,
+        feeds: feedsWithLikeStatus,
         pagination: {
           total: count,
           totalPages,

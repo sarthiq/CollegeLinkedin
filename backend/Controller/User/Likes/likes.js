@@ -1,5 +1,7 @@
 const Likes = require("../../../Models/Basic/likes");
 const Feeds = require("../../../Models/Basic/feeds");
+const User = require("../../../Models/User/users");
+const UserProfile = require("../../../Models/User/userProfile");
 
 // Toggle like on a feed
 exports.toggleLike = async (req, res) => {
@@ -96,9 +98,15 @@ exports.getFeedLikes = async (req, res) => {
       where: { FeedId: feedId },
       include: [
         {
-          model: require("../../../Models/User/users"),
-          attributes: ['id', 'name', 'profileUrl']
-        }
+          model: User,
+          attributes: ["id", "name"],
+          include: [
+            {
+              model: UserProfile,
+              attributes: ["profileUrl", "title"],
+            },
+          ],
+        },
       ],
       limit: parseInt(limit),
       offset: parseInt(offset),

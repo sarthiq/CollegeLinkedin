@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { getAllFeedsHandler, createFeedHandler, deleteFeedHandler, updateFeedHandler } from './feedApiHandler';
+import { toggleLikeHandler, getLikeStatusHandler, getFeedLikesHandler } from './likeApiHandler';
+import { createCommentHandler, updateCommentHandler, deleteCommentHandler, getFeedCommentsHandler } from './commentApiHandler';
 import './Feed.css';
 
 export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true }) => {
@@ -28,6 +30,15 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
   const [selectedImagePopup, setSelectedImagePopup] = useState(null);
   const [imageZoom, setImageZoom] = useState(1);
   const imagePopupRef = useRef(null);
+  const [commentText, setCommentText] = useState('');
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingCommentText, setEditingCommentText] = useState('');
+  const [showLikes, setShowLikes] = useState(null);
+  const [showComments, setShowComments] = useState(null);
+  const [likesList, setLikesList] = useState({});
+  const [commentsList, setCommentsList] = useState({});
+  const [likesPagination, setLikesPagination] = useState({});
+  const [commentsPagination, setCommentsPagination] = useState({});
 
   // Fetch feeds on component mount and when pageId or pagination changes
   useEffect(() => {
@@ -71,11 +82,12 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
           image: feed.feedData.imageUrl 
             ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${feed.feedData.imageUrl}` 
             : null,
-          likes: feed.likes || [],
-          comments: feed.comments || [],
+          like: feed.like || 0,
+          comments: feed.comments || 0,
           timestamp: new Date(feed.createdAt).toLocaleDateString(),
           showComments: false,
-          pageInfo:feed.Page
+          pageInfo:feed.Page,
+          isLiked: feed.isLiked
         }));
 
         setFeeds(transformedFeeds);
@@ -143,36 +155,167 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
     setPagination(prev => ({ ...prev, currentPage: newPage }));
   };
 
-  // For now, keeping these handlers simple as backend APIs are not implemented
-  const handleLike = (feedId) => {
-    setFeeds(feeds.map(feed => 
-      feed.id === feedId 
-        ? { ...feed, likes: [...feed.likes, { id: Date.now(), user: 'Current User' }] }
-        : feed
-    ));
+  const handleLike = async (feedId) => {
+    try {
+      const response = await toggleLikeHandler(
+        { feedId },
+        setIsLoading,
+        (error) => setError(error)
+      );
+
+      if (response && response.success) {
+        setFeeds(feeds.map(feed => 
+          feed.id === feedId 
+            ? { 
+                ...feed, 
+                likesCount: response.data.likes,
+                isLiked: response.data.isLiked
+              }
+            : feed
+        ));
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to toggle like');
+    }
   };
 
-  const handleComment = (feedId, commentText) => {
-    if (commentText.trim()) {
-      setFeeds(feeds.map(feed => 
-        feed.id === feedId 
-          ? {
-              ...feed,
-              comments: [
-                ...feed.comments,
-                {
-                  id: Date.now(),
-                  user: {
-                    name: 'Current User',
-                    avatar: 'https://randomuser.me/api/portraits/men/3.jpg'
-                  },
-                  text: commentText,
-                  timestamp: 'Just now'
-                }
-              ]
-            }
-          : feed
-      ));
+  const handleComment = async (feedId, commentText) => {
+    if (!commentText.trim()) return;
+
+    try {
+      const response = await createCommentHandler(
+        { feedId, comment: commentText },
+        setIsLoading,
+        (error) => setError(error)
+      );
+
+      if (response && response.success) {
+        setFeeds(feeds.map(feed => 
+          feed.id === feedId 
+            ? {
+                ...feed,
+                commentsCount: (feed.commentsCount || 0) + 1
+              }
+            : feed
+        ));
+        setCommentText('');
+        // Refresh comments list
+        await loadFeedComments(feedId);
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to add comment');
+    }
+  };
+
+  const handleUpdateComment = async (feedId, commentId, newText) => {
+    if (!newText.trim()) return;
+
+    try {
+      const response = await updateCommentHandler(
+        { id: commentId, comment: newText },
+        setIsLoading,
+        (error) => setError(error)
+      );
+
+      if (response && response.success) {
+        await loadFeedComments(feedId);
+        setEditingCommentId(null);
+        setEditingCommentText('');
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to update comment');
+    }
+  };
+
+  const handleDeleteComment = async (feedId, commentId) => {
+    try {
+      const response = await deleteCommentHandler(
+        { id: commentId },
+        setIsLoading,
+        (error) => setError(error)
+      );
+
+      if (response && response.success) {
+        setFeeds(feeds.map(feed => 
+          feed.id === feedId 
+            ? {
+                ...feed,
+                commentsCount: (feed.commentsCount || 0) - 1
+              }
+            : feed
+        ));
+        await loadFeedComments(feedId);
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to delete comment');
+    }
+  };
+
+  const loadFeedLikes = async (feedId, page = 1) => {
+    try {
+      const response = await getFeedLikesHandler(
+        { feedId, page, limit: 10 },
+        setIsLoading,
+        (error) => setError(error)
+      );
+
+      if (response && response.success) {
+        setLikesList(prev => ({
+          ...prev,
+          [feedId]: response.data.likes
+        }));
+        setLikesPagination(prev => ({
+          ...prev,
+          [feedId]: response.data.pagination
+        }));
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to load likes');
+    }
+  };
+
+  const loadFeedComments = async (feedId, page = 1) => {
+    try {
+      const response = await getFeedCommentsHandler(
+        { feedId, page, limit: 10 },
+        setIsLoading,
+        (error) => setError(error)
+      );
+
+      if (response && response.success) {
+        setCommentsList(prev => ({
+          ...prev,
+          [feedId]: response.data.comments
+        }));
+        setCommentsPagination(prev => ({
+          ...prev,
+          [feedId]: response.data.pagination
+        }));
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to load comments');
+    }
+  };
+
+  const toggleComments = async (feedId) => {
+    if (showComments === feedId) {
+      setShowComments(null);
+    } else {
+      setShowComments(feedId);
+      if (!commentsList[feedId]) {
+        await loadFeedComments(feedId);
+      }
+    }
+  };
+
+  const toggleLikes = async (feedId) => {
+    if (showLikes === feedId) {
+      setShowLikes(null);
+    } else {
+      setShowLikes(feedId);
+      if (!likesList[feedId]) {
+        await loadFeedLikes(feedId);
+      }
     }
   };
 
@@ -497,83 +640,191 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
                 </div>
 
                 <div className="feed-item-stats">
-                  <div className="feed-likes-count">
+                  <div 
+                    className="feed-likes-count" 
+                    onClick={() => toggleLikes(feed.id)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <span className="feed-icon">👍</span>
-                    <span>{feed.likes.length}</span>
+                    <span>{feed.like} Likes</span>
                   </div>
                   <div className="feed-comments-count">
-                    <span>{feed.comments.length} comments</span>
+                    <span>{feed.comments} Comments</span>
                   </div>
                 </div>
 
                 <div className="feed-item-actions">
                   <button 
-                    className="feed-action-button"
+                    className={`feed-action-button ${feed.isLiked ? 'liked' : ''}`}
                     onClick={() => handleLike(feed.id)}
                   >
                     <span className="feed-icon">👍</span>
-                    <span className="feed-action-text">Like</span>
+                    <span className="feed-action-text">{feed.isLiked ? 'Liked' : 'Like'}</span>
                   </button>
                   <button 
                     className="feed-action-button"
-                    onClick={() => handleComment(feed.id)}
+                    onClick={() => toggleComments(feed.id)}
                   >
                     <span className="feed-icon">💬</span>
                     <span className="feed-action-text">Comment</span>
                   </button>
                 </div>
                 
-                {feed.showComments && (
-                  <div className="comments-section">
-                    {feed.likes.length > 0 && (
-                      <div className="likes-list">
-                        <div className="likes-preview">
-                          {feed.likes.slice(0, 3).map(like => (
-                            <span key={like.id} className="like-user">{like.user}</span>
-                          ))}
-                          {feed.likes.length > 3 && (
-                            <span className="more-likes">and {feed.likes.length - 3} more</span>
+                {showComments === feed.id && (
+                  <div className="feed-comments-section">
+                    <div className="feed-comments-header">
+                      <h4>Comments ({feed.comments})</h4>
+                    </div>
+                    
+                    <div className="feed-comments-list">
+                      {commentsList[feed.id]?.map(comment => (
+                        <div key={comment.id} className="feed-comment-item">
+                          <div className="feed-comment-user">
+                            <img 
+                              src={comment.User?.UserProfile?.profileUrl 
+                                ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${comment.User.UserProfile.profileUrl}` 
+                                : '/assets/Utils/male.png'} 
+                              alt={comment.User?.name} 
+                              className="feed-comment-avatar"
+                            />
+                            <div className="feed-comment-user-info">
+                              <span className="feed-comment-username">{comment.User?.name}</span>
+                              <span className="feed-comment-time">
+                                {new Date(comment.createdAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                          </div>
+                          
+                          <div className="feed-comment-content">
+                            {editingCommentId === comment.id ? (
+                              <div className="feed-comment-edit">
+                                <textarea
+                                  value={editingCommentText}
+                                  onChange={(e) => setEditingCommentText(e.target.value)}
+                                  className="feed-comment-edit-input"
+                                  rows="2"
+                                />
+                                <div className="feed-comment-edit-actions">
+                                  <button 
+                                    className="feed-comment-save-btn"
+                                    onClick={() => handleUpdateComment(feed.id, comment.id, editingCommentText)}
+                                  >
+                                    Save
+                                  </button>
+                                  <button 
+                                    className="feed-comment-cancel-btn"
+                                    onClick={() => {
+                                      setEditingCommentId(null);
+                                      setEditingCommentText('');
+                                    }}
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <p className="feed-comment-text">{comment.comment}</p>
+                            )}
+                          </div>
+
+                          {comment.User?.id === userId && !editingCommentId && (
+                            <div className="feed-comment-actions">
+                              <button 
+                                className="feed-comment-edit-btn"
+                                onClick={() => {
+                                  setEditingCommentId(comment.id);
+                                  setEditingCommentText(comment.comment);
+                                }}
+                              >
+                                Edit
+                              </button>
+                              <button 
+                                className="feed-comment-delete-btn"
+                                onClick={() => handleDeleteComment(feed.id, comment.id)}
+                              >
+                                Delete
+                              </button>
+                            </div>
                           )}
                         </div>
-                      </div>
+                      ))}
+                    </div>
+
+                    {commentsPagination[feed.id]?.hasNextPage && (
+                      <button 
+                        className="feed-comments-load-more"
+                        onClick={() => loadFeedComments(feed.id, commentsPagination[feed.id].currentPage + 1)}
+                      >
+                        Load More Comments
+                      </button>
                     )}
+
+                    <div className="feed-add-comment">
+                      <img 
+                        src={feed.user.avatar} 
+                        alt="User" 
+                        className="feed-add-comment-avatar"
+                      />
+                      <div className="feed-add-comment-input-wrapper">
+                        <input 
+                          type="text" 
+                          placeholder="Write a comment..." 
+                          value={commentText}
+                          onChange={(e) => setCommentText(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.key === 'Enter') {
+                              handleComment(feed.id, commentText);
+                            }
+                          }}
+                          className="feed-add-comment-input"
+                        />
+                        {commentText && (
+                          <button 
+                            className="feed-add-comment-submit"
+                            onClick={() => handleComment(feed.id, commentText)}
+                          >
+                            Post
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {showLikes === feed.id && (
+                  <div className="feed-likes-section">
+                    <div className="feed-likes-header">
+                      <h4>Likes ({feed.like})</h4>
+                    </div>
                     
-                    <div className="comments-list">
-                      {feed.comments.map(comment => (
-                        <div key={comment.id} className="comment-item">
-                          <img 
-                            src={comment.user.avatar} 
-                            alt={comment.user.name} 
-                            className="comment-avatar"
-                          />
-                          <div className="comment-content">
-                            <div className="comment-header">
-                              <span className="comment-user">{comment.user.name}</span>
-                              <span className="comment-time">{comment.timestamp}</span>
+                    <div className="feed-likes-list">
+                      {likesList[feed.id]?.map(like => (
+                        <div key={like.id} className="feed-like-item">
+                          <div className="feed-like-user">
+                            <img 
+                              src={like.User?.UserProfile?.profileUrl 
+                                ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${like.User.UserProfile.profileUrl}` 
+                                : '/assets/Utils/male.png'} 
+                              alt={like.User?.name} 
+                              className="feed-like-avatar"
+                            />
+                            <div className="feed-like-user-info">
+                              <span className="feed-like-username">{like.User?.name}</span>
+                              <span className="feed-like-title">{like.User?.UserProfile?.title || ''}</span>
                             </div>
-                            <p className="comment-text">{comment.text}</p>
                           </div>
                         </div>
                       ))}
                     </div>
 
-                    <div className="add-comment">
-                      <img 
-                        src="https://randomuser.me/api/portraits/men/3.jpg" 
-                        alt="User" 
-                        className="comment-avatar"
-                      />
-                      <input 
-                        type="text" 
-                        placeholder="Write a comment..." 
-                        onKeyPress={(e) => {
-                          if (e.key === 'Enter') {
-                            handleComment(feed.id, e.target.value);
-                            e.target.value = '';
-                          }
-                        }}
-                      />
-                    </div>
+                    {likesPagination[feed.id]?.hasNextPage && (
+                      <button 
+                        className="feed-likes-load-more"
+                        onClick={() => loadFeedLikes(feed.id, likesPagination[feed.id].currentPage + 1)}
+                      >
+                        Load More Likes
+                      </button>
+                    )}
                   </div>
                 )}
               </div>

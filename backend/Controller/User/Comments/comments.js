@@ -1,5 +1,8 @@
 const Comments = require("../../../Models/Basic/comments");
 const Feeds = require("../../../Models/Basic/feeds");
+const UserProfile = require("../../../Models/User/userProfile");
+const User = require("../../../Models/User/users");
+
 
 // Create a new comment
 exports.createComment = async (req, res) => {
@@ -27,6 +30,7 @@ exports.createComment = async (req, res) => {
 
     res.status(201).json({ success: true, data: newComment });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
@@ -42,9 +46,15 @@ exports.getFeedComments = async (req, res) => {
       where: { FeedId: feedId },
       include: [
         {
-          model: require("../../../Models/User/users"),
-          attributes: ['id', 'name', 'profileUrl']
-        }
+          model: User,
+          attributes: ["id", "name"],
+          include: [
+            {
+              model: UserProfile,
+              attributes: ["profileUrl", "title"],
+            },
+          ],
+        },
       ],
       limit: parseInt(limit),
       offset: parseInt(offset),
@@ -70,6 +80,7 @@ exports.getFeedComments = async (req, res) => {
       }
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
