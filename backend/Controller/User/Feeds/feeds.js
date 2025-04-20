@@ -2,17 +2,15 @@ const Feeds = require("../../../Models/Basic/feeds");
 const { saveFile } = require("../../../Utils/fileHandler");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
-
+const Page = require("../../../Models/Basic/pages");
 // Create a new feed
 exports.createFeed = async (req, res) => {
   try {
-    const { feedData } = req.body;
+    const { feedData, pageId } = req.body;
     const userId = req.user.id; // Get user ID from request
-    const imageFile = req.files
-      ? req.files[req.fileName]
-        ? req.files[req.fileName][0]
-        : null
-      : null;
+    
+    const imageFile = req.files && req.files.image ? req.files.image[0] : null;
+    
 
     if (!feedData) {
       return res.status(400).json({ success: false, message: "Feed data is required" });
@@ -27,12 +25,20 @@ exports.createFeed = async (req, res) => {
       parsedFeedData.imageUrl = imageUrl;
     }
 
-    const newFeed = await Feeds.create({
-      UserId: userId,
+    const feedDataToCreate = {
       feedData: parsedFeedData,
       like: 0,
-      comments: 0
-    });
+      comments: 0,
+      UserId: userId
+    };
+
+    // Add PageId to feed data if provided
+    if (pageId) {
+      feedDataToCreate.PageId = pageId;
+    }
+    
+
+    const newFeed = await Feeds.create(feedDataToCreate);
 
     res.status(201).json({ success: true, data: newFeed });
   } catch (error) {
@@ -43,7 +49,7 @@ exports.createFeed = async (req, res) => {
 // Get all feeds with pagination
 exports.getAllFeeds = async (req, res) => {
   try {
-    const { page = 1, limit = 10, usersFeed = false } = req.body;
+    const { page = 1, limit = 10, usersFeed = false, pageId } = req.body;
     const offset = (page - 1) * limit;
 
     // Build where condition
@@ -53,11 +59,21 @@ exports.getAllFeeds = async (req, res) => {
       whereCondition.UserId = userId; // Assuming there's a UserId field in the Feeds model
     }
 
+    if (pageId) {
+      whereCondition.PageId = pageId;
+    }
+
     const { count, rows: feeds } = await Feeds.findAndCountAll({
       where: whereCondition,
       limit: parseInt(limit),
       offset: parseInt(offset),
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: Page,
+          attributes: ['id', 'title', 'imageUrl', 'description', 'adminId']
+        }
+      ]
     });
 
     const totalPages = Math.ceil(count / limit);
@@ -105,11 +121,7 @@ exports.updateFeed = async (req, res) => {
     const { id } = req.body;
     const { feedData } = req.body;
     const userId = req.user.id;
-    const imageFile = req.files
-      ? req.files[req.fileName]
-        ? req.files[req.fileName][0]
-        : null
-      : null;
+    const imageFile = req.files && req.files.image ? req.files.image[0] : null;
 
     const feed = await Feeds.findByPk(id);
     if (!feed) {
@@ -154,8 +166,23 @@ exports.deleteFeed = async (req, res) => {
       return res.status(404).json({ success: false, message: "Feed not found" });
     }
 
-    // Check if the user is the owner of the feed
-    if (feed.UserId !== userId) {
+    // Check if the user is either the page admin or the feed creator
+    let isAuthorized = false;
+    
+    // Check if user is the feed creator
+    if (feed.UserId === userId) {
+      isAuthorized = true;
+    }
+    
+    // If feed belongs to a page, check if user is the page admin
+    if (feed.PageId) {
+      const page = await Page.findByPk(feed.PageId);
+      if (page && page.adminId === userId) {
+        isAuthorized = true;
+      }
+    }
+
+    if (!isAuthorized) {
       return res.status(403).json({ success: false, message: "You are not authorized to delete this feed" });
     }
 

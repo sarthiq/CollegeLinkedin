@@ -59,8 +59,7 @@ exports.getAllPages = async (req, res) => {
       pageData.isFollowing = !!follower;
       return pageData;
     }));
-    console.log(pagesWithFollowingStatus);
-    console.log("--------------------------------");
+    
 
     res.status(200).json({
       success: true,
