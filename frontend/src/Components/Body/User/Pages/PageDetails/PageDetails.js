@@ -361,10 +361,10 @@ export const PageDetails = () => {
           <img src={page.image} alt={page.name} className="cover-image" />
         </div>
         <div className="page-info">
-          <div className="page-avatar">
+          <div className="page-profile-avatar">
             <img src={page.image} alt={page.name} />
           </div>
-          <div className="page-details">
+          <div className="page-profile-details">
             {isEditing ? (
               <form onSubmit={handleUpdatePage} className="page-edit-form">
                 <div className="form-group">
@@ -460,43 +460,43 @@ export const PageDetails = () => {
               </form>
             ) : (
               <>
-                <h1 className="page-name">{page.name}</h1>
-                <p className="page-description">{page.description}</p>
-                <div className="page-meta">
-                  <div className="user-info">
-                    <div className="user-avatar">
+                <h1 className="page-profile-name">{page.name}</h1>
+                <p className="page-profile-description">{page.description}</p>
+                <div className="page-profile-meta">
+                  <div className="page-user-info">
+                    <div className="page-user-avatar">
                       <img src={userInfo.image} alt={userInfo.name} />
                     </div>
                     <span>Created by {userInfo.name}</span>
                   </div>
                 </div>
-                <div className="page-stats">
-                  <div className="stat-item">
-                    <span className="stat-value">{page.followers}</span>
-                    <span className="stat-label">Followers</span>
+                <div className="page-profile-stats">
+                  <div className="page-stat-item">
+                    <span className="page-stat-value">{page.followers}</span>
+                    <span className="page-stat-label">Followers</span>
                   </div>
-                  <div className="stat-item">
-                    <span className="stat-value">{page.posts}</span>
-                    <span className="stat-label">Posts</span>
+                  <div className="page-stat-item">
+                    <span className="page-stat-value">{page.posts}</span>
+                    <span className="page-stat-label">Posts</span>
                   </div>
                 </div>
                 {userInfo.isAdmin ? (
-                  <div className="admin-actions">
+                  <div className="page-admin-actions">
                     <button
-                      className="edit-button"
+                      className="page-edit-button"
                       onClick={handleEditClick}
                       disabled={isUpdating || isDeleting}
                     >
                       Edit Page
                     </button>
                     <button
-                      className="delete-button"
+                      className="page-delete-button"
                       onClick={handleDeletePage}
                       disabled={isUpdating || isDeleting}
                     >
                       {isDeleting ? (
                         <>
-                          <span className="spinner-small"></span>
+                          <span className="page-spinner-small"></span>
                           Deleting...
                         </>
                       ) : (
@@ -506,7 +506,7 @@ export const PageDetails = () => {
                   </div>
                 ) : (
                   <button
-                    className={`follow-button ${
+                    className={`page-follow-button ${
                       page.isFollowing ? "following" : ""
                     }`}
                     onClick={toggleFollow}
