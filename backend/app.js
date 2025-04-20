@@ -22,7 +22,7 @@ app.set("trust proxy", 1); // 1 means trust the first proxy, usually Nginx or an
 
 app.use(
   cors({
-    origin: "https://campuslab.sarthiq.com", // Replace with your frontend domain
+    origin: "*", // Replace with your frontend domain
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true // if using cookies or auth headers
