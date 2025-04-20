@@ -7,16 +7,18 @@ const bodyParser = require("body-parser");
 const useragent = require("express-useragent");
 const geoip = require("geoip-lite");
 
-
 const { setupRoutes } = require("./Routes/setupRoutes");
 const db = require("./database");
 const infoRoutes = require("./infoRoutes");
-const {setupModels} = require("./Models/setModels");
-
-
+const { setupModels } = require("./Models/setModels");
 
 // Just check-checkinf git working
 app = express();
+
+app.use((req, res, next) => {
+  console.log("Request received");
+  next();
+});
 
 app.set("trust proxy", 1); // 1 means trust the first proxy, usually Nginx or another load balancer
 
@@ -25,13 +27,12 @@ app.use(
     origin: "*", // Replace with your frontend domain
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true // if using cookies or auth headers
+    credentials: true, // if using cookies or auth headers
   })
 );
 
 // Handle preflight requests explicitly
-app.options('*', cors());
-
+app.options("*", cors());
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
@@ -42,12 +43,11 @@ app.use((err, req, res, next) => {
     return res.status(400).json({
       success: false,
       message: "Invalid JSON format",
-      error: err.message
+      error: err.message,
     });
   }
   next();
 });
-
 
 app.use(express.static(path.join(__dirname, "CustomFiles")));
 
