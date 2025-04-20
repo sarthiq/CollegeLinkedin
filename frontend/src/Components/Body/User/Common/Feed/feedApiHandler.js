@@ -13,6 +13,7 @@ export const createFeedHandler = async (data, setIsLoading, showAlert) => {
     const data = response.data;
     return data;
   } catch (e) {
+    console.log(e);
     handleErrors(e, showAlert);
   } finally {
     setIsLoading(false);
