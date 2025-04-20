@@ -33,8 +33,8 @@ export const Feed = ({ pageId = null, showCreatePost = true }) => {
         { 
           page: pagination.currentPage, 
           limit: pagination.limit,
-          pageId: pageId,
-          usersFeed: !pageId // If no pageId, show user feeds
+          //pageId: pageId,
+          //usersFeed: !pageId // If no pageId, show user feeds
         },
         setIsLoading,
         (error) => setError(error)
