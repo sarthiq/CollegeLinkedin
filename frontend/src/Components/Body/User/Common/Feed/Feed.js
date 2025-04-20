@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { getAllFeedsHandler, createFeedHandler } from './feedApiHandler';
 import './Feed.css';
 
-export const Feed = ({ pageId = null, showCreatePost = true }) => {
+export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true }) => {
   const [feeds, setFeeds] = useState([]);
   const [newPost, setNewPost] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
@@ -33,8 +33,8 @@ export const Feed = ({ pageId = null, showCreatePost = true }) => {
         { 
           page: pagination.currentPage, 
           limit: pagination.limit,
-          //pageId: pageId,
-          //usersFeed: !pageId // If no pageId, show user feeds
+            pageId: pageId,
+            usersFeed: usersFeed // If no pageId, show user feeds
         },
         setIsLoading,
         (error) => setError(error)

@@ -103,7 +103,14 @@ exports.getPageById = async (req, res) => {
     });
 
     page.admin = user;
-
+    const isFollowing=await Followers.findOne({
+      where: {
+        UserId: req.user.id,
+        PageId: page.id,
+      },
+    });
+   
+    
     res.status(200).json({
       success: true,
       data: {
@@ -113,12 +120,7 @@ exports.getPageById = async (req, res) => {
           name: user.name,
           profileUrl: user.UserProfile.profileUrl,
         },
-        isFollowing: await Followers.findOne({
-          where: {
-            UserId: req.user.id,
-            PageId: page.id,
-          },
-        }),
+        isFollowing: isFollowing ? true : false,
       },
     });
   } catch (error) {

@@ -450,11 +450,8 @@ export const Profile = () => {
 
         <div className="profile-feeds">
           <Feed 
-            feeds={feeds}
-            onPostSubmit={handlePostSubmit}
-            onLike={handleLike}
-            onComment={handleComment}
-            showCreatePost={true}
+            usersFeed={true}
+            showCreatePost={false}
           />
         </div>
       </div>

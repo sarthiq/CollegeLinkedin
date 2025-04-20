@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Feed } from "../../Common/Feed/Feed";
-import { getPageByIdHandler, toggleFollowPageHandler, updatePageHandler, deletePageHandler } from "../pageApiHandler";
+import {
+  getPageByIdHandler,
+  toggleFollowPageHandler,
+  updatePageHandler,
+  deletePageHandler,
+} from "../pageApiHandler";
 import "./PageDetails.css";
 
 export const PageDetails = () => {
@@ -26,13 +31,13 @@ export const PageDetails = () => {
   const [userInfo, setUserInfo] = useState({
     name: "",
     image: "",
-    isAdmin: false
+    isAdmin: false,
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     title: "",
     description: "",
-    image: null
+    image: null,
   });
   const imageInputRef = useRef(null);
 
@@ -55,15 +60,15 @@ export const PageDetails = () => {
       if (response && response.success) {
         const pageData = response.data.page;
         const userData = response.data.admin;
-        
-        console.log(userData);
 
+        
+        
         setUserInfo({
           name: userData.name,
-          image: userData.profileUrl 
-            ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${userData.profileUrl}` 
+          image: userData.profileUrl
+            ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${userData.profileUrl}`
             : "https://via.placeholder.com/150",
-          isAdmin: userData.isAdmin || false
+          isAdmin: userData.isAdmin || false,
         });
 
         // Transform the page data to match our component's structure
@@ -76,11 +81,7 @@ export const PageDetails = () => {
             : "https://via.placeholder.com/300x200",
           followers: pageData.followers || 0,
           posts: pageData.posts || 0,
-          isFollowing: Array.isArray(pageData.followers)
-            ? pageData.followers.some(
-                (follower) => follower.id === localStorage.getItem("userId")
-              )
-            : false,
+          isFollowing: response.data.isFollowing || false,
           createdBy: userData.name || "Admin",
           lastActive: pageData.updatedAt
             ? new Date(pageData.updatedAt).toLocaleDateString()
@@ -92,7 +93,7 @@ export const PageDetails = () => {
         setEditForm({
           title: pageData.title,
           description: pageData.description || "",
-          image: null
+          image: null,
         });
 
         // For now, we'll use dummy feed data since the API doesn't provide it
@@ -243,7 +244,7 @@ export const PageDetails = () => {
     setEditForm({
       title: page.name,
       description: page.description,
-      image: null
+      image: null,
     });
   };
 
@@ -252,7 +253,7 @@ export const PageDetails = () => {
     if (file) {
       setEditForm({
         ...editForm,
-        image: file
+        image: file,
       });
     }
   };
@@ -264,12 +265,12 @@ export const PageDetails = () => {
 
     try {
       const formData = new FormData();
-      formData.append('id', page.id);
-      formData.append('title', editForm.title);
-      formData.append('description', editForm.description);
-      
+      formData.append("id", page.id);
+      formData.append("title", editForm.title);
+      formData.append("description", editForm.description);
+
       if (editForm.image) {
-        formData.append('image', editForm.image);
+        formData.append("image", editForm.image);
       }
 
       const response = await updatePageHandler(
@@ -286,7 +287,7 @@ export const PageDetails = () => {
           description: editForm.description,
           // Image URL will be updated after a successful fetch
         });
-        
+
         // Refresh page data to get updated image URL
         await fetchPageDetails();
         setIsEditing(false);
@@ -301,7 +302,11 @@ export const PageDetails = () => {
   };
 
   const handleDeletePage = async () => {
-    if (window.confirm("Are you sure you want to delete this page? This action cannot be undone.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this page? This action cannot be undone."
+      )
+    ) {
       setIsDeleting(true);
       setError(null);
 
@@ -367,7 +372,9 @@ export const PageDetails = () => {
                   <input
                     type="text"
                     value={editForm.title}
-                    onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, title: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -375,7 +382,9 @@ export const PageDetails = () => {
                   <label>Description</label>
                   <textarea
                     value={editForm.description}
-                    onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, description: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -384,15 +393,19 @@ export const PageDetails = () => {
                   <div className="image-upload-container">
                     {editForm.image ? (
                       <div className="image-preview">
-                        <img 
-                          src={typeof editForm.image === 'string' 
-                            ? editForm.image 
-                            : URL.createObjectURL(editForm.image)} 
-                          alt="Preview" 
+                        <img
+                          src={
+                            typeof editForm.image === "string"
+                              ? editForm.image
+                              : URL.createObjectURL(editForm.image)
+                          }
+                          alt="Preview"
                         />
-                        <button 
-                          type="button" 
-                          onClick={() => setEditForm({ ...editForm, image: null })}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setEditForm({ ...editForm, image: null })
+                          }
                           className="remove-image"
                         >
                           ×
@@ -405,9 +418,14 @@ export const PageDetails = () => {
                           ref={imageInputRef}
                           onChange={handleImageChange}
                           accept="image/*"
-                          style={{ display: 'none' }}
+                          style={{ display: "none" }}
                         />
-                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                        <svg
+                          viewBox="0 0 24 24"
+                          width="24"
+                          height="24"
+                          fill="currentColor"
+                        >
                           <path d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
                         </svg>
                         <span>Upload Image</span>
@@ -416,16 +434,16 @@ export const PageDetails = () => {
                   </div>
                 </div>
                 <div className="form-actions">
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="cancel-button"
                     onClick={handleCancelEdit}
                     disabled={isUpdating}
                   >
                     Cancel
                   </button>
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="save-button"
                     disabled={isUpdating}
                   >
@@ -435,7 +453,7 @@ export const PageDetails = () => {
                         Saving...
                       </>
                     ) : (
-                      'Save Changes'
+                      "Save Changes"
                     )}
                   </button>
                 </div>
@@ -482,13 +500,15 @@ export const PageDetails = () => {
                           Deleting...
                         </>
                       ) : (
-                        'Delete Page'
+                        "Delete Page"
                       )}
                     </button>
                   </div>
                 ) : (
                   <button
-                    className={`follow-button ${page.isFollowing ? "following" : ""}`}
+                    className={`follow-button ${
+                      page.isFollowing ? "following" : ""
+                    }`}
                     onClick={toggleFollow}
                     disabled={isLoading}
                   >
@@ -502,12 +522,7 @@ export const PageDetails = () => {
       </div>
 
       <div className="page-content">
-        <Feed
-          feeds={feeds}
-          onPostSubmit={handlePostSubmit}
-          onLike={handleLike}
-          onComment={handleComment}
-        />
+        <Feed pageId={id} showCreatePost={page.isFollowing || userInfo.isAdmin} />
       </div>
     </div>
   );
