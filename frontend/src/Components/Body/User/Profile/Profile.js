@@ -51,10 +51,10 @@ export const Profile = () => {
           following: 0, // These would come from a different API
           image: profileData.profileUrl 
             ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.profileUrl}` 
-            : 'https://via.placeholder.com/150',
+            : '/assets/Utils/male.png',
           coverImage: profileData.coverUrl 
             ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.coverUrl}` 
-            : 'https://via.placeholder.com/1200x300',
+            : 'https://placehold.co/1200x300',
           collegeName: profileData.collegeName || '',
           collegeYear: profileData.collegeYear || '',
           courseName: profileData.courseName || ''
@@ -259,7 +259,7 @@ export const Profile = () => {
       
       <div className="profile-header">
         <div className="profile-cover-image">
-          <img src={profile.coverImage || 'https://via.placeholder.com/1200x300'} alt="Cover" />
+          <img src={profile.coverImage || 'https://placehold.co/1200x300'} alt="Cover" />
           {isEditing && (
             <button 
               className="profile-edit-cover-button"
@@ -280,7 +280,7 @@ export const Profile = () => {
         </div>
         <div className="profile-info">
           <div className="profile-image-container">
-            <img src={profile.image || 'https://via.placeholder.com/150'} alt={profile.name} />
+            <img src={profile.image || 'https://placehold.co/150'} alt={profile.name} />
             {isEditing && (
               <button 
                 className="profile-edit-image-button"

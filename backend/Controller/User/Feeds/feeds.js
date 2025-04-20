@@ -3,20 +3,27 @@ const { saveFile } = require("../../../Utils/fileHandler");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const Page = require("../../../Models/Basic/pages");
+const User = require("../../../Models/User/users");
+const UserProfile = require("../../../Models/User/userProfile");
+const { sequelize } = require("../../../importantInfo");
+
 // Create a new feed
 exports.createFeed = async (req, res) => {
+  let transaction;
   try {
     const { feedData, pageId } = req.body;
     const userId = req.user.id; // Get user ID from request
-    
+
     const imageFile = req.files && req.files.image ? req.files.image[0] : null;
-    
 
     if (!feedData) {
-      return res.status(400).json({ success: false, message: "Feed data is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Feed data is required" });
     }
 
-    let parsedFeedData = typeof feedData === 'string' ? JSON.parse(feedData) : feedData;
+    let parsedFeedData =
+      typeof feedData === "string" ? JSON.parse(feedData) : feedData;
 
     if (imageFile) {
       const filePath = path.join("CustomFiles", "Feeds");
@@ -25,23 +32,43 @@ exports.createFeed = async (req, res) => {
       parsedFeedData.imageUrl = imageUrl;
     }
 
+    transaction = await sequelize.transaction();
+
     const feedDataToCreate = {
       feedData: parsedFeedData,
       like: 0,
       comments: 0,
-      UserId: userId
+      UserId: userId,
     };
 
     // Add PageId to feed data if provided
+
+    let page;
     if (pageId) {
       feedDataToCreate.PageId = pageId;
-    }
-    
+      page = await Page.findByPk(pageId);
 
-    const newFeed = await Feeds.create(feedDataToCreate);
+      if (!page) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Page not found" });
+      }
+
+
+      page.increment("posts", { transaction });
+    }
+
+
+
+    const newFeed = await Feeds.create(feedDataToCreate, { transaction });
+    await transaction.commit();
 
     res.status(201).json({ success: true, data: newFeed });
   } catch (error) {
+    if (transaction) {
+      await transaction.rollback();
+    }
+    console.log(error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
@@ -67,13 +94,23 @@ exports.getAllFeeds = async (req, res) => {
       where: whereCondition,
       limit: parseInt(limit),
       offset: parseInt(offset),
-      order: [['createdAt', 'DESC']],
+      order: [["createdAt", "DESC"]],
       include: [
         {
+          model: User,
+          attributes: ["id", "name"],
+          include: [
+            {
+              model: UserProfile,
+              attributes: ["profileUrl", "title"],
+            },
+          ],
+        },
+        {
           model: Page,
-          attributes: ['id', 'title', 'imageUrl', 'description', 'adminId']
-        }
-      ]
+          attributes: ["id", "title", "imageUrl", "description", "adminId"],
+        },
+      ],
     });
 
     const totalPages = Math.ceil(count / limit);
@@ -90,9 +127,9 @@ exports.getAllFeeds = async (req, res) => {
           currentPage: parseInt(page),
           limit: parseInt(limit),
           hasNextPage,
-          hasPrevPage
-        }
-      }
+          hasPrevPage,
+        },
+      },
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -106,7 +143,9 @@ exports.getFeedById = async (req, res) => {
     const feed = await Feeds.findByPk(id);
 
     if (!feed) {
-      return res.status(404).json({ success: false, message: "Feed not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Feed not found" });
     }
 
     res.status(200).json({ success: true, data: feed });
@@ -125,15 +164,23 @@ exports.updateFeed = async (req, res) => {
 
     const feed = await Feeds.findByPk(id);
     if (!feed) {
-      return res.status(404).json({ success: false, message: "Feed not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Feed not found" });
     }
 
     // Check if the user is the owner of the feed
     if (feed.UserId !== userId) {
-      return res.status(403).json({ success: false, message: "You are not authorized to update this feed" });
+      return res
+        .status(403)
+        .json({
+          success: false,
+          message: "You are not authorized to update this feed",
+        });
     }
 
-    let parsedFeedData = typeof feedData === 'string' ? JSON.parse(feedData) : feedData;
+    let parsedFeedData =
+      typeof feedData === "string" ? JSON.parse(feedData) : feedData;
     let currentFeedData = feed.feedData;
 
     if (imageFile) {
@@ -146,7 +193,7 @@ exports.updateFeed = async (req, res) => {
     }
 
     await feed.update({
-      feedData: parsedFeedData
+      feedData: parsedFeedData,
     });
 
     res.status(200).json({ success: true, data: feed });
@@ -157,23 +204,28 @@ exports.updateFeed = async (req, res) => {
 
 // Delete feed
 exports.deleteFeed = async (req, res) => {
+  let transaction;
   try {
     const { id } = req.body;
     const userId = req.user.id;
     const feed = await Feeds.findByPk(id);
 
     if (!feed) {
-      return res.status(404).json({ success: false, message: "Feed not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Feed not found" });
     }
 
     // Check if the user is either the page admin or the feed creator
     let isAuthorized = false;
-    
+
     // Check if user is the feed creator
     if (feed.UserId === userId) {
       isAuthorized = true;
     }
-    
+
+
+
     // If feed belongs to a page, check if user is the page admin
     if (feed.PageId) {
       const page = await Page.findByPk(feed.PageId);
@@ -183,13 +235,31 @@ exports.deleteFeed = async (req, res) => {
     }
 
     if (!isAuthorized) {
-      return res.status(403).json({ success: false, message: "You are not authorized to delete this feed" });
+      return res
+        .status(403)
+        .json({
+          success: false,
+          message: "You are not authorized to delete this feed",
+        });
     }
 
-    await feed.destroy();
-    res.status(200).json({ success: true, message: "Feed deleted successfully" });
+    transaction = await sequelize.transaction();
+
+    if (feed.PageId) {
+      const page = await Page.findByPk(feed.PageId);
+      page.decrement("posts", { transaction });
+    }
+
+    await feed.destroy({ transaction });
+    await transaction.commit();
+    res
+      .status(200)
+      .json({ success: true, message: "Feed deleted successfully" });
   } catch (error) {
+    if (transaction) {
+      await transaction.rollback();
+    }
+    console.log(error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
-

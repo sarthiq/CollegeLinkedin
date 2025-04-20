@@ -67,7 +67,7 @@ export const PageDetails = () => {
           name: userData.name,
           image: userData.profileUrl
             ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${userData.profileUrl}`
-            : "https://via.placeholder.com/150",
+            : "https://placehold.co/150",
           isAdmin: userData.isAdmin || false,
         });
 
@@ -78,7 +78,7 @@ export const PageDetails = () => {
           description: pageData.description || "",
           image: pageData.imageUrl
             ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${pageData.imageUrl}`
-            : "https://via.placeholder.com/300x200",
+            : "https://placehold.co/300x200",
           followers: pageData.followers || 0,
           posts: pageData.posts || 0,
           isFollowing: response.data.isFollowing || false,

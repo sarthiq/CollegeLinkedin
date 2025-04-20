@@ -42,16 +42,16 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
 
       if (response && response.success) {
         const { feeds, pagination: paginationData } = response.data;
-        
+        console.log(feeds);
         // Transform the feeds data to match our component's structure
         const transformedFeeds = feeds.map(feed => ({
           id: feed.id,
           user: {
             name: feed.User?.name || 'Anonymous',
-            avatar: feed.User?.profileUrl 
-              ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${feed.User.profileUrl}` 
-              : 'https://randomuser.me/api/portraits/men/1.jpg',
-            title: feed.User?.title || 'User'
+            avatar: feed.User?.UserProfile?.profileUrl 
+              ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${feed.User.UserProfile.profileUrl}` 
+              : '/assets/Utils/male.png',
+            title: feed.User?.UserProfile?.title || ''
           },
           content: feed.feedData.content || '',
           image: feed.feedData.imageUrl 
@@ -60,7 +60,8 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
           likes: feed.likes || [],
           comments: feed.comments || [],
           timestamp: new Date(feed.createdAt).toLocaleDateString(),
-          showComments: false
+          showComments: false,
+          pageInfo:feed.Page
         }));
 
         setFeeds(transformedFeeds);
@@ -164,45 +165,31 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
   return (
     <div className="feed-container">
       {showCreatePost && (
-        <div className="create-post">
-          <div className="post-creator">
-            <img 
-              src="https://randomuser.me/api/portraits/men/3.jpg" 
-              alt="User" 
-              className="user-avatar"
-            />
-            <div className="post-input-container">
+        <div className="feed-create-post">
+          <div className="feed-post-creator">
+            <div className="feed-input-wrapper">
               <form onSubmit={handleSubmit}>
                 <textarea
                   placeholder="Share your thoughts..."
                   value={newPost}
                   onChange={(e) => setNewPost(e.target.value)}
-                  className="post-input"
+                  className="feed-post-input"
+                  rows="3"
                 />
                 {selectedImage && (
-                  <div className="image-preview">
+                  <div className="feed-image-preview">
                     <img src={selectedImage} alt="Preview" />
                     <button 
                       type="button" 
                       onClick={() => setSelectedImage(null)}
-                      className="remove-image"
+                      className="feed-remove-image"
                     >
                       ×
                     </button>
                   </div>
                 )}
-                <div className="post-actions">
-                  <div className="action-buttons">
-                    <button 
-                      type="button" 
-                      className="image-upload-button"
-                      onClick={() => fileInputRef.current.click()}
-                    >
-                      <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                        <path d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
-                      </svg>
-                      <span>Photo</span>
-                    </button>
+                <div className="feed-post-footer">
+                  <label className="feed-upload-btn">
                     <input
                       type="file"
                       ref={fileInputRef}
@@ -210,10 +197,14 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
                       accept="image/*"
                       style={{ display: 'none' }}
                     />
-                  </div>
+                    <svg viewBox="0 0 24 24" width="22" height="22">
+                      <path fill="currentColor" d="M18 15v3H6v-3H4v3c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-3h-2zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5-5 5z"/>
+                    </svg>
+                    <span>Photo</span>
+                  </label>
                   <button 
                     type="submit" 
-                    className="post-button"
+                    className="feed-submit-btn"
                     disabled={isPosting || (!newPost.trim() && !selectedImage)}
                   >
                     {isPosting ? 'Posting...' : 'Post'}
@@ -250,7 +241,10 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
                   <div className="user-info">
                     <img src={feed.user.avatar} alt={feed.user.name} className="user-avatar" />
                     <div className="user-details">
-                      <span className="user-name">{feed.user.name}</span>
+                      <span className="user-name">
+                        {feed.user.name}
+                        {feed.pageInfo && <span> - {feed.pageInfo.title}</span>}
+                      </span>
                       <span className="user-title">{feed.user.title}</span>
                       <span className="post-time">{feed.timestamp}</span>
                     </div>

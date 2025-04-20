@@ -9,7 +9,7 @@ const dummyUserDetails = {
   name: "John Doe",
   email: "john.doe@example.com",
   phone: "+91 98765 43210",
-  profilePicture: "https://via.placeholder.com/150",
+  profilePicture: "https://placehold.co/150",
   school: "St. Mary's High School",
   section: "A",
   course: "Science",

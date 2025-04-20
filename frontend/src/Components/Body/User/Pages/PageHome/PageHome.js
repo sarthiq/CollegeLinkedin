@@ -58,7 +58,7 @@ export const PageHome = () => {
           description: page.description || '',
           image: page.imageUrl 
             ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${page.imageUrl}` 
-            : 'https://via.placeholder.com/300x200',
+            : 'https://placehold.co/300x200',
           followers: page.followers || 0,
           posts: page.posts || 0,
           isFollowing: page.isFollowing || false,
