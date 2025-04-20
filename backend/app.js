@@ -22,14 +22,19 @@ app.set("trust proxy", 1); // 1 means trust the first proxy, usually Nginx or an
 
 app.use(
   cors({
-    origin: "*",
-    methods: ["GET", "POST"],
+    origin: "https://campuslab.sarthiq.com", // Replace with your frontend domain
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true // if using cookies or auth headers
   })
 );
 
+// Handle preflight requests explicitly
+app.options('*', cors());
 
 
-app.use(bodyParser.json({ extends: false }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
 // Custom error handler for invalid JSON
 app.use((err, req, res, next) => {
