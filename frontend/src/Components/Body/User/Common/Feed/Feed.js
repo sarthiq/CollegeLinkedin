@@ -39,11 +39,26 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
   const [commentsList, setCommentsList] = useState({});
   const [likesPagination, setLikesPagination] = useState({});
   const [commentsPagination, setCommentsPagination] = useState({});
+  const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   // Fetch feeds on component mount and when pageId or pagination changes
   useEffect(() => {
     fetchFeeds();
   }, [pageId, pagination.currentPage]);
+
+  // Prevent background scrolling when popup is open
+  useEffect(() => {
+    if (selectedImagePopup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [selectedImagePopup]);
 
   const fetchFeeds = async () => {
     setIsLoading(true);
@@ -427,11 +442,16 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
   const handleImageClick = (imageUrl) => {
     setSelectedImagePopup(imageUrl);
     setImageZoom(1);
+    setImagePosition({ x: 0, y: 0 });
   };
 
-  const handleClosePopup = () => {
-    setSelectedImagePopup(null);
-    setImageZoom(1);
+  const handleClosePopup = (e) => {
+    // Only close if clicking outside the image
+    if (e.target === imagePopupRef.current) {
+      setSelectedImagePopup(null);
+      setImageZoom(1);
+      setImagePosition({ x: 0, y: 0 });
+    }
   };
 
   const handleZoomIn = () => {
@@ -442,18 +462,37 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
     setImageZoom(prev => Math.max(prev - 0.25, 0.5));
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Escape') {
-      handleClosePopup();
+  const handleWheel = (e) => {
+    e.preventDefault();
+    if (e.deltaY < 0) {
+      handleZoomIn();
+    } else {
+      handleZoomOut();
     }
   };
 
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
+  const handleMouseDown = (e) => {
+    if (imageZoom > 1) {
+      setIsDragging(true);
+      setDragStart({
+        x: e.clientX - imagePosition.x,
+        y: e.clientY - imagePosition.y
+      });
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (isDragging && imageZoom > 1) {
+      setImagePosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
 
   return (
     <div className="feed-container">
@@ -852,7 +891,12 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
       )}
 
       {selectedImagePopup && (
-        <div className="feed-image-popup" ref={imagePopupRef}>
+        <div 
+          className="feed-image-popup" 
+          ref={imagePopupRef}
+          onClick={handleClosePopup}
+          onWheel={handleWheel}
+        >
           <div className="feed-image-popup-content">
             <div className="feed-image-popup-controls">
               <button className="feed-image-zoom-btn" onClick={handleZoomIn}>
@@ -874,8 +918,15 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
             <img 
               src={selectedImagePopup} 
               alt="Full size" 
-              style={{ transform: `scale(${imageZoom})` }}
+              style={{ 
+                transform: `scale(${imageZoom}) translate(${imagePosition.x}px, ${imagePosition.y}px)`,
+                cursor: imageZoom > 1 ? 'move' : 'default'
+              }}
               className="feed-image-popup-img"
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
             />
           </div>
         </div>
