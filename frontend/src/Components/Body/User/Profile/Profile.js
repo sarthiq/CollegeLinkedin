@@ -1,29 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Feed } from '../Common/Feed/Feed';
-import { getProfileHandler, updateProfileHandler } from './profileApiHandler';
-import { useSearchParams } from 'react-router-dom';
-import './Profile.css';
+import React, { useState, useRef, useEffect } from "react";
+import { Feed } from "../Common/Feed/Feed";
+import { getProfileHandler, updateProfileHandler } from "./profileApiHandler";
+import { useSearchParams } from "react-router-dom";
+import "./Profile.css";
 
 export const Profile = () => {
   const [searchParams] = useSearchParams();
-  const userId = searchParams.get('userId');
+  const userId = searchParams.get("userId");
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState(null);
   const [profile, setProfile] = useState({
-    name: '',
-    title: '',
-    email: '',
-    phone: '',
-    description: '',
+    name: "",
+    title: "",
+    email: "",
+    phone: "",
+    description: "",
     followers: 0,
     following: 0,
-    image: '',
-    coverImage: '',
-    collegeName: '',
-    collegeYear: '',
-    courseName: ''
+    image: "",
+    coverImage: "",
+    collegeName: "",
+    collegeYear: "",
+    courseName: "",
   });
 
   const coverImageInputRef = useRef(null);
@@ -35,40 +35,38 @@ export const Profile = () => {
   }, [userId]);
 
   const fetchProfile = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await getProfileHandler({ userId }, setIsLoading, (error) => {
+    setIsLoading(true);
+    setError(null);
+    const response = await getProfileHandler(
+      { userId },
+      setIsLoading,
+      (error) => {
         setError(error);
-      });
-      
-      if (response && response.success) {
-        const profileData = response.data;
-        setProfile({
-          name: profileData.User?.name || '',
-          title: profileData.title || '',
-          email: profileData.User?.email || '',
-          phone: profileData.User?.phone || '',
-          description: profileData.bio || '',
-          followers: 0, // These would come from a different API
-          following: 0, // These would come from a different API
-          image: profileData.profileUrl 
-            ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.profileUrl}` 
-            : '/assets/Utils/male.png',
-          coverImage: profileData.coverUrl 
-            ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.coverUrl}` 
-            : 'https://placehold.co/1200x300',
-          collegeName: profileData.collegeName || '',
-          collegeYear: profileData.collegeYear || '',
-          courseName: profileData.courseName || ''
-        });
-      } else {
-        setError('Failed to fetch profile data');
       }
-    } catch (err) {
-      setError(err.message || 'An error occurred while fetching profile');
-    } finally {
-      setIsLoading(false);
+    );
+
+    if (response && response.success) {
+      const profileData = response.data;
+      setProfile({
+        name: profileData.User?.name || "",
+        title: profileData.title || "",
+        email: profileData.User?.email || "",
+        phone: profileData.User?.phone || "",
+        description: profileData.bio || "",
+        followers: 0, // These would come from a different API
+        following: 0, // These would come from a different API
+        image: profileData.profileUrl
+          ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.profileUrl}`
+          : "/assets/Utils/male.png",
+        coverImage: profileData.coverUrl
+          ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.coverUrl}`
+          : "https://placehold.co/1200x300",
+        collegeName: profileData.collegeName || "",
+        collegeYear: profileData.collegeYear || "",
+        courseName: profileData.courseName || "",
+      });
+    } else {
+      setError("Failed to fetch profile data");
     }
   };
 
@@ -76,30 +74,31 @@ export const Profile = () => {
     {
       id: 1,
       user: {
-        name: 'John Doe',
-        avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-        title: 'Computer Science Student'
+        name: "John Doe",
+        avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+        title: "Computer Science Student",
       },
-      content: 'Just completed my final year project on machine learning!',
-      image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+      content: "Just completed my final year project on machine learning!",
+      image:
+        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
       likes: [
-        { id: 1, user: 'Alice Smith' },
-        { id: 2, user: 'Bob Johnson' }
+        { id: 1, user: "Alice Smith" },
+        { id: 2, user: "Bob Johnson" },
       ],
       comments: [
-        { 
-          id: 1, 
+        {
+          id: 1,
           user: {
-            name: 'Alice Smith',
-            avatar: 'https://randomuser.me/api/portraits/women/1.jpg'
-          }, 
-          text: 'Great work!', 
-          timestamp: '1h ago' 
-        }
+            name: "Alice Smith",
+            avatar: "https://randomuser.me/api/portraits/women/1.jpg",
+          },
+          text: "Great work!",
+          timestamp: "1h ago",
+        },
       ],
-      timestamp: '2h ago',
-      showComments: false
-    }
+      timestamp: "2h ago",
+      showComments: false,
+    },
   ]);
 
   const handlePostSubmit = (content, image, callback) => {
@@ -109,14 +108,14 @@ export const Profile = () => {
         user: {
           name: profile.name,
           avatar: profile.image,
-          title: profile.title
+          title: profile.title,
         },
         content,
         image,
         likes: [],
         comments: [],
-        timestamp: 'Just now',
-        showComments: false
+        timestamp: "Just now",
+        showComments: false,
       };
       setFeeds([newFeed, ...feeds]);
       callback();
@@ -124,37 +123,41 @@ export const Profile = () => {
   };
 
   const handleLike = (feedId) => {
-    setFeeds(feeds.map(feed => 
-      feed.id === feedId 
-        ? { 
-            ...feed, 
-            likes: [...feed.likes, { id: Date.now(), user: 'Current User' }]
-          }
-        : feed
-    ));
+    setFeeds(
+      feeds.map((feed) =>
+        feed.id === feedId
+          ? {
+              ...feed,
+              likes: [...feed.likes, { id: Date.now(), user: "Current User" }],
+            }
+          : feed
+      )
+    );
   };
 
   const handleComment = (feedId, commentText) => {
     if (commentText.trim()) {
-      setFeeds(feeds.map(feed => 
-        feed.id === feedId 
-          ? { 
-              ...feed, 
-              comments: [
-                ...feed.comments, 
-                { 
-                  id: Date.now(), 
-                  user: {
-                    name: profile.name,
-                    avatar: profile.image
+      setFeeds(
+        feeds.map((feed) =>
+          feed.id === feedId
+            ? {
+                ...feed,
+                comments: [
+                  ...feed.comments,
+                  {
+                    id: Date.now(),
+                    user: {
+                      name: profile.name,
+                      avatar: profile.image,
+                    },
+                    text: commentText,
+                    timestamp: "Just now",
                   },
-                  text: commentText,
-                  timestamp: 'Just now'
-                }
-              ]
-            }
-          : feed
-      ));
+                ],
+              }
+            : feed
+        )
+      );
     }
   };
 
@@ -162,34 +165,38 @@ export const Profile = () => {
     e.preventDefault();
     setIsUpdating(true);
     setError(null);
-    
-    try {
+
+   
       const formData = new FormData();
-      
+
       // Add text fields
-      formData.append('name', e.target.name.value);
-      formData.append('title', e.target.title.value);
-      formData.append('bio', e.target.description.value);
-      formData.append('collegeName', e.target.collegeName.value);
-      formData.append('collegeYear', e.target.collegeYear.value);
-      formData.append('courseName', e.target.courseName.value);
-      
+      formData.append("name", e.target.name.value);
+      formData.append("title", e.target.title.value);
+      formData.append("bio", e.target.description.value);
+      formData.append("collegeName", e.target.collegeName.value);
+      formData.append("collegeYear", e.target.collegeYear.value);
+      formData.append("courseName", e.target.courseName.value);
+
       // Add files if they were changed
       if (profileImageInputRef.current.files.length > 0) {
-        formData.append('image', profileImageInputRef.current.files[0]);
+        formData.append("image", profileImageInputRef.current.files[0]);
       }
-      
+
       if (coverImageInputRef.current.files.length > 0) {
-        formData.append('coverImage', coverImageInputRef.current.files[0]);
+        formData.append("coverImage", coverImageInputRef.current.files[0]);
       }
-      
-      const response = await updateProfileHandler(formData, setIsUpdating, (error) => {
-        setError(error);
-      });
-      
+
+      const response = await updateProfileHandler(
+        formData,
+        setIsUpdating,
+        (error) => {
+          setError(error);
+        }
+      );
+
       if (response && response.success) {
         // Update local state with new data
-        setProfile(prev => ({
+        setProfile((prev) => ({
           ...prev,
           name: e.target.name.value,
           title: e.target.title.value,
@@ -199,18 +206,12 @@ export const Profile = () => {
           courseName: e.target.courseName.value,
           // Image URLs will be updated after a successful fetch
         }));
-        
+
         // Refresh profile data to get updated image URLs
         await fetchProfile();
         setIsEditing(false);
-      } else {
-        setError('Failed to update profile');
-      }
-    } catch (err) {
-      setError(err.message || 'An error occurred while updating profile');
-    } finally {
-      setIsUpdating(false);
-    }
+      } 
+    
   };
 
   const handleCoverImageChange = (e) => {
@@ -218,9 +219,9 @@ export const Profile = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfile(prev => ({
+        setProfile((prev) => ({
           ...prev,
-          coverImage: reader.result
+          coverImage: reader.result,
         }));
       };
       reader.readAsDataURL(file);
@@ -232,9 +233,9 @@ export const Profile = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfile(prev => ({
+        setProfile((prev) => ({
           ...prev,
-          image: reader.result
+          image: reader.result,
         }));
       };
       reader.readAsDataURL(file);
@@ -259,17 +260,17 @@ export const Profile = () => {
           <button onClick={fetchProfile}>Try Again</button>
         </div>
       )}
-      
+
       <div className="profile-header">
         <div className="profile-cover-image">
           <img src={profile.coverImage} alt="Cover" />
           {!userId && (
-            <button 
+            <button
               className="profile-edit-cover-button"
               onClick={() => coverImageInputRef.current.click()}
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
               </svg>
             </button>
           )}
@@ -278,19 +279,19 @@ export const Profile = () => {
             ref={coverImageInputRef}
             onChange={handleCoverImageChange}
             accept="image/*"
-            style={{ display: 'none' }}
+            style={{ display: "none" }}
           />
         </div>
         <div className="profile-info">
           <div className="profile-image-container">
             <img src={profile.image} alt={profile.name} />
             {!userId && (
-              <button 
+              <button
                 className="profile-edit-image-button"
                 onClick={() => profileImageInputRef.current.click()}
               >
                 <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                  <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
                 </svg>
               </button>
             )}
@@ -299,7 +300,7 @@ export const Profile = () => {
               ref={profileImageInputRef}
               onChange={handleProfileImageChange}
               accept="image/*"
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
             />
           </div>
           <div className="profile-details">
@@ -308,7 +309,9 @@ export const Profile = () => {
             <div className="profile-college-info">
               <span className="college-name">{profile.collegeName}</span>
               <span className="college-year">{profile.collegeYear}</span>
-              {profile.courseName && <span className="course-name">{profile.courseName}</span>}
+              {profile.courseName && (
+                <span className="course-name">{profile.courseName}</span>
+              )}
             </div>
             <div className="profile-stats">
               <div className="profile-stat-item">
@@ -321,7 +324,7 @@ export const Profile = () => {
               </div>
             </div>
             {!userId && (
-              <button 
+              <button
                 className="profile-edit-button"
                 onClick={() => setIsEditing(true)}
               >
@@ -408,7 +411,7 @@ export const Profile = () => {
                 />
               </div>
               <div className="profile-form-actions">
-                <button 
+                <button
                   type="button"
                   className="profile-cancel-button"
                   onClick={() => setIsEditing(false)}
@@ -416,8 +419,8 @@ export const Profile = () => {
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="profile-save-button"
                   disabled={isUpdating}
                 >
@@ -427,7 +430,7 @@ export const Profile = () => {
                       Saving...
                     </>
                   ) : (
-                    'Save Changes'
+                    "Save Changes"
                   )}
                 </button>
               </div>
@@ -437,14 +440,24 @@ export const Profile = () => {
               <p className="profile-description">{profile.description}</p>
               <div className="profile-contact-info">
                 <div className="profile-info-item">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                  >
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
                   </svg>
                   <span>{profile.email}</span>
                 </div>
                 <div className="profile-info-item">
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                    <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                  >
+                    <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z" />
                   </svg>
                   <span>{profile.phone}</span>
                 </div>
@@ -454,7 +467,7 @@ export const Profile = () => {
         </div>
 
         <div className="profile-feeds">
-          <Feed 
+          <Feed
             usersFeed={!userId}
             othersUserId={userId}
             showCreatePost={!userId}
@@ -464,4 +477,3 @@ export const Profile = () => {
     </div>
   );
 };
-    

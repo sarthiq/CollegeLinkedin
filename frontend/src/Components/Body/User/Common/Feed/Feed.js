@@ -66,7 +66,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
     setIsLoading(true);
     setError(null);
 
-    try {
+    
       const response = await getAllFeedsHandler(
         { 
           page: pagination.currentPage, 
@@ -111,11 +111,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
         setFeeds(transformedFeeds);
         setPagination(paginationData);
       }
-    } catch (err) {
-      setError(err.message || 'An error occurred while fetching feeds');
-    } finally {
-      setIsLoading(false);
-    }
+    
   };
 
   const handleImageUpload = (e) => {
@@ -174,7 +170,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
   };
 
   const handleLike = async (feedId) => {
-    try {
+   
       const response = await toggleLikeHandler(
         { feedId },
         setIsLoading,
@@ -192,15 +188,14 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
             : feed
         ));
       }
-    } catch (err) {
-      setError(err.message || 'Failed to toggle like');
-    }
+  
+      
   };
 
   const handleComment = async (feedId, commentText) => {
     if (!commentText.trim()) return;
 
-    try {
+    
       const response = await createCommentHandler(
         { feedId, comment: commentText },
         setIsLoading,
@@ -220,15 +215,13 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
         // Refresh comments list
         await loadFeedComments(feedId);
       }
-    } catch (err) {
-      setError(err.message || 'Failed to add comment');
-    }
+    
   };
 
   const handleUpdateComment = async (feedId, commentId, newText) => {
     if (!newText.trim()) return;
 
-    try {
+   
       const response = await updateCommentHandler(
         { id: commentId, comment: newText },
         setIsLoading,
@@ -240,13 +233,11 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
         setEditingCommentId(null);
         setEditingCommentText('');
       }
-    } catch (err) {
-      setError(err.message || 'Failed to update comment');
-    }
+    
   };
 
   const handleDeleteComment = async (feedId, commentId) => {
-    try {
+    
       const response = await deleteCommentHandler(
         { id: commentId },
         setIsLoading,
@@ -264,13 +255,11 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
         ));
         await loadFeedComments(feedId);
       }
-    } catch (err) {
-      setError(err.message || 'Failed to delete comment');
-    }
+    
   };
 
   const loadFeedLikes = async (feedId, page = 1) => {
-    try {
+    
       const response = await getFeedLikesHandler(
         { feedId, page, limit: 10 },
         setIsLoading,
@@ -287,13 +276,11 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
           [feedId]: response.data.pagination
         }));
       }
-    } catch (err) {
-      setError(err.message || 'Failed to load likes');
-    }
+    
   };
 
   const loadFeedComments = async (feedId, page = 1) => {
-    try {
+    
       const response = await getFeedCommentsHandler(
         { feedId, page, limit: 10 },
         setIsLoading,
@@ -310,9 +297,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
           [feedId]: response.data.pagination
         }));
       }
-    } catch (err) {
-      setError(err.message || 'Failed to load comments');
-    }
+    
   };
 
   const toggleComments = async (feedId) => {
@@ -351,7 +336,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
 
   const handleDeleteFeed = async (feedId) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
-      try {
+     
         const response = await deleteFeedHandler(
           { id:feedId },
           setIsLoading,
@@ -360,9 +345,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
         if (response && response.success) {
           setFeeds(feeds.filter(feed => feed.id !== feedId));
         }
-      } catch (err) {
-        setError(err.message || 'Failed to delete post');
-      }
+      
     }
   };
 
@@ -401,7 +384,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
         formData.append('image', editFileInputRef.current.files[0]);
       }
 
-      try {
+      
         const response = await updateFeedHandler(
           formData,
           setIsPosting,
@@ -425,11 +408,8 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
             editFileInputRef.current.value = '';
           }
         }
-      } catch (err) {
-        setError(err.message || 'Failed to update post');
-      } finally {
-        setIsPosting(false);
-      }
+     
+        
     }
   };
 
@@ -499,6 +479,10 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
 
   const handleUserClick = (userId) => {
     navigate(`/profile?userId=${userId}`);
+  };
+
+  const handlePageClick = (pageId) => {
+    navigate(`/pages/details/${pageId}`);
   };
 
   return (
@@ -586,14 +570,22 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
                       style={{ cursor: 'pointer' }}
                     />
                     <div className="feed-user-details">
-                      <span 
-                        className="feed-user-name"
-                        onClick={() => handleUserClick(feed.user.id)}
-                        style={{ cursor: 'pointer' }}
-                      >
-                        {feed.user.name}
-                        {feed.pageInfo && <span> - {feed.pageInfo.title}</span>}
-                      </span>
+                      <div className="feed-name-container">
+                        <span 
+                          className="feed-user-name"
+                          onClick={() => handleUserClick(feed.user.id)}
+                        >
+                          {feed.user.name}
+                        </span>
+                        {feed.pageInfo && (
+                          <span 
+                            className="feed-page-name"
+                            onClick={() => handlePageClick(feed.pageInfo.id)}
+                          >
+                            - {feed.pageInfo.title}
+                          </span>
+                        )}
+                      </div>
                       <span className="feed-user-title">{feed.user.title}</span>
                       <span className="feed-post-time">{feed.timestamp}</span>
                     </div>

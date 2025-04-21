@@ -163,9 +163,21 @@
   border: 2px solid #e0e0e0;
 }
 
+.feed-name-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .feed-user-name {
   font-weight: 600;
-  color: #050505;
+  color: #000;
+  cursor: pointer;
+}
+
+.feed-page-name {
+  color: #d93025;
+  cursor: pointer;
 }
 
 .feed-user-name span {

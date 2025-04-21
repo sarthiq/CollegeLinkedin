@@ -83,7 +83,7 @@ export const PageHome = () => {
   const handleCreatePage = async (e) => {
     e.preventDefault();
     if (newPage.title && newPage.description) {
-      try {
+      
         setIsLoading(true);
         
         const formData = new FormData();
@@ -108,14 +108,7 @@ export const PageHome = () => {
           // Reset form and close modal
           setNewPage({ title: '', description: '', image: null, category: 'Department' });
           setShowCreatePage(false);
-        } else {
-          setError('Failed to create page');
-        }
-      } catch (err) {
-        setError(err.message || 'An error occurred while creating the page');
-      } finally {
-        setIsLoading(false);
-      }
+        } 
     }
   };
 

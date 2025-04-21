@@ -52,7 +52,7 @@ export const PageDetails = () => {
     setIsLoading(true);
     setError(null);
 
-    try {
+   
       const response = await getPageByIdHandler({ id }, setIsLoading, (error) =>
         setError(error)
       );
@@ -138,11 +138,7 @@ export const PageDetails = () => {
           },
         ]);
       }
-    } catch (err) {
-      setError(err.message || "An error occurred while fetching page details");
-    } finally {
-      setIsLoading(false);
-    }
+   
   };
 
   const handlePostSubmit = (content, image, callback) => {
