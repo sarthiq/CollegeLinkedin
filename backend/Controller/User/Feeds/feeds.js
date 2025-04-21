@@ -77,13 +77,15 @@ exports.createFeed = async (req, res) => {
 // Get all feeds with pagination
 exports.getAllFeeds = async (req, res) => {
   try {
-    const { page = 1, limit = 10, userId, pageId } = req.body;
+    const { page = 1, limit = 10,usersFeed = false, userId, pageId } = req.body;
     const offset = (page - 1) * limit;
 
     // Build where condition
     const whereCondition = {};
-    if (userId) {
-      whereCondition.UserId = userId; // Assuming there's a UserId field in the Feeds model
+    if (usersFeed) {
+      whereCondition.UserId = req.user.id;
+    } else if (userId) {
+      whereCondition.UserId = userId;
     }
 
     if (pageId) {

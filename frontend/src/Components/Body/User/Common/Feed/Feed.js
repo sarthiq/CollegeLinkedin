@@ -4,7 +4,7 @@ import { toggleLikeHandler, getLikeStatusHandler, getFeedLikesHandler } from './
 import { createCommentHandler, updateCommentHandler, deleteCommentHandler, getFeedCommentsHandler } from './commentApiHandler';
 import './Feed.css';
 
-export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true }) => {
+export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCreatePost = true }) => {
   const [feeds, setFeeds] = useState([]);
   const [newPost, setNewPost] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
@@ -70,7 +70,8 @@ export const Feed = ({ pageId = null,usersFeed = false, showCreatePost = true })
           page: pagination.currentPage, 
           limit: pagination.limit,
           pageId: pageId,
-          usersFeed: usersFeed
+          usersFeed: usersFeed,
+          userId:othersUserId,
         },
         setIsLoading,
         (error) => setError(error)

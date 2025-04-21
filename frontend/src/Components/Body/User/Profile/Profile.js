@@ -3,7 +3,7 @@ import { Feed } from '../Common/Feed/Feed';
 import { getProfileHandler, updateProfileHandler } from './profileApiHandler';
 import './Profile.css';
 
-export const Profile = ({isUserProfile = false,userId}) => {
+export const Profile = ({isUserProfile = true,userId}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -450,7 +450,8 @@ export const Profile = ({isUserProfile = false,userId}) => {
 
         <div className="profile-feeds">
           <Feed 
-            usersFeed={true}
+            usersFeed={isUserProfile}
+            othersUserId={userId}
             showCreatePost={false}
           />
         </div>
