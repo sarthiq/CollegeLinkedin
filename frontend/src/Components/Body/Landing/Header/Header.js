@@ -86,9 +86,9 @@ export const Header = () => {
                             Dashboard
                         </Link>
                     ) : (
-                        <button onClick={handleSignIn} className="nav-btn nav-btn-secondary">
+                        <Link to="/landing#login" className="nav-btn" onClick={toggleMenu}>
                             Login
-                        </button>
+                        </Link>
                     )}
                 </nav>
             </div>

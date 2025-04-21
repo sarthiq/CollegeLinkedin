@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./LandingHome.css";
 import { useDispatch } from "react-redux";
 import { userLogin, setUserAuthToken } from "../../../../Store/User/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { loginHandler, signUpHandler } from "../Auth/authApiHandler";
 
 export const LandingHome = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isJoinForm, setIsJoinForm] = useState(false);
   const [signInMethod, setSignInMethod] = useState("email"); // 'email' or 'phone'
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +26,16 @@ export const LandingHome = () => {
     confirmPassword: "",
   });
   const [formErrors, setFormErrors] = useState({});
+
+  // Handle hash-based navigation
+  useEffect(() => {
+    if (location.hash === '#login') {
+      const landingTitle = document.getElementById('landing-title');
+      if (landingTitle) {
+        landingTitle.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location.hash]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -180,11 +191,11 @@ export const LandingHome = () => {
     <main className="landing-main">
       <div className="landing-content">
         <div className="landing-left">
-          <h1 className="landing-title">Welcome to the college community!</h1>
+          <h1 id="landing-title" className="landing-title">Welcome to the college community!</h1>
           <h2 className="landing-subtitle">
             A platform for students to Learn, Engage, Contribute, and Earn.
           </h2>
-          <div className="auth-form">
+          <div id="login-section" className="auth-form">
             {/* API Error and Success Messages */}
             {apiError && (
               <div className="api-error-message">
@@ -387,21 +398,21 @@ export const LandingHome = () => {
           </div>
           <p className="landing-agreement">
             By clicking Continue to join or sign in, you agree to
-            CollegeLinkedIn's <a href="#">User Agreement</a>,{" "}
+            Sarthiq's <a href="#">User Agreement</a>,{" "}
             <a href="#">Privacy Policy</a>, and <a href="#">Cookie Policy</a>.
           </p>
           <div className="join-now">
             <p>
               {isJoinForm ? (
                 <>
-                  Already on CollegeLinkedIn?{" "}
+                  Already on Sarthiq?{" "}
                   <a href="#" onClick={toggleForm}>
                     Sign in
                   </a>
                 </>
               ) : (
                 <>
-                  New to CollegeLinkedIn?{" "}
+                  New to Sarthiq?{" "}
                   <a href="#" onClick={toggleForm}>
                     Join now
                   </a>

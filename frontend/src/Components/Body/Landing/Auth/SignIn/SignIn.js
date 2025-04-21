@@ -73,7 +73,7 @@ export const SignIn = () => {
             <div className={styles.leftSection}>
                 <div className={styles.patternBackground}></div>
                 <div className={styles.leftContent}>
-                    <h1 className={styles.leftTitle}>Welcome Back to CollegeLinkedIn</h1>
+                    <h1 className={styles.leftTitle}>Welcome Back to Sarthiq</h1>
                     <p className={styles.leftSubtitle}>Sign in to connect with your college community and explore opportunities.</p>
                     
                     <ul className={styles.featureList}>
@@ -178,7 +178,7 @@ export const SignIn = () => {
                     </div> */}
 
                     <div className={styles.signUpLink}>
-                        New to CollegeLinkedIn? <Link to="/auth/joinNow">Join now</Link>
+                        New to Sarthiq? <Link to="/auth/joinNow">Join now</Link>
                     </div>
                 </div>
             </div>

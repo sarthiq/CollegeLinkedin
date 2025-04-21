@@ -97,7 +97,7 @@ export const JoinNow = () => {
                 <div className={styles.patternBackground}></div>
                 <div className={styles.leftContent}>
                     <h1 className={styles.leftTitle}>Connect with Your College Community</h1>
-                    <p className={styles.leftSubtitle}>Join CollegeLinkedIn to network with students, alumni, and professionals from your college.</p>
+                    <p className={styles.leftSubtitle}>Join Sarthiq to network with students, alumni, and professionals from your college.</p>
                     
                     <ul className={styles.featureList}>
                         <li className={styles.featureItem}>
@@ -126,7 +126,7 @@ export const JoinNow = () => {
             
             <div className={styles.rightSection}>
                 <div className={styles.joinNowContainer}>
-                    <h1 className={styles.joinNowTitle}>Join CollegeLinkedIn</h1>
+                    <h1 className={styles.joinNowTitle}>Join Sarthiq</h1>
                     <form onSubmit={handleSubmit}>
                         <div className={styles.formGroup}>
                             <label className={styles.label} htmlFor="name">Full Name</label>
