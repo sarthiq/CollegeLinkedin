@@ -20,6 +20,16 @@ export const Header = () => {
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+        if (!isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    };
+
+    const handleNavClick = () => {
+        setIsMenuOpen(false);
+        document.body.style.overflow = 'auto';
     };
 
     const handleSignIn = () => {
@@ -27,7 +37,7 @@ export const Header = () => {
         dispatch(setUserAuthToken('dummy-token'));
         localStorage.setItem('token', 'dummy-token');
         navigate('/dashboard');
-        setIsMenuOpen(false);
+        handleNavClick();
     };
 
     const handleJoinNow = () => {
@@ -35,7 +45,7 @@ export const Header = () => {
         dispatch(setUserAuthToken('dummy-token'));
         localStorage.setItem('token', 'dummy-token');
         navigate('/dashboard');
-        setIsMenuOpen(false);
+        handleNavClick();
     };
 
     return (
@@ -57,37 +67,37 @@ export const Header = () => {
             </div>
             <div className={`landing-header-right ${isMenuOpen ? 'open' : ''}`}>
                 <nav className="landing-header-nav">
-                    <Link to="/landing/learning" className="landing-nav-link" onClick={toggleMenu}>
+                    <Link to="/landing/learning" className="landing-nav-link" onClick={handleNavClick}>
                         <div className="landing-nav-icon-container">
                             <span className="landing-nav-icon">🎓</span>
                             <span className="landing-nav-text">Learning</span>
                         </div>
                     </Link>
-                    <Link to="/landing/internships" className="landing-nav-link" onClick={toggleMenu}>
+                    <Link to="/landing/internships" className="landing-nav-link" onClick={handleNavClick}>
                         <div className="landing-nav-icon-container">
                             <span className="landing-nav-icon">💼</span>
                             <span className="landing-nav-text">Internships</span>
                         </div>
                     </Link>
-                    <Link to="/landing/projects" className="landing-nav-link" onClick={toggleMenu}>
+                    <Link to="/landing/projects" className="landing-nav-link" onClick={handleNavClick}>
                         <div className="landing-nav-icon-container">
                             <span className="landing-nav-icon">💡</span>
                             <span className="landing-nav-text">Projects</span>
                         </div>
                     </Link>
-                    <Link to="/landing/community" className="landing-nav-link" onClick={toggleMenu}>
+                    <Link to="/landing/community" className="landing-nav-link" onClick={handleNavClick}>
                         <div className="landing-nav-icon-container">
                             <span className="landing-nav-icon">👥</span>
                             <span className="landing-nav-text">Community</span>
                         </div>
                     </Link>
-                    <Link to="/landing/blogs" className="landing-nav-link" onClick={toggleMenu}>
+                    <Link to="/landing/blogs" className="landing-nav-link" onClick={handleNavClick}>
                         <div className="landing-nav-icon-container">
                             <span className="landing-nav-icon">📝</span>
                             <span className="landing-nav-text">Blogs</span>
                         </div>
                     </Link>
-                    <Link to="/landing/pages" className="landing-nav-link" onClick={toggleMenu}>
+                    <Link to="/landing/pages" className="landing-nav-link" onClick={handleNavClick}>
                         <div className="landing-nav-icon-container">
                             <span className="landing-nav-icon">📚</span>
                             <span className="landing-nav-text">Pages</span>
@@ -96,11 +106,11 @@ export const Header = () => {
                 </nav>
                 <nav className="landing-nav-buttons">
                     {isLoggedIn ? (
-                        <Link to="/dashboard" className="landing-nav-btn" onClick={toggleMenu}>
+                        <Link to="/dashboard" className="landing-nav-btn" onClick={handleNavClick}>
                             Dashboard
                         </Link>
                     ) : (
-                        <Link to="/landing#login" className="landing-nav-btn" onClick={toggleMenu}>
+                        <Link to="/landing#login" className="landing-nav-btn" onClick={handleNavClick}>
                             Login
                         </Link>
                     )}

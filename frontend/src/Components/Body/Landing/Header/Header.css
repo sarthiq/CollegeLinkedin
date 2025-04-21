@@ -144,30 +144,91 @@
 }
 
 @media (max-width: 768px) {
-    .landing-header-nav {
-        position: fixed;
-        top: 60px;
-        left: 0;
-        right: 0;
-        background-color: white;
-        padding: 1rem;
-        flex-direction: row;
-        justify-content: space-around;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transform: translateY(-100%);
-        transition: transform 0.3s;
-        z-index: 999;
+    .landing-header {
+        padding: 0.75rem 1rem;
     }
 
-    .landing-header-nav.open {
-        transform: translateY(0);
+    .landing-header-right {
+        position: fixed;
+        top: 0;
+        right: -50%;
+        width: 50%;
+        height: 100vh;
+        background-color: white;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 4rem;
+        transition: right 0.3s ease-in-out;
+        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .landing-header-right.open {
+        right: 0;
+    }
+
+    .landing-header-nav {
+        flex-direction: column;
+        width: 100%;
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .landing-nav-link {
+        width: 100%;
+        padding: 0.75rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .landing-nav-icon-container {
+        flex-direction: row;
+        gap: 0.75rem;
+        width: 100%;
+    }
+
+    .landing-nav-text {
+        font-size: 0.9rem;
     }
 
     .landing-hamburger-menu {
         display: block;
+        z-index: 1001;
     }
 
     .landing-nav-buttons {
-        display: none;
+        width: 100%;
+        padding: 1rem;
+        display: flex;
+        justify-content: center;
+        margin-top: auto;
+        margin-bottom: 1rem;
+    }
+
+    .landing-nav-btn {
+        width: 100%;
+        max-width: 200px;
+        text-align: center;
+    }
+
+    .landing-menu-overlay {
+        display: block;
+        background-color: rgba(0, 0, 0, 0.3);
+        pointer-events: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .landing-logo {
+        font-size: 1.25rem;
+    }
+
+    .landing-header {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .landing-header-right {
+        width: 70%;
+        right: -70%;
     }
 } 
