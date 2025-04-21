@@ -40,73 +40,73 @@ export const Header = () => {
 
     return (
         <header className="landing-header">
-            <div className="header-left">
-                <Link to="/" className="logo-link">
-                    <h1 className="logo">
-                        <span className="logo-text">Sarthi</span>
-                        <span className="logo-q">Q</span>
+            <div className="landing-header-left">
+                <Link to="/" className="landing-logo-link">
+                    <h1 className="landing-logo">
+                        <span className="landing-logo-text">Sarthi</span>
+                        <span className="landing-logo-q">Q</span>
                     </h1>
                 </Link>
             </div>
-            <div className="hamburger-menu" onClick={toggleMenu}>
-                <div className={`hamburger-icon ${isMenuOpen ? 'open' : ''}`}>
+            <div className="landing-hamburger-menu" onClick={toggleMenu}>
+                <div className={`landing-hamburger-icon ${isMenuOpen ? 'open' : ''}`}>
                     <span></span>
                     <span></span>
                     <span></span>
                 </div>
             </div>
-            <div className={`header-right ${isMenuOpen ? 'open' : ''}`}>
-                <nav className="header-nav">
-                    <Link to="/landing/learning" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">🎓</span>
-                            <span className="nav-text">Learning</span>
+            <div className={`landing-header-right ${isMenuOpen ? 'open' : ''}`}>
+                <nav className="landing-header-nav">
+                    <Link to="/landing/learning" className="landing-nav-link" onClick={toggleMenu}>
+                        <div className="landing-nav-icon-container">
+                            <span className="landing-nav-icon">🎓</span>
+                            <span className="landing-nav-text">Learning</span>
                         </div>
                     </Link>
-                    <Link to="/landing/internships" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">💼</span>
-                            <span className="nav-text">Internships</span>
+                    <Link to="/landing/internships" className="landing-nav-link" onClick={toggleMenu}>
+                        <div className="landing-nav-icon-container">
+                            <span className="landing-nav-icon">💼</span>
+                            <span className="landing-nav-text">Internships</span>
                         </div>
                     </Link>
-                    <Link to="/landing/projects" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">💡</span>
-                            <span className="nav-text">Projects</span>
+                    <Link to="/landing/projects" className="landing-nav-link" onClick={toggleMenu}>
+                        <div className="landing-nav-icon-container">
+                            <span className="landing-nav-icon">💡</span>
+                            <span className="landing-nav-text">Projects</span>
                         </div>
                     </Link>
-                    <Link to="/landing/community" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">👥</span>
-                            <span className="nav-text">Community</span>
+                    <Link to="/landing/community" className="landing-nav-link" onClick={toggleMenu}>
+                        <div className="landing-nav-icon-container">
+                            <span className="landing-nav-icon">👥</span>
+                            <span className="landing-nav-text">Community</span>
                         </div>
                     </Link>
-                    <Link to="/landing/blogs" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">📝</span>
-                            <span className="nav-text">Blogs</span>
+                    <Link to="/landing/blogs" className="landing-nav-link" onClick={toggleMenu}>
+                        <div className="landing-nav-icon-container">
+                            <span className="landing-nav-icon">📝</span>
+                            <span className="landing-nav-text">Blogs</span>
                         </div>
                     </Link>
-                    <Link to="/landing/pages" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">📚</span>
-                            <span className="nav-text">Pages</span>
+                    <Link to="/landing/pages" className="landing-nav-link" onClick={toggleMenu}>
+                        <div className="landing-nav-icon-container">
+                            <span className="landing-nav-icon">📚</span>
+                            <span className="landing-nav-text">Pages</span>
                         </div>
                     </Link>
                 </nav>
-                <nav className="nav-buttons">
+                <nav className="landing-nav-buttons">
                     {isLoggedIn ? (
-                        <Link to="/dashboard" className="nav-btn" onClick={toggleMenu}>
+                        <Link to="/dashboard" className="landing-nav-btn" onClick={toggleMenu}>
                             Dashboard
                         </Link>
                     ) : (
-                        <Link to="/landing#login" className="nav-btn" onClick={toggleMenu}>
+                        <Link to="/landing#login" className="landing-nav-btn" onClick={toggleMenu}>
                             Login
                         </Link>
                     )}
                 </nav>
             </div>
-            {isMenuOpen && <div className="menu-overlay" onClick={toggleMenu}></div>}
+            {isMenuOpen && <div className="landing-menu-overlay" onClick={toggleMenu}></div>}
         </header>
     );
 }

@@ -48,96 +48,96 @@ export const Header = () => {
     };
 
     return (
-        <header className="landing-header">
-            <div className="header-left">
-                <Link to="/" className="logo-link">
-                    <h1 className="logo">
-                        <span className="logo-text">Sarthi</span>
-                        <span className="logo-q">Q</span>
+        <header className="dashboard-header">
+            <div className="dashboard-header-left">
+                <Link to="/" className="dashboard-logo-link">
+                    <h1 className="dashboard-logo">
+                        <span className="dashboard-logo-text">Sarthi</span>
+                        <span className="dashboard-logo-q">Q</span>
                     </h1>
                 </Link>
             </div>
-            <div className="hamburger-menu" onClick={toggleMenu}>
-                <div className={`hamburger-icon ${isMenuOpen ? 'open' : ''}`}>
+            <div className="dashboard-hamburger-menu" onClick={toggleMenu}>
+                <div className={`dashboard-hamburger-icon ${isMenuOpen ? 'open' : ''}`}>
                     <span></span>
                     <span></span>
                     <span></span>
                 </div>
             </div>
-            <div className={`header-right ${isMenuOpen ? 'open' : ''}`}>
-                <nav className="header-nav">
-                    <Link to="/dashboard" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">🏠</span>
-                            <span className="nav-text">Dashboard</span>
+            <div className={`dashboard-header-right ${isMenuOpen ? 'open' : ''}`}>
+                <nav className="dashboard-header-nav">
+                    <Link to="/dashboard" className="dashboard-nav-link" onClick={toggleMenu}>
+                        <div className="dashboard-nav-icon-container">
+                            <span className="dashboard-nav-icon">🏠</span>
+                            <span className="dashboard-nav-text">Dashboard</span>
                         </div>
                     </Link>
-                    <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">🎓</span>
-                            <span className="nav-text">Learning</span>
+                    <Link to="/" className="dashboard-nav-link" onClick={toggleMenu}>
+                        <div className="dashboard-nav-icon-container">
+                            <span className="dashboard-nav-icon">🎓</span>
+                            <span className="dashboard-nav-text">Learning</span>
                         </div>
                     </Link>
-                    <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">💼</span>
-                            <span className="nav-text">Internships</span>
+                    <Link to="/" className="dashboard-nav-link" onClick={toggleMenu}>
+                        <div className="dashboard-nav-icon-container">
+                            <span className="dashboard-nav-icon">💼</span>
+                            <span className="dashboard-nav-text">Internships</span>
                         </div>
                     </Link>
-                    <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">💡</span>
-                            <span className="nav-text">Projects</span>
+                    <Link to="/" className="dashboard-nav-link" onClick={toggleMenu}>
+                        <div className="dashboard-nav-icon-container">
+                            <span className="dashboard-nav-icon">💡</span>
+                            <span className="dashboard-nav-text">Projects</span>
                         </div>
                     </Link>
-                    <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">👥</span>
-                            <span className="nav-text">Community</span>
+                    <Link to="/" className="dashboard-nav-link" onClick={toggleMenu}>
+                        <div className="dashboard-nav-icon-container">
+                            <span className="dashboard-nav-icon">👥</span>
+                            <span className="dashboard-nav-text">Community</span>
                         </div>
                     </Link>
-                    <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">📝</span>
-                            <span className="nav-text">Blogs</span>
+                    <Link to="/" className="dashboard-nav-link" onClick={toggleMenu}>
+                        <div className="dashboard-nav-icon-container">
+                            <span className="dashboard-nav-icon">📝</span>
+                            <span className="dashboard-nav-text">Blogs</span>
                         </div>
                     </Link>
-                    <Link to="./pages" className="nav-link" onClick={toggleMenu}>
-                        <div className="nav-icon-container">
-                            <span className="nav-icon">📚</span>
-                            <span className="nav-text">Pages</span>
+                    <Link to="./pages" className="dashboard-nav-link" onClick={toggleMenu}>
+                        <div className="dashboard-nav-icon-container">
+                            <span className="dashboard-nav-icon">📚</span>
+                            <span className="dashboard-nav-text">Pages</span>
                         </div>
                     </Link>
                 </nav>
-                {/* <nav className="nav-buttons">
-                    <button onClick={handleJoinNow} className="nav-btn">Join now</button>
-                    <button onClick={handleSignIn} className="nav-btn nav-btn-secondary">Sign in</button>
+                {/* <nav className="dashboard-nav-buttons">
+                    <button onClick={handleJoinNow} className="dashboard-nav-btn">Join now</button>
+                    <button onClick={handleSignIn} className="dashboard-nav-btn dashboard-nav-btn-secondary">Sign in</button>
                 </nav> */}
                 
                 {/* Profile Section with Dropdown */}
-                <div className="profile-section">
-                    <div className="profile-icon">
-                        <span className="profile-avatar">👤</span>
-                        <span className="profile-text">Profile</span>
-                        <span className="dropdown-indicator">▼</span>
+                <div className="dashboard-profile-section">
+                    <div className="dashboard-profile-icon">
+                        <span className="dashboard-profile-avatar">👤</span>
+                        <span className="dashboard-profile-text">Profile</span>
+                        <span className="dashboard-dropdown-indicator">▼</span>
                     </div>
-                    <div className="profile-dropdown">
-                        <Link to="./profile" className="dropdown-item">
-                            <span className="dropdown-icon">👤</span>
+                    <div className="dashboard-profile-dropdown">
+                        <Link to="./profile" className="dashboard-dropdown-item">
+                            <span className="dashboard-dropdown-icon">👤</span>
                             My Profile
                         </Link>
-                        <Link to="./account-settings" className="dropdown-item">
-                            <span className="dropdown-icon">⚙️</span>
+                        <Link to="./account-settings" className="dashboard-dropdown-item">
+                            <span className="dashboard-dropdown-icon">⚙️</span>
                             Account Settings
                         </Link>
-                        <button onClick={handleLogout} className="dropdown-item logout-btn">
-                            <span className="dropdown-icon">🚪</span>
+                        <button onClick={handleLogout} className="dashboard-dropdown-item dashboard-logout-btn">
+                            <span className="dashboard-dropdown-icon">🚪</span>
                             Logout
                         </button>
                     </div>
                 </div>
             </div>
-            {isMenuOpen && <div className="menu-overlay" onClick={toggleMenu}></div>}
+            {isMenuOpen && <div className="dashboard-menu-overlay" onClick={toggleMenu}></div>}
         </header>
     );
 }
