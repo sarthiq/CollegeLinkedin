@@ -27,9 +27,9 @@ export const Footer = () => {
                     </div>
                     <div className="footer-section">
                         <h3>Legal</h3>
-                        <Link to="/privacy">Privacy Policy</Link>
-                        <Link to="/terms">Terms of Service</Link>
-                        <Link to="/cookie">Cookie Policy</Link>
+                        <Link to="/landing/privacy">Privacy Policy</Link>
+                        <Link to="/landing/terms">Terms of Service</Link>
+                        <Link to="/landing/refund">Refund Policy</Link>
                     </div>
                 </div>
             </div>

@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { userLogin, setUserAuthToken } from "../../../../Store/User/auth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { loginHandler, signUpHandler } from "../Auth/authApiHandler";
+import { Link } from "react-router-dom";
 
 export const LandingHome = () => {
   const dispatch = useDispatch();
@@ -398,8 +399,9 @@ export const LandingHome = () => {
           </div>
           <p className="landing-agreement">
             By clicking Continue to join or sign in, you agree to
-            Sarthiq's <a href="#">User Agreement</a>,{" "}
-            <a href="#">Privacy Policy</a>, and <a href="#">Cookie Policy</a>.
+            Sarthiq's <Link to="/landing/terms">Terms of Service</Link>,{" "}
+            <Link to="/landing/privacy">Privacy Policy</Link>, and{" "}
+            <Link to="/landing/refund">Refund Policy</Link>.
           </p>
           <div className="join-now">
             <p>
