@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { getAllFeedsHandler, createFeedHandler, deleteFeedHandler, updateFeedHandler } from './feedApiHandler';
 import { toggleLikeHandler, getLikeStatusHandler, getFeedLikesHandler } from './likeApiHandler';
 import { createCommentHandler, updateCommentHandler, deleteCommentHandler, getFeedCommentsHandler } from './commentApiHandler';
+import { useNavigate } from 'react-router-dom';
 import './Feed.css';
 
 export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCreatePost = true }) => {
@@ -42,6 +43,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const navigate = useNavigate();
 
   // Fetch feeds on component mount and when pageId or pagination changes
   useEffect(() => {
@@ -495,6 +497,10 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
     setIsDragging(false);
   };
 
+  const handleUserClick = (userId) => {
+    navigate(`/profile?userId=${userId}`);
+  };
+
   return (
     <div className="feed-container">
       {showCreatePost && (
@@ -572,9 +578,19 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
               <div key={feed.id} className="feed-item">
                 <div className="feed-item-header">
                   <div className="feed-user-info">
-                    <img src={feed.user.avatar} alt={feed.user.name} className="feed-user-avatar" />
+                    <img 
+                      src={feed.user.avatar} 
+                      alt={feed.user.name} 
+                      className="feed-user-avatar"
+                      onClick={() => handleUserClick(feed.user.id)}
+                      style={{ cursor: 'pointer' }}
+                    />
                     <div className="feed-user-details">
-                      <span className="feed-user-name">
+                      <span 
+                        className="feed-user-name"
+                        onClick={() => handleUserClick(feed.user.id)}
+                        style={{ cursor: 'pointer' }}
+                      >
                         {feed.user.name}
                         {feed.pageInfo && <span> - {feed.pageInfo.title}</span>}
                       </span>

@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Feed } from '../Common/Feed/Feed';
 import { getProfileHandler, updateProfileHandler } from './profileApiHandler';
+import { useSearchParams } from 'react-router-dom';
 import './Profile.css';
 
-export const Profile = ({isUserProfile = true,userId}) => {
+export const Profile = () => {
+  const [searchParams] = useSearchParams();
+  const userId = searchParams.get('userId');
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -26,16 +29,16 @@ export const Profile = ({isUserProfile = true,userId}) => {
   const coverImageInputRef = useRef(null);
   const profileImageInputRef = useRef(null);
 
-  // Fetch profile data on component mount
+  // Fetch profile data when userId changes
   useEffect(() => {
     fetchProfile();
-  }, []);
+  }, [userId]);
 
   const fetchProfile = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await getProfileHandler({userId}, setIsLoading, (error) => {
+      const response = await getProfileHandler({ userId }, setIsLoading, (error) => {
         setError(error);
       });
       
@@ -259,8 +262,8 @@ export const Profile = ({isUserProfile = true,userId}) => {
       
       <div className="profile-header">
         <div className="profile-cover-image">
-          <img src={profile.coverImage || 'https://placehold.co/1200x300'} alt="Cover" />
-          {isEditing && (
+          <img src={profile.coverImage} alt="Cover" />
+          {!userId && (
             <button 
               className="profile-edit-cover-button"
               onClick={() => coverImageInputRef.current.click()}
@@ -280,8 +283,8 @@ export const Profile = ({isUserProfile = true,userId}) => {
         </div>
         <div className="profile-info">
           <div className="profile-image-container">
-            <img src={profile.image || 'https://placehold.co/150'} alt={profile.name} />
-            {isEditing && (
+            <img src={profile.image} alt={profile.name} />
+            {!userId && (
               <button 
                 className="profile-edit-image-button"
                 onClick={() => profileImageInputRef.current.click()}
@@ -317,12 +320,14 @@ export const Profile = ({isUserProfile = true,userId}) => {
                 <span className="profile-stat-label">Following</span>
               </div>
             </div>
-            <button 
-              className="profile-edit-button"
-              onClick={() => setIsEditing(true)}
-            >
-              Edit Profile
-            </button>
+            {!userId && (
+              <button 
+                className="profile-edit-button"
+                onClick={() => setIsEditing(true)}
+              >
+                Edit Profile
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -450,9 +455,9 @@ export const Profile = ({isUserProfile = true,userId}) => {
 
         <div className="profile-feeds">
           <Feed 
-            usersFeed={isUserProfile}
+            usersFeed={!userId}
             othersUserId={userId}
-            showCreatePost={false}
+            showCreatePost={!userId}
           />
         </div>
       </div>
