@@ -49,34 +49,40 @@ export const Header = () => {
             </div>
             <div className={`header-right ${isMenuOpen ? 'open' : ''}`}>
                 <nav className="header-nav">
-                    <Link to="/" className="nav-link" onClick={toggleMenu}>
+                    <Link to="/landing/learning" className="nav-link" onClick={toggleMenu}>
                         <div className="nav-icon-container">
                             <span className="nav-icon">🎓</span>
                             <span className="nav-text">Learning</span>
                         </div>
                     </Link>
-                    <Link to="/" className="nav-link" onClick={toggleMenu}>
+                    <Link to="/landing/internships" className="nav-link" onClick={toggleMenu}>
                         <div className="nav-icon-container">
                             <span className="nav-icon">💼</span>
                             <span className="nav-text">Internships</span>
                         </div>
                     </Link>
-                    <Link to="/" className="nav-link" onClick={toggleMenu}>
+                    <Link to="/landing/projects" className="nav-link" onClick={toggleMenu}>
                         <div className="nav-icon-container">
                             <span className="nav-icon">💡</span>
                             <span className="nav-text">Projects</span>
                         </div>
                     </Link>
-                    <Link to="/" className="nav-link" onClick={toggleMenu}>
+                    <Link to="/landing/community" className="nav-link" onClick={toggleMenu}>
                         <div className="nav-icon-container">
                             <span className="nav-icon">👥</span>
                             <span className="nav-text">Community</span>
                         </div>
                     </Link>
-                    <Link to="/" className="nav-link" onClick={toggleMenu}>
+                    <Link to="/landing/blogs" className="nav-link" onClick={toggleMenu}>
                         <div className="nav-icon-container">
                             <span className="nav-icon">📝</span>
                             <span className="nav-text">Blogs</span>
+                        </div>
+                    </Link>
+                    <Link to="/landing/pages" className="nav-link" onClick={toggleMenu}>
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">📚</span>
+                            <span className="nav-text">Pages</span>
                         </div>
                     </Link>
                 </nav>

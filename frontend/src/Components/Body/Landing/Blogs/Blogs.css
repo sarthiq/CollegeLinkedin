@@ -1,0 +1,214 @@
+.landing-blogs-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Inter', 'Arial', sans-serif;
+    line-height: 1.8;
+    color: #2d3748;
+    margin-top: 80px;
+}
+
+.landing-blogs-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.landing-blogs-title {
+    font-size: 3rem;
+    color: #1a365d;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #1a365d, #2c5282);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+
+.landing-blogs-subtitle {
+    font-size: 1.2rem;
+    color: #4a5568;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.landing-blogs-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.landing-blogs-feature-card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.landing-blogs-feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.landing-blogs-feature-icon {
+    font-size: 2.5rem;
+    color: #4299e1;
+    margin-bottom: 1rem;
+}
+
+.landing-blogs-feature-title {
+    font-size: 1.5rem;
+    color: #2d3748;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.landing-blogs-feature-description {
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+}
+
+.landing-blogs-categories {
+    background: #f7fafc;
+    padding: 3rem;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+}
+
+.landing-blogs-categories-title {
+    font-size: 2rem;
+    color: #2d3748;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.landing-blogs-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.landing-blogs-category-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.landing-blogs-category-icon {
+    color: #4299e1;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.landing-blogs-category-title {
+    font-size: 1.2rem;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.landing-blogs-category-description {
+    color: #4a5568;
+    font-size: 1rem;
+}
+
+.landing-blogs-benefits {
+    margin-bottom: 3rem;
+}
+
+.landing-blogs-benefits-title {
+    font-size: 2rem;
+    color: #2d3748;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.landing-blogs-benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.landing-blogs-benefit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.landing-blogs-benefit-icon {
+    color: #4299e1;
+    font-size: 1.5rem;
+    margin-top: 0.3rem;
+}
+
+.landing-blogs-benefit-text {
+    color: #4a5568;
+}
+
+.landing-blogs-cta {
+    text-align: center;
+    padding: 3rem;
+    background: linear-gradient(135deg, #4299e1, #2b6cb0);
+    border-radius: 12px;
+    color: white;
+}
+
+.landing-blogs-cta-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.landing-blogs-cta-description {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.landing-blogs-cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: white;
+    color: #2b6cb0;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.landing-blogs-cta-button:hover {
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .landing-blogs-container {
+        padding: 1.5rem;
+        margin-top: 60px;
+    }
+
+    .landing-blogs-title {
+        font-size: 2.2rem;
+    }
+
+    .landing-blogs-features {
+        grid-template-columns: 1fr;
+    }
+
+    .landing-blogs-categories {
+        padding: 2rem;
+    }
+
+    .landing-blogs-cta {
+        padding: 2rem;
+    }
+} 

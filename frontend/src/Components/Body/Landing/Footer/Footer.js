@@ -15,15 +15,15 @@ export const Footer = () => {
                 <div className="footer-links">
                     <div className="footer-section">
                         <h3>General</h3>
-                        <Link to="/about">About</Link>
-                        <Link to="/blogs">Blogs</Link>
-                        <Link to="/community">Community</Link>
+                        <Link to="/landing">About</Link>
+                        <Link to="/landing/blogs">Blogs</Link>
+                        <Link to="/landing/community">Community</Link>
                     </div>
                     <div className="footer-section">
                         <h3>Browse</h3>
-                        <Link to="/learning">Learning</Link>
-                        <Link to="/projects">Projects</Link>
-                        <Link to="/internships">Internships</Link>
+                        <Link to="/landing/learning">Learning</Link>
+                        <Link to="/landing/projects">Projects</Link>
+                        <Link to="/landing/internships">Internships</Link>
                     </div>
                     <div className="footer-section">
                         <h3>Legal</h3>
