@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Footer.css';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export const Footer = () => {
+    const location = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [location]);
+
     return (
         <footer className="landing-footer">
             <div className="footer-content">

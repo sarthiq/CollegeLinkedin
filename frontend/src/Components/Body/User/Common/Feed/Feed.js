@@ -66,7 +66,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
     setIsLoading(true);
     setError(null);
 
-    
+    try {
       const response = await getAllFeedsHandler(
         { 
           page: pagination.currentPage, 
@@ -110,8 +110,20 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
 
         setFeeds(transformedFeeds);
         setPagination(paginationData);
+        
+        // Scroll to top after content is loaded
+        setTimeout(() => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }, 100);
       }
-    
+    } catch (error) {
+      setError('Failed to fetch feeds');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleImageUpload = (e) => {

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Header.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userLogin, setUserAuthToken } from '../../../../Store/User/auth';
 
@@ -8,7 +8,15 @@ export const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     const isLoggedIn = useSelector((state) => state.userAuth.isLoggedIn);
+
+    useEffect(() => {
+        // Don't scroll to top if it's the login link
+        if (!location.hash.includes('#login')) {
+            window.scrollTo(0, 0);
+        }
+    }, [location]);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
