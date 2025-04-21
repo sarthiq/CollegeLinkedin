@@ -12,7 +12,7 @@ export const getProfileHandler = async (data, setIsLoading, showAlert) => {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await apiRequest(url, obj, token, "get");
+    const response = await apiRequest(url, obj, token, "post");
     const data = response.data;
 
     return data;

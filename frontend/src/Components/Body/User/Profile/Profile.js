@@ -3,7 +3,7 @@ import { Feed } from '../Common/Feed/Feed';
 import { getProfileHandler, updateProfileHandler } from './profileApiHandler';
 import './Profile.css';
 
-export const Profile = () => {
+export const Profile = ({isUserProfile = false,userId}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -35,7 +35,7 @@ export const Profile = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await getProfileHandler({}, setIsLoading, (error) => {
+      const response = await getProfileHandler({userId}, setIsLoading, (error) => {
         setError(error);
       });
       

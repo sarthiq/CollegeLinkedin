@@ -77,13 +77,12 @@ exports.createFeed = async (req, res) => {
 // Get all feeds with pagination
 exports.getAllFeeds = async (req, res) => {
   try {
-    const { page = 1, limit = 10, usersFeed = false, pageId } = req.body;
+    const { page = 1, limit = 10, userId, pageId } = req.body;
     const offset = (page - 1) * limit;
 
     // Build where condition
     const whereCondition = {};
-    if (usersFeed) {
-      const userId = req.user.id; // Assuming user ID is available in request
+    if (userId) {
       whereCondition.UserId = userId; // Assuming there's a UserId field in the Feeds model
     }
 
@@ -115,11 +114,11 @@ exports.getAllFeeds = async (req, res) => {
     });
 
     // Get like status for each feed
-    const userId = req.user.id;
+    
     const feedsWithLikeStatus = await Promise.all(feeds.map(async (feed) => {
       const isLiked = await Likes.findOne({
         where: {
-          UserId: userId,
+          UserId: req.user.id,
           FeedId: feed.id
         }
       });

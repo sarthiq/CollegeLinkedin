@@ -8,7 +8,8 @@ const { saveFile } = require("../../../Utils/fileHandler");
 
 exports.getProfile = async (req, res) => {
   try {
-    const userId = req.user.id;
+    // Get userId from either req.body or req.user.id
+    const userId = req.body.userId || req.user.id;
     
     const userProfile = await UserProfile.findOne({
       where: { userId },
