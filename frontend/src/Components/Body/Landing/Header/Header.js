@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import './Header.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { userLogin, setUserAuthToken } from '../../../../Store/User/auth';
 
 export const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const isLoggedIn = useSelector((state) => state.userAuth.isLoggedIn);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -17,7 +18,7 @@ export const Header = () => {
         dispatch(userLogin());
         dispatch(setUserAuthToken('dummy-token'));
         localStorage.setItem('token', 'dummy-token');
-        navigate('/home');
+        navigate('/dashboard');
         setIsMenuOpen(false);
     };
 
@@ -25,7 +26,7 @@ export const Header = () => {
         dispatch(userLogin());
         dispatch(setUserAuthToken('dummy-token'));
         localStorage.setItem('token', 'dummy-token');
-        navigate('/home');
+        navigate('/dashboard');
         setIsMenuOpen(false);
     };
 
@@ -49,30 +50,47 @@ export const Header = () => {
             <div className={`header-right ${isMenuOpen ? 'open' : ''}`}>
                 <nav className="header-nav">
                     <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <span className="nav-icon">🎓</span>
-                        Learning Lab
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">🎓</span>
+                            <span className="nav-text">Learning</span>
+                        </div>
                     </Link>
                     <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <span className="nav-icon">💼</span>
-                        Internships
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">💼</span>
+                            <span className="nav-text">Internships</span>
+                        </div>
                     </Link>
                     <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <span className="nav-icon">💡</span>
-                        Project Arena
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">💡</span>
+                            <span className="nav-text">Projects</span>
+                        </div>
                     </Link>
                     <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <span className="nav-icon">👥</span>
-                        Community
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">👥</span>
+                            <span className="nav-text">Community</span>
+                        </div>
                     </Link>
                     <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <span className="nav-icon">📝</span>
-                        Blogs
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">📝</span>
+                            <span className="nav-text">Blogs</span>
+                        </div>
                     </Link>
                 </nav>
-                {/* <nav className="nav-buttons">
-                    <button onClick={handleJoinNow} className="nav-btn">Join now</button>
-                    <button onClick={handleSignIn} className="nav-btn nav-btn-secondary">Sign in</button>
-                </nav> */}
+                <nav className="nav-buttons">
+                    {isLoggedIn ? (
+                        <Link to="/dashboard" className="nav-btn" onClick={toggleMenu}>
+                            Dashboard
+                        </Link>
+                    ) : (
+                        <button onClick={handleSignIn} className="nav-btn nav-btn-secondary">
+                            Login
+                        </button>
+                    )}
+                </nav>
             </div>
             {isMenuOpen && <div className="menu-overlay" onClick={toggleMenu}></div>}
         </header>

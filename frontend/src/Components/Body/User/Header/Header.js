@@ -58,29 +58,47 @@ export const Header = () => {
             </div>
             <div className={`header-right ${isMenuOpen ? 'open' : ''}`}>
                 <nav className="header-nav">
-                    <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <span className="nav-icon">🎓</span>
-                        Learning Lab
+                    <Link to="/dashboard" className="nav-link" onClick={toggleMenu}>
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">🏠</span>
+                            <span className="nav-text">Dashboard</span>
+                        </div>
                     </Link>
                     <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <span className="nav-icon">💼</span>
-                        Internships
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">🎓</span>
+                            <span className="nav-text">Learning</span>
+                        </div>
                     </Link>
                     <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <span className="nav-icon">💡</span>
-                        Project Arena
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">💼</span>
+                            <span className="nav-text">Internships</span>
+                        </div>
                     </Link>
                     <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <span className="nav-icon">👥</span>
-                        Community
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">💡</span>
+                            <span className="nav-text">Projects</span>
+                        </div>
                     </Link>
                     <Link to="/" className="nav-link" onClick={toggleMenu}>
-                        <span className="nav-icon">📝</span>
-                        Blogs
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">👥</span>
+                            <span className="nav-text">Community</span>
+                        </div>
                     </Link>
-                    <Link to="/pages" className="nav-link" onClick={toggleMenu}>
-                        <span className="nav-icon">📚</span>
-                        Pages
+                    <Link to="/" className="nav-link" onClick={toggleMenu}>
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">📝</span>
+                            <span className="nav-text">Blogs</span>
+                        </div>
+                    </Link>
+                    <Link to="./pages" className="nav-link" onClick={toggleMenu}>
+                        <div className="nav-icon-container">
+                            <span className="nav-icon">📚</span>
+                            <span className="nav-text">Pages</span>
+                        </div>
                     </Link>
                 </nav>
                 {/* <nav className="nav-buttons">
@@ -96,11 +114,11 @@ export const Header = () => {
                         <span className="dropdown-indicator">▼</span>
                     </div>
                     <div className="profile-dropdown">
-                        <Link to="/profile" className="dropdown-item">
+                        <Link to="./profile" className="dropdown-item">
                             <span className="dropdown-icon">👤</span>
                             My Profile
                         </Link>
-                        <Link to="/account-settings" className="dropdown-item">
+                        <Link to="./account-settings" className="dropdown-item">
                             <span className="dropdown-icon">⚙️</span>
                             Account Settings
                         </Link>

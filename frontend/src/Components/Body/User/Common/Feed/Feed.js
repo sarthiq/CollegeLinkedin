@@ -478,11 +478,11 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
   };
 
   const handleUserClick = (userId) => {
-    navigate(`/profile?userId=${userId}`);
+    navigate(`/dashboard/profile?userId=${userId}`);
   };
 
   const handlePageClick = (pageId) => {
-    navigate(`/pages/details/${pageId}`);
+    navigate(`/dashboard/pages/details/${pageId}`);
   };
 
   return (

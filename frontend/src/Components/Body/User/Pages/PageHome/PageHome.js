@@ -144,7 +144,7 @@ export const PageHome = () => {
   };
 
   const handleViewMore = (pageId) => {
-    navigate(`/pages/details/${pageId}`);
+    navigate(`/dashboard/pages/details/${pageId}`);
   };
 
   const handlePageChange = (newPage) => {
