@@ -142,6 +142,20 @@ exports.createPage = async (req, res) => {
         .json({ success: false, message: "Title is required" });
     }
 
+    // Check if page with same trimmed title already exists
+    const trimmedTitle = title.trim();
+    const existingPage = await Pages.findOne({
+      where: {
+        title: trimmedTitle
+      }
+    });
+
+    if (existingPage) {
+      return res
+        .status(400)
+        .json({ success: false, message: "A page with this title already exists" });
+    }
+
     let imageUrl = "";
     if (imageFile) {
       const filePath = path.join("CustomFiles", "Pages");
@@ -150,7 +164,7 @@ exports.createPage = async (req, res) => {
     }
 
     const page = await Pages.create({
-      title,
+      title: trimmedTitle,
       imageUrl,
       followers: 0,
       adminId: userId,

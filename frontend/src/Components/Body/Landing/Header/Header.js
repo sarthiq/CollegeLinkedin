@@ -54,7 +54,6 @@ export const Header = () => {
                 <Link to="/" className="landing-logo-link">
                     <h1 className="landing-logo">
                         <span className="landing-logo-text">Sarthi</span>
-                        <span className="landing-logo-q">Q</span>
                     </h1>
                 </Link>
             </div>

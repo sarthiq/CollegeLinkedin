@@ -91,6 +91,21 @@
   margin: auto;
 }
 
+.create-page-error {
+  background-color: #fff3f3;
+  border-left: 4px solid #e53935;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.create-page-error p {
+  color: #d32f2f;
+  margin: 0;
+  font-weight: 500;
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;

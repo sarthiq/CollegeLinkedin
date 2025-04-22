@@ -60,7 +60,6 @@ export const Header = () => {
                 <Link to="/" className="dashboard-logo-link">
                     <h1 className="dashboard-logo">
                         <span className="dashboard-logo-text">Sarthi</span>
-                        <span className="dashboard-logo-q">Q</span>
                     </h1>
                 </Link>
                 <div className="dashboard-hamburger-menu" onClick={toggleMenu}>

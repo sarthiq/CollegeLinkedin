@@ -9,6 +9,7 @@ export const PageHome = () => {
   const [showUserPages, setShowUserPages] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [createPageError, setCreatePageError] = useState(null);
   const [pages, setPages] = useState([]);
   const [pagination, setPagination] = useState({
     total: 0,
@@ -34,8 +35,7 @@ export const PageHome = () => {
   }, [showUserPages, pagination.currentPage]);
 
   const fetchPages = async () => {
-    
-      
+    try {
       setError(null);
       
       const response = await getAllPagesHandler(
@@ -71,6 +71,9 @@ export const PageHome = () => {
         setPages(transformedPages);
         setPagination(pagination);
       } 
+    } catch (err) {
+      setError(err.message || 'An error occurred while fetching pages');
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -83,8 +86,9 @@ export const PageHome = () => {
   const handleCreatePage = async (e) => {
     e.preventDefault();
     if (newPage.title && newPage.description) {
-      
+      try {
         setIsLoading(true);
+        setCreatePageError(null);
         
         const formData = new FormData();
         formData.append('title', newPage.title);
@@ -98,7 +102,7 @@ export const PageHome = () => {
         const response = await createPageHandler(
           formData, 
           setIsLoading, 
-          (error) => setError(error)
+          (error) => setCreatePageError(error)
         );
         
         if (response && response.success) {
@@ -109,6 +113,9 @@ export const PageHome = () => {
           setNewPage({ title: '', description: '', image: null, category: 'Department' });
           setShowCreatePage(false);
         } 
+      } catch (err) {
+        setCreatePageError(err.message || 'An error occurred while creating the page');
+      }
     }
   };
 
@@ -188,7 +195,7 @@ export const PageHome = () => {
         </div>
       </div>
 
-      {error && (
+      {error && !showCreatePage && (
         <div className="pages-error-message">
           <p>{error}</p>
           <button onClick={fetchPages}>Try Again</button>
@@ -202,11 +209,19 @@ export const PageHome = () => {
               <h2>Create New Page</h2>
               <button 
                 className="close-button"
-                onClick={() => setShowCreatePage(false)}
+                onClick={() => {
+                  setShowCreatePage(false);
+                  setCreatePageError(null);
+                }}
               >
                 ×
               </button>
             </div>
+            {createPageError && (
+              <div className="create-page-error">
+                <p>{createPageError}</p>
+              </div>
+            )}
             <form onSubmit={handleCreatePage}>
               <div className="form-group">
                 <label>Page Name</label>

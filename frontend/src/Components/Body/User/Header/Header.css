@@ -35,6 +35,11 @@
   color: #0a66c2;
 }
 
+.dashboard-logo-text::after {
+  content: "Q";
+  color: #ff6b6b;
+}
+
 .dashboard-logo-q {
   color: #ff6b6b;
   margin-left: 0.25rem;
