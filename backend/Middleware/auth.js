@@ -121,6 +121,7 @@ exports.developerAuthentication = async (req, res, next) => {
 
 // User Authentication Middleware
 exports.userAuthentication = async (req, res, next) => {
+  
   try {
     // Get token from header
     const token = req.header("Authorization");
@@ -131,10 +132,10 @@ exports.userAuthentication = async (req, res, next) => {
         message: "Authentication required. Please login.",
       });
     }
-
+   
     // Verify token
     const decoded = jwt.verify(token, JWT_SECRET_KEY);
-
+    
     // Find user
     const user = await User.findByPk(decoded.id);
 
@@ -157,21 +158,10 @@ exports.userAuthentication = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    if (error.name === "JsonWebTokenError") {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid token. Please login again.",
-      });
-    }
-    if (error.name === "TokenExpiredError") {
-      return res.status(401).json({
-        success: false,
-        message: "Token expired. Please login again.",
-      });
-    }
-    res.status(500).json({
+    
+    res.status(503).json({
       success: false,
-      message: "Authentication failed",
+      message: "Invalid token",
       error: error.message,
     });
   }
