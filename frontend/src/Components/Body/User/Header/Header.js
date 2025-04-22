@@ -114,6 +114,12 @@ export const Header = () => {
                             <span className="dashboard-nav-text">Pages</span>
                         </div>
                     </Link>
+                    <a href="https://career.sarthiq.com" className="dashboard-nav-link" onClick={handleNavClick} target="_blank" rel="noopener noreferrer">
+                        <div className="dashboard-nav-icon-container">
+                            <span className="dashboard-nav-icon">🚀</span>
+                            <span className="dashboard-nav-text">Know Thyself</span>
+                        </div>
+                    </a>
                 </nav>
                 
                 <div className="dashboard-profile-section">
