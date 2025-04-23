@@ -1,73 +1,91 @@
-.admin-page {
+.dashboard-admin-page {
   display: flex;
   height: calc(100vh - 60px); /* Subtract header height */
   margin-top: 60px; /* Add margin equal to header height */
   overflow: hidden;
 }
 
-.sidebar.collapsed {
+.dashboard-sidebar {
+  position: relative;
+  width: 250px;
+  transition: width 0.3s;
+  background-color: #343a40;
+  height: 100%; /* Change from 100vh to 100% */
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.dashboard-sidebar.collapsed {
   width: 70px;
 }
 
-.tabs-list {
+.dashboard-tabs-list {
   list-style: none;
   padding: 0;
   margin: 0;
   flex-grow: 1;
 }
 
-.tab-link {
+.dashboard-tab-link {
   display: flex;
   align-items: center;
   padding: 15px;
   text-decoration: none;
+  color: #ccc;
+  transition: background 0.3s, color 0.3s;
+}
+
+.dashboard-tab-link:hover {
+  background-color: #495057;
   color: #fff;
-  transition: background 0.3s;
 }
 
-.tab-link:hover {
+.dashboard-active-tab {
   background-color: #495057;
+  color: #00bfff;
 }
 
-.active-tab {
-  background-color: #495057;
-}
-
-.tab-icon {
-  font-size: 20px;
+.dashboard-tab-icon {
+  font-size: 1.5rem;
   margin-right: 10px;
 }
 
-.sidebar.collapsed .tab-icon {
+.dashboard-sidebar.collapsed .dashboard-tab-icon {
   margin: 0;
 }
 
-.sidebar.collapsed .tab-link span {
+.dashboard-sidebar.collapsed .dashboard-tab-link span {
   display: none;
 }
 
 /* Toggle button styles */
-.toggle-button {
+.dashboard-toggle-button {
   position: absolute;
-  top: 50%;
   right: -15px;
+  top: 50%;
   transform: translateY(-50%);
-  background-color: #495057;
-  border: none;
-  color: #fff;
-  padding: 10px;
-  cursor: pointer;
-  text-align: center;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
+  border: none;
+  background-color: #495057;
+  color: #fff;
+  cursor: pointer;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: background-color 0.3s;
 }
 
-.toggle-button:hover {
-  background-color: #6c757d;
+.dashboard-toggle-button:hover {
+  background-color: #00bfff;
+  color: #fff;
 }
 
 /* Content section styles */
-.content {
+.dashboard-content {
   flex-grow: 1; /* Ensures the content section takes the remaining space */
   overflow-y: auto; /* Allows vertical scrolling if content overflows */
   padding: 20px;
@@ -78,7 +96,7 @@
 /*66666666666666666666*/
 
 /* Sidebar Styling */
-.sidebar {
+.dashboard-sidebar {
   position: relative;
   width: 250px;
   transition: width 0.3s;
@@ -89,13 +107,13 @@
 }
 
 /* Tabs List */
-.tabs-list {
+.dashboard-tabs-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.tab-link {
+.dashboard-tab-link {
   display: flex;
   align-items: center;
   padding: 15px;
@@ -104,23 +122,23 @@
   transition: background 0.3s, color 0.3s;
 }
 
-.tab-link:hover {
+.dashboard-tab-link:hover {
   background-color: #495057;
   color: #fff;
 }
 
-.active-tab {
+.dashboard-active-tab {
   background-color: #495057;
   color: #00bfff;
 }
 
-.tab-icon {
+.dashboard-tab-icon {
   font-size: 1.5rem;
   margin-right: 10px;
 }
 
 /* Toggle Button */
-.toggle-button {
+.dashboard-toggle-button {
   position: absolute;
   right: -15px; /* Slightly outside the sidebar */
   top: 50%;
@@ -140,7 +158,7 @@
   transition: background-color 0.3s;
 }
 
-.toggle-button:hover {
+.dashboard-toggle-button:hover {
   background-color: #00bfff;
   color: #fff;
 }

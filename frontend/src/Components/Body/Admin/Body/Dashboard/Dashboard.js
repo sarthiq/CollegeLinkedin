@@ -14,17 +14,17 @@ export const DashboardPage = () => {
   };
 
   return (
-    <div className="admin-page">
-      <div className={`sidebar ${collapsed ? "collapsed" : ""}`}>
-        <ul className="tabs-list">
+    <div className="dashboard-admin-page">
+      <div className={`dashboard-sidebar ${collapsed ? "collapsed" : ""}`}>
+        <ul className="dashboard-tabs-list">
           <li>
             <NavLink
               to="./"
               className={({ isActive }) =>
-                isActive ? "tab-link active-tab" : "tab-link"
+                isActive ? "dashboard-tab-link dashboard-active-tab" : "dashboard-tab-link"
               }
             >
-              <i className="tab-icon bi bi-speedometer2"></i>
+              <i className="dashboard-tab-icon bi bi-speedometer2"></i>
               {!collapsed && <span>Dashboard</span>}
             </NavLink>
           </li>
@@ -33,20 +33,20 @@ export const DashboardPage = () => {
             <NavLink
               to="./users"
               className={({ isActive }) =>
-                isActive ? "tab-link active-tab" : "tab-link"
+                isActive ? "dashboard-tab-link dashboard-active-tab" : "dashboard-tab-link"
               }
             >
-              <i className="tab-icon bi bi-people"></i>
+              <i className="dashboard-tab-icon bi bi-people"></i>
               {!collapsed && <span>Users</span>}
             </NavLink>
           </li>
         </ul>
 
-        <button className="toggle-button" onClick={toggleSidebar}>
+        <button className="dashboard-toggle-button" onClick={toggleSidebar}>
           {collapsed ? "❯" : "❮"}
         </button>
       </div>
-      <div className="content">
+      <div className="dashboard-content">
         <Routes>
           <Route path="" element={<Home />} />
           <Route path="users/*" element={<UserRoutes />} />
