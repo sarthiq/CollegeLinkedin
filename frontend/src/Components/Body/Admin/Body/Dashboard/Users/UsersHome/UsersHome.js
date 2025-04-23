@@ -1,182 +1,226 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { FaUser, FaEnvelope, FaPhone, FaCalendar, FaEye } from "react-icons/fa";
-import "../Users.css";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-// Dummy data for demonstration
-const dummyUsers = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+91 98765 43210",
-    date: "2024-03-15",
-    time: "14:30",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    phone: "+91 98765 43211",
-    date: "2024-03-14",
-    time: "15:45",
-  },
-  {
-    id: 3,
-    name: "Mike Johnson",
-    email: "mike.j@example.com",
-    phone: "+91 98765 43212",
-    date: "2024-03-13",
-    time: "09:15",
-  },
-  // Add more dummy users as needed
-];
+import './UsersHome.css';
+import { getUsersHandler, getUsersStatsHandler } from '../userApiHandler';
 
 export const UsersHome = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 10;
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    todayUsers: 0,
+    monthUsers: 0
+  });
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0
+  });
+  const [search, setSearch] = useState('');
+  const navigate = useNavigate();
 
-  // Filter users based on search term
-  const filteredUsers = dummyUsers.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.phone.includes(searchTerm)
-  );
+  useEffect(() => {
+    fetchUsersStats();
+    fetchUsers();
+  }, [pagination.page, search]);
 
-  // Calculate pagination
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  const fetchUsersStats = async () => {
+    try {
+      const response = await getUsersStatsHandler({},setIsLoading, setError);
+      if (response) {
+        setStats(response.data);
+      }
+    } catch (error) {
+      setError('Failed to fetch user statistics');
+    }
+  };
 
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  const fetchUsers = async () => {
+    try {
+        const response = await getUsersHandler(
+        {
+            page: pagination.page,
+            limit: pagination.limit,
+            search: search
+        },
+        setIsLoading,
+        setError,
+      );
+      if (response) {
+        setUsers(response.data);
+        setPagination(prev => ({
+          ...prev,
+          total: response.pagination.total,
+          totalPages: response.pagination.totalPages
+        }));
+      }
+    } catch (error) {
+      setError('Failed to fetch users');
+    }
+  };
+  console.log(users)
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setPagination(prev => ({ ...prev, page: 1 }));
+    fetchUsers();
+  };
+
+  const handlePageChange = (newPage) => {
+    setPagination(prev => ({ ...prev, page: newPage }));
+  };
+
+  const handleViewMore = (userId) => {
+    navigate(`id/${userId}`);
+  };
+
+  if (error) {
+    return (
+      <div className="admin-users-error">
+        <p>{error}</p>
+        <button onClick={() => {
+          setError(null);
+          fetchUsersStats();
+          fetchUsers();
+        }}>Try Again</button>
+      </div>
+    );
+  }
 
   return (
-    <div className="users-container">
-      <div className="users-header">
-        <h2>Users Management</h2>
-        <div className="users-stats">
-          <div className="stat-card">
-            <h3>{dummyUsers.length}</h3>
-            <p>Total Users</p>
+    <div className="admin-users-container">
+      {/* Stats Section */}
+      <div className="admin-users-stats">
+        <div className="admin-users-stat-card">
+          <div className="admin-users-stat-icon">
+            <i className="bi bi-people-fill"></i>
           </div>
-          <div className="stat-card">
-            <h3>{dummyUsers.filter(user => new Date(user.date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length}</h3>
-            <p>New Users (Last 7 days)</p>
+          <div className="admin-users-stat-content">
+            <h3>Total Users</h3>
+            <div className="admin-users-stat-number">{stats.totalUsers}</div>
           </div>
-          <div className="stat-card">
-            <h3>{dummyUsers.filter(user => new Date(user.date) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).length}</h3>
-            <p>Active Users (Last 30 days)</p>
+        </div>
+        <div className="admin-users-stat-card">
+          <div className="admin-users-stat-icon">
+            <i className="bi bi-person-plus-fill"></i>
+          </div>
+          <div className="admin-users-stat-content">
+            <h3>Today's Users</h3>
+            <div className="admin-users-stat-number">{stats.todayUsers}</div>
+          </div>
+        </div>
+        <div className="admin-users-stat-card">
+          <div className="admin-users-stat-icon">
+            <i className="bi bi-graph-up"></i>
+          </div>
+          <div className="admin-users-stat-content">
+            <h3>This Month</h3>
+            <div className="admin-users-stat-number">{stats.monthUsers}</div>
           </div>
         </div>
       </div>
 
-      <div className="users-table-container">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <div className="search-box">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search users..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+      {/* Search and User List Section */}
+      <div className="admin-users-content">
+        <div className="admin-users-header">
+          <h2>User Management</h2>
+          <form onSubmit={handleSearch} className="admin-users-search-form">
+            <div className="admin-users-search-input">
+              <i className="bi bi-search"></i>
+              <input
+                type="text"
+                placeholder="Search users..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="admin-users-search-button">
+              Search
+            </button>
+          </form>
         </div>
 
-        <table className="users-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>Date & Time</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentUsers.map((user) => (
-              <tr key={user.id}>
-                <td>
-                  <div className="d-flex align-items-center">
-                    <FaUser className="me-2" />
-                    {user.name}
-                  </div>
-                </td>
-                <td>
-                  <div className="d-flex align-items-center">
-                    <FaEnvelope className="me-2" />
-                    {user.email}
-                  </div>
-                </td>
-                <td>
-                  <div className="d-flex align-items-center">
-                    <FaPhone className="me-2" />
-                    {user.phone}
-                  </div>
-                </td>
-                <td>
-                  <div className="d-flex align-items-center">
-                    <FaCalendar className="me-2" />
-                    {user.date} {user.time}
-                  </div>
-                </td>
-                <td>
-                  <Link to={`/admin/users/id/${user.id}`} className="view-more-btn">
-                    <FaEye className="me-1" />
-                    View More
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {totalPages > 1 && (
-          <div className="d-flex justify-content-center mt-4">
-            <nav>
-              <ul className="pagination">
-                <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                  <button
-                    className="page-link"
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    Previous
-                  </button>
-                </li>
-                {[...Array(totalPages)].map((_, index) => (
-                  <li
-                    key={index + 1}
-                    className={`page-item ${
-                      currentPage === index + 1 ? "active" : ""
-                    }`}
-                  >
-                    <button
-                      className="page-link"
-                      onClick={() => setCurrentPage(index + 1)}
-                    >
-                      {index + 1}
-                    </button>
-                  </li>
-                ))}
-                <li
-                  className={`page-item ${
-                    currentPage === totalPages ? "disabled" : ""
-                  }`}
-                >
-                  <button
-                    className="page-link"
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    Next
-                  </button>
-                </li>
-              </ul>
-            </nav>
+        {isLoading ? (
+          <div className="admin-users-loading">
+            <div className="admin-users-spinner"></div>
+            <p>Loading users...</p>
           </div>
+        ) : (
+          <>
+            <div className="admin-users-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>College</th>
+                    <th>Course</th>
+                    <th>Joined Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((user) => (
+                    <tr key={user.id}>
+                      <td>
+                        <div className="admin-users-info">
+                          <img 
+                            src={user.UserProfile?.profileUrl
+                              ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${user.UserProfile?.profileUrl}`
+                              : "/assets/Utils/male.png"} 
+                            alt={user.name}
+                            className="admin-users-avatar"
+                          />
+                          <span>{user.name}</span>
+                        </div>
+                      </td>
+                      <td>{user.email}</td>
+                      <td>{user.phone}</td>
+                      <td>{user.UserProfile?.collegeName || '-'}</td>
+                      <td>{user.UserProfile?.courseName || '-'}</td>
+                      <td>{new Date(user.createdAt).toLocaleDateString()}</td>
+                      <td>
+                        <button 
+                          className="admin-users-action-button view"
+                          onClick={() => handleViewMore(user.id)}
+                        >
+                          <i className="bi bi-eye"></i> View More
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            <div className="admin-users-pagination">
+              <button
+                onClick={() => handlePageChange(pagination.page - 1)}
+                disabled={pagination.page === 1}
+              >
+                <i className="bi bi-chevron-left"></i>
+              </button>
+              {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={pagination.page === page ? 'active' : ''}
+                >
+                  {page}
+                </button>
+              ))}
+              <button
+                onClick={() => handlePageChange(pagination.page + 1)}
+                disabled={pagination.page === pagination.totalPages}
+              >
+                <i className="bi bi-chevron-right"></i>
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>

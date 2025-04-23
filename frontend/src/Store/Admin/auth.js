@@ -12,7 +12,7 @@ const adminAuthSlice = createSlice({
     adminLogin(state) {
       state.isLoggedIn = true;
     },
-    adminLogOut(state) {
+    adminLogout(state) {
       state.isLoggedIn = false;
     },
     setAdminAuthToken(state, action) {
@@ -22,7 +22,7 @@ const adminAuthSlice = createSlice({
 });
 
 // Export the actions
-export const { adminLogin, adminLogOut, setAdminAuthToken } = adminAuthSlice.actions;
+export const { adminLogin, adminLogout, setAdminAuthToken } = adminAuthSlice.actions;
 
 // Export the reducer
 export const adminAuthReducer = adminAuthSlice.reducer;

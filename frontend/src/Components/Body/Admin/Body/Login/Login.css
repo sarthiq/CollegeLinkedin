@@ -1,69 +1,162 @@
-  /* Login Container */
-  .admin-login-container {
-    background-color: #f8f9fa;
-    padding: 15px;
-    height: 84%;
-  }
-  
-  /* Center the login form */
-  .admin-login-card {
-    border-radius: 8px;
-    background-color: white;
-    padding: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
+/* Main Wrapper */
+.admin-login-wrapper {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    min-width: 350px; /* Maximum width for larger screens */
+/* Login Container */
+.admin-login-container {
+  padding: 20px;
+  width: 100%;
+}
+
+/* Login Card */
+.admin-login-card {
+  border: none;
+  border-radius: 16px;
+  background-color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.admin-login-card:hover {
+  transform: translateY(-5px);
+}
+
+.admin-login-card-body {
+  padding: 40px;
+}
+
+/* Header Section */
+.admin-login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.admin-login-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.admin-login-subtitle {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+/* Form Styles */
+.admin-login-form {
+  margin-top: 20px;
+}
+
+.admin-login-form-group {
+  margin-bottom: 25px;
+}
+
+.admin-login-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.admin-login-input-wrapper {
+  position: relative;
+}
+
+.admin-login-input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #95a5a6;
+  font-size: 18px;
+}
+
+.admin-login-input {
+  width: 100%;
+  padding: 12px 15px 12px 45px;
+  border: 2px solid #ecf0f1;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.admin-login-input:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  background-color: white;
+}
+
+/* Button Styles */
+.admin-login-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.admin-login-button:hover {
+  background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.admin-login-button:disabled {
+  background: #bdc3c7;
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Alert Styles */
+.admin-login-alert {
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  border: none;
+  background-color: #fff3f3;
+  color: #e74c3c;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+/* Responsive Styles */
+@media (max-width: 576px) {
+  .admin-login-card-body {
+    padding: 30px 20px;
   }
-  
-  /* Heading Style */
+
   .admin-login-title {
-    font-size: 30px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px;
+    font-size: 24px;
   }
-  
-  /* Form Field Styles */
-  .admin-login-input {
-    border-radius: 8px;
-    border: 1px solid #ced4da;
-    margin-bottom: 20px;
+
+  .admin-login-subtitle {
+    font-size: 13px;
   }
-  
-  /* Button Style */
-  .admin-login-button {
-    background-color: #007bff;
-    border: none;
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 16px;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+}
+
+@media (min-width: 577px) and (max-width: 992px) {
+  .admin-login-card-body {
+    padding: 35px 30px;
   }
-  
-  .admin-login-button:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Mobile Responsive Styles */
-  @media (max-width: 576px) {
-    .admin-login-card {
-      padding: 20px;
-    }
-  
-    .admin-login-title {
-      font-size: 26px;
-      margin-bottom: 15px;
-    }
-  }
-  
-  /* Tablet and Larger Devices */
-  @media (min-width: 577px) and (max-width: 992px) {
-    .admin-login-card {
-      padding: 25px;
-    }
-  }
+}
   
   

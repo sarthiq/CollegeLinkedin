@@ -3,8 +3,7 @@ import { Navigate, Route, Routes, NavLink } from "react-router-dom";
 import "./Dashboard.css";
 import { useState } from "react";
 import { Home } from "./Home/Home";
-import { Quiz } from "./Quiz/Quiz";
-import { Result } from "./Result/Result";
+
 import { UserRoutes } from "./Users/UserRoutes";
 import { PageNotFound } from "./PageNotFound/PageNotFound";
 export const DashboardPage = () => {
@@ -29,28 +28,7 @@ export const DashboardPage = () => {
               {!collapsed && <span>Dashboard</span>}
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="./quiz"
-              className={({ isActive }) =>
-                isActive ? "tab-link active-tab" : "tab-link"
-              }
-            >
-              <i className="tab-icon bi bi-question-circle"></i>
-              {!collapsed && <span>Quiz</span>}
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="./result"
-              className={({ isActive }) =>
-                isActive ? "tab-link active-tab" : "tab-link"
-              }
-            >
-              <i className="tab-icon bi bi-clipboard-data"></i>
-              {!collapsed && <span>Results</span>}
-            </NavLink>
-          </li>
+          
           <li>
             <NavLink
               to="./users"
@@ -71,8 +49,6 @@ export const DashboardPage = () => {
       <div className="content">
         <Routes>
           <Route path="" element={<Home />} />
-          <Route path="quiz/*" element={<Quiz />} />
-          <Route path="result/*" element={<Result />} />
           <Route path="users/*" element={<UserRoutes />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>

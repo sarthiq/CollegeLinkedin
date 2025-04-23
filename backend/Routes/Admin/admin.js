@@ -6,6 +6,7 @@ const {
   SSAAdminAuthentication,
 } = require("../../Middleware/auth");
 const activityRouter = require("./Activity/activity");
+const userRouter = require("./User/user");
 const router = express.Router();
 
 router.use("/auth", authRouter);
@@ -14,6 +15,7 @@ router.use(
   adminAuthentication,
   activityRouter
 );
+router.use("/users", adminAuthentication, userRouter);
 
 // Admin api routes start here
 
