@@ -10,19 +10,15 @@ const {
 } = require("../../../importantInfo");
 const UserProfile = require("../../../Models/User/userProfile");
 
-
-
 exports.userSignUp = async (req, res, next) => {
   let transaction;
   try {
-    const { name, email, phone, password, collegeName, collegeYear ,courseName} = req.body;
+    const { name, email, phone, password } = req.body;
 
     if (!name || !email || !phone || !password) {
-      return res
-        .status(400)
-        .json({
-          message: "All fields are required - name, email, phone, password",
-        });
+      return res.status(400).json({
+        message: "All fields are required - name, email, phone, password",
+      });
     }
 
     if (password.length < 8) {
@@ -59,9 +55,6 @@ exports.userSignUp = async (req, res, next) => {
 
     const newUserProfile = await UserProfile.create(
       {
-        collegeName,
-        collegeYear,
-        courseName,
         UserId: newUser.id,
       },
       { transaction }

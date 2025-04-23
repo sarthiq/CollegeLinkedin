@@ -11,15 +11,15 @@ const UserProfile = sequelize.define(
     },
     collegeName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     collegeYear: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     courseName: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     followers: {
       type: DataTypes.INTEGER,

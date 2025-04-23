@@ -30,10 +30,10 @@ export const LandingHome = () => {
 
   // Handle hash-based navigation
   useEffect(() => {
-    if (location.hash === '#login') {
-      const landingTitle = document.getElementById('landing-title');
+    if (location.hash === "#login") {
+      const landingTitle = document.getElementById("landing-title");
       if (landingTitle) {
-        landingTitle.scrollIntoView({ behavior: 'smooth' });
+        landingTitle.scrollIntoView({ behavior: "smooth" });
       }
     }
   }, [location.hash]);
@@ -68,12 +68,8 @@ export const LandingHome = () => {
       if (formData.phoneNumber && formData.phoneNumber.length !== 10) {
         errors.phoneNumber = "Phone number must be 10 digits long";
       }
-      if (!formData.collegeName)
-        errors.collegeName = "College name is required";
-      if (!formData.courseName) errors.courseName = "Course name is required";
-      if (!formData.collegeYear || !/^\d{4}$/.test(formData.collegeYear)) {
-        errors.collegeYear = "Enter a valid year (4 digits)";
-      }
+      
+      
       if (!formData.password || formData.password.length < 8) {
         errors.password = "Password must be at least 8 characters long";
       }
@@ -143,9 +139,6 @@ export const LandingHome = () => {
       email: formData.email,
       phone: formData.phoneNumber,
       password: formData.password,
-      collegeName: formData.collegeName,
-      collegeYear: formData.collegeYear,
-      courseName: formData.courseName,
     };
 
     // Pass handleApiError as the showAlert parameter
@@ -192,7 +185,9 @@ export const LandingHome = () => {
     <main className="landing-main">
       <div className="landing-content">
         <div className="landing-left">
-          <h1 id="landing-title" className="landing-title">Welcome to the college community!</h1>
+          <h1 id="landing-title" className="landing-title">
+            Welcome to the college community!
+          </h1>
           <h2 className="landing-subtitle">
             A platform for students to Learn, Engage, Contribute, and Earn.
           </h2>
@@ -252,52 +247,7 @@ export const LandingHome = () => {
                     </span>
                   )}
                 </div>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="collegeName"
-                    placeholder="College Name"
-                    value={formData.collegeName}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  {formErrors.collegeName && (
-                    <span className="error-message">
-                      {formErrors.collegeName}
-                    </span>
-                  )}
-                </div>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="courseName"
-                    placeholder="Course Name"
-                    value={formData.courseName}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  {formErrors.courseName && (
-                    <span className="error-message">
-                      {formErrors.courseName}
-                    </span>
-                  )}
-                </div>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="collegeYear"
-                    placeholder="College Year (4 digits)"
-                    value={formData.collegeYear}
-                    onChange={handleInputChange}
-                    pattern="\d{4}"
-                    required
-                  />
-                  {formErrors.collegeYear && (
-                    <span className="error-message">
-                      {formErrors.collegeYear}
-                    </span>
-                  )}
-                </div>
+
                 <div className="form-group">
                   <input
                     type="password"
@@ -398,8 +348,8 @@ export const LandingHome = () => {
             )}
           </div>
           <p className="landing-agreement">
-            By clicking Continue to join or sign in, you agree to
-            Sarthiq's <Link to="/landing/terms">Terms of Service</Link>,{" "}
+            By clicking Continue to join or sign in, you agree to Sarthiq's{" "}
+            <Link to="/landing/terms">Terms of Service</Link>,{" "}
             <Link to="/landing/privacy">Privacy Policy</Link>, and{" "}
             <Link to="/landing/refund">Refund Policy</Link>.
           </p>
@@ -438,6 +388,37 @@ export const LandingHome = () => {
           </div>
         </div>
       </div>
+
+      {/* Community Section */}
+      <section className="landing-section community">
+        <h2 className="section-title">Community</h2>
+        <p className="section-description">
+          Connect with peers across colleges and domains to grow together
+        </p>
+        <div className="feature-cards">
+          <div className="feature-card">
+            <h3>College Network</h3>
+            <p>
+              Build lasting connections with students from various colleges.
+              Create your professional network early.
+            </p>
+          </div>
+          <div className="feature-card">
+            <h3>Interest Groups</h3>
+            <p>
+              Join communities based on your interests - from coding to arts.
+              Collaborate on passion projects.
+            </p>
+          </div>
+          <div className="feature-card">
+            <h3>Startup Collaboration</h3>
+            <p>
+              Find the perfect team for your startup idea. Connect with
+              technical and business minds.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Learning Lab Section */}
       <section className="landing-section learning-lab">
@@ -530,37 +511,6 @@ export const LandingHome = () => {
             <p>
               Learn from successful internship experiences. Build your path to
               professional success.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Community Section */}
-      <section className="landing-section community">
-        <h2 className="section-title">Community</h2>
-        <p className="section-description">
-          Connect with peers across colleges and domains to grow together
-        </p>
-        <div className="feature-cards">
-          <div className="feature-card">
-            <h3>College Network</h3>
-            <p>
-              Build lasting connections with students from various colleges.
-              Create your professional network early.
-            </p>
-          </div>
-          <div className="feature-card">
-            <h3>Interest Groups</h3>
-            <p>
-              Join communities based on your interests - from coding to arts.
-              Collaborate on passion projects.
-            </p>
-          </div>
-          <div className="feature-card">
-            <h3>Startup Collaboration</h3>
-            <p>
-              Find the perfect team for your startup idea. Connect with
-              technical and business minds.
             </p>
           </div>
         </div>
