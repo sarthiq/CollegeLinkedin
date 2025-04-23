@@ -34,19 +34,39 @@
 
 .landing-title {
     color: #0a66c2;
-    font-size: 64px;
+    font-size: 48px;
     font-weight: 700;
     line-height: 1.1;
     margin: 0 0 24px;
-    background: linear-gradient(45deg, #0a66c2, #004182);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: titleAnimation 1.5s ease-out;
+    position: relative;
+    white-space: nowrap;
+    border-right: 2px solid #0a66c2;
+    width: max-content;
+    clip-path: inset(0 100% 0 0);
+    animation: typing 3s steps(40) forwards, blink-caret 0.75s step-end infinite;
 }
 
-@keyframes titleAnimation {
-    from { transform: translateY(-30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+@keyframes typing {
+    to { 
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: #0a66c2 }
+}
+
+@media (min-width: 1200px) {
+    .landing-title {
+        font-size: 56px;
+    }
+}
+
+@media (min-width: 1600px) {
+    .landing-title {
+        font-size: 64px;
+    }
 }
 
 .landing-subtitle {
