@@ -170,12 +170,8 @@ export const FeedDetails = () => {
 
   return (
     <div className="feed-details-container">
-      <div className="feed-details-header">
-        <button className="back-button" onClick={() => navigate(-1)}>
-          ← Back
-        </button>
-        <h1>Feed Details</h1>
-      </div>
+      
+      
 
       <div className="feed-details-content">
         <div className="feed-details-user-info">
@@ -189,12 +185,23 @@ export const FeedDetails = () => {
             style={{ cursor: 'pointer' }}
           />
           <div className="feed-details-user-details">
-            <h2 
-              onClick={() => handleUserClick(feed.User?.id)}
-              style={{ cursor: 'pointer' }}
-            >
-              {feed.User?.name}
-            </h2>
+            <div className="feed-name-container">
+              <h2 
+                onClick={() => handleUserClick(feed.User?.id)}
+                style={{ cursor: 'pointer' }}
+              >
+                {feed.User?.name}
+              </h2>
+              {feed.Page && (
+                <span 
+                  className="feed-page-name"
+                  onClick={() => handlePageClick(feed.Page.id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  - {feed.Page.title}
+                </span>
+              )}
+            </div>
             <p>{feed.User?.UserProfile?.title}</p>
             <span className="feed-details-time">
               {new Date(feed.createdAt).toLocaleDateString()}

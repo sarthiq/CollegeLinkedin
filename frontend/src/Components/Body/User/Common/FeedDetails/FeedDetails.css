@@ -5,6 +5,7 @@
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 4rem;
 }
 
 .feed-details-header {
@@ -353,4 +354,19 @@
 
 .feed-details-error button:hover {
   background-color: #004182;
+}
+
+.feed-name-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.feed-page-name {
+  color: #d93025;
+  font-size: 0.9rem;
+}
+
+.feed-page-name:hover {
+  text-decoration: underline;
 } 
