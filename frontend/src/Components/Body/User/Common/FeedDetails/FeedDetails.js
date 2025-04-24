@@ -133,6 +133,14 @@ export const FeedDetails = () => {
     setIsExpanded(!isExpanded);
   };
 
+  const handleUserClick = (userId) => {
+    navigate(`/dashboard/profile?userId=${userId}`);
+  };
+
+  const handlePageClick = (pageId) => {
+    navigate(`/dashboard/pages/details/${pageId}`);
+  };
+
   if (isLoading) {
     return (
       <div className="feed-details-loading">
@@ -177,9 +185,16 @@ export const FeedDetails = () => {
               : '/assets/Utils/male.png'} 
             alt={feed.User?.name} 
             className="feed-details-avatar"
+            onClick={() => handleUserClick(feed.User?.id)}
+            style={{ cursor: 'pointer' }}
           />
           <div className="feed-details-user-details">
-            <h2>{feed.User?.name}</h2>
+            <h2 
+              onClick={() => handleUserClick(feed.User?.id)}
+              style={{ cursor: 'pointer' }}
+            >
+              {feed.User?.name}
+            </h2>
             <p>{feed.User?.UserProfile?.title}</p>
             <span className="feed-details-time">
               {new Date(feed.createdAt).toLocaleDateString()}
@@ -224,7 +239,11 @@ export const FeedDetails = () => {
             <span className="feed-icon">👍</span>
             <span>{feed.like} Likes</span>
           </div>
-          <div className="feed-details-comments-count">
+          <div 
+            className="feed-details-comments-count"
+            onClick={toggleComments}
+            style={{ cursor: 'pointer', marginLeft: 'auto' }}
+          >
             <span>{feed.comments} Comments</span>
           </div>
         </div>
@@ -243,9 +262,16 @@ export const FeedDetails = () => {
                         : '/assets/Utils/male.png'} 
                       alt={comment.User?.name} 
                       className="feed-details-comment-avatar"
+                      onClick={() => handleUserClick(comment.User?.id)}
+                      style={{ cursor: 'pointer' }}
                     />
                     <div className="feed-details-comment-content">
-                      <h4>{comment.User?.name}</h4>
+                      <h4 
+                        onClick={() => handleUserClick(comment.User?.id)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        {comment.User?.name}
+                      </h4>
                       <p>{comment.comment}</p>
                       <span className="feed-details-comment-time">
                         {new Date(comment.createdAt).toLocaleDateString()}
@@ -287,9 +313,16 @@ export const FeedDetails = () => {
                       : '/assets/Utils/male.png'} 
                     alt={like.User?.name} 
                     className="feed-details-like-avatar"
+                    onClick={() => handleUserClick(like.User?.id)}
+                    style={{ cursor: 'pointer' }}
                   />
                   <div className="feed-details-like-info">
-                    <h4>{like.User?.name}</h4>
+                    <h4 
+                      onClick={() => handleUserClick(like.User?.id)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {like.User?.name}
+                    </h4>
                     <p>{like.User?.UserProfile?.title}</p>
                   </div>
                 </div>

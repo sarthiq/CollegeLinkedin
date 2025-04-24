@@ -115,7 +115,8 @@
 
 .feed-details-stats {
   display: flex;
-  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
   margin: 20px 0;
   padding: 10px 0;
   border-top: 1px solid #eee;
@@ -129,6 +130,14 @@
   gap: 5px;
   color: #666;
   font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.feed-details-likes-count:hover,
+.feed-details-comments-count:hover {
+  background-color: #f3f3f3;
 }
 
 .feed-icon {
