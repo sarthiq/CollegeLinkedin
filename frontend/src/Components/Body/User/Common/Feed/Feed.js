@@ -738,10 +738,10 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
                     <>
                       <div 
                         id={`feed-content-${feed.id}`}
-                        className={`feed-item-text ${!expandedFeeds.has(feed.id) ? 'feed-text-collapsed' : ''} ${!expandedFeeds.has(feed.id) && contentHeights[feed.id] > 96 ? 'has-gradient' : ''}`}
+                        className={`feed-item-text ${!expandedFeeds.has(feed.id) ? 'feed-text-collapsed' : ''} ${!expandedFeeds.has(feed.id) && contentHeights[feed.id] > 192 ? 'has-gradient' : ''}`}
                         dangerouslySetInnerHTML={{ __html: feed.content }}
                       />
-                      {contentHeights[feed.id] > 96 && (
+                      {contentHeights[feed.id] > 222 && (
                         <button 
                           className="feed-show-more-btn"
                           onClick={() => toggleFeedContent(feed.id)}

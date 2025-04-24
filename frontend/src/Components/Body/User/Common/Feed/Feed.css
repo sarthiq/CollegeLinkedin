@@ -211,7 +211,7 @@
 }
 
 .feed-item-text.feed-text-collapsed {
-  max-height: 96px;
+  max-height: 222px; /* 8 lines * 24px (line-height) = 192px */
   overflow: hidden;
 }
 
