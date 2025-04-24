@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getFeedByIdHandler } from '../Feed/feedApiHandler';
 import { toggleLikeHandler, getFeedLikesHandler } from '../Feed/likeApiHandler';
 import { createCommentHandler, getFeedCommentsHandler } from '../Feed/commentApiHandler';
+import { handleShare, renderActionButtons } from '../Feed/feedUtils';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './FeedDetails.css';
@@ -228,22 +229,7 @@ export const FeedDetails = () => {
           </div>
         </div>
 
-        <div className="feed-details-actions">
-          <button 
-            className={`feed-action-button ${feed.isLiked ? 'liked' : ''}`}
-            onClick={handleLike}
-          >
-            <span className="feed-icon">👍</span>
-            <span className="feed-action-text">{feed.isLiked ? 'Liked' : 'Like'}</span>
-          </button>
-          <button 
-            className="feed-action-button"
-            onClick={toggleComments}
-          >
-            <span className="feed-icon">💬</span>
-            <span className="feed-action-text">Comment</span>
-          </button>
-        </div>
+        {renderActionButtons(feed, handleLike, toggleComments, handleShare)}
 
         {showComments && (
           <div className="feed-details-comments">

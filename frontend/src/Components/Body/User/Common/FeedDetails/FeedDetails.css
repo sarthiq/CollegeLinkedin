@@ -137,8 +137,10 @@
 
 .feed-details-actions {
   display: flex;
+  justify-content: space-between;
   gap: 20px;
   margin: 20px 0;
+  padding: 0 20px;
 }
 
 .feed-action-button {
@@ -153,6 +155,8 @@
   padding: 8px 15px;
   border-radius: 4px;
   transition: all 0.2s;
+  flex: 1;
+  justify-content: center;
 }
 
 .feed-action-button:hover {
@@ -191,6 +195,10 @@
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.feed-details-comment-content {
+  flex: 1;
 }
 
 .feed-details-comment-content h4 {
@@ -233,6 +241,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
+  align-self: flex-end;
 }
 
 .feed-details-comment-submit:hover {
@@ -276,6 +285,10 @@
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.feed-details-like-info {
+  flex: 1;
 }
 
 .feed-details-like-info h4 {

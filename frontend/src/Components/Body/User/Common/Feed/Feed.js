@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './Feed.css';
+import { handleShare as shareFeed } from './feedUtils';
 
 export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCreatePost = true }) => {
   const [feeds, setFeeds] = useState([]);
@@ -556,6 +557,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
   };
 
   const handleShare = (feedId) => {
+    shareFeed(feedId);
     navigate(`/dashboard/feed/${feedId}`);
   };
 
