@@ -19,8 +19,6 @@ export const FeedDetails = () => {
   const [comments, setComments] = useState([]);
   const [likes, setLikes] = useState([]);
   const [showLikes, setShowLikes] = useState(false);
-  const [contentHeight, setContentHeight] = useState(0);
-  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     fetchFeedDetails();
@@ -129,10 +127,6 @@ export const FeedDetails = () => {
     setShowLikes(!showLikes);
   };
 
-  const toggleContent = () => {
-    setIsExpanded(!isExpanded);
-  };
-
   const handleUserClick = (userId) => {
     navigate(`/dashboard/profile?userId=${userId}`);
   };
@@ -170,9 +164,6 @@ export const FeedDetails = () => {
 
   return (
     <div className="feed-details-container">
-      
-      
-
       <div className="feed-details-content">
         <div className="feed-details-user-info">
           <img 
@@ -210,22 +201,9 @@ export const FeedDetails = () => {
         </div>
 
         <div 
-          className={`feed-details-text ${!isExpanded ? 'feed-text-collapsed' : ''} ${!isExpanded && contentHeight > 222 ? 'has-gradient' : ''}`}
+          className="feed-details-text"
           dangerouslySetInnerHTML={{ __html: feed.feedData.content }}
-          ref={el => {
-            if (el) {
-              setContentHeight(el.scrollHeight);
-            }
-          }}
         />
-        {contentHeight > 222 && (
-          <button 
-            className="feed-show-more-btn"
-            onClick={toggleContent}
-          >
-            {isExpanded ? 'Show less' : 'Show more'}
-          </button>
-        )}
 
         {feed.feedData.imageUrl && (
           <div className="feed-details-image">
