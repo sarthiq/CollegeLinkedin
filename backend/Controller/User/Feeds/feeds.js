@@ -157,7 +157,27 @@ exports.getAllFeeds = async (req, res) => {
 exports.getFeedById = async (req, res) => {
   try {
     const { id } = req.body;
-    const feed = await Feeds.findByPk(id);
+    const feed = await Feeds.findByPk(id, {
+      include: [
+        {
+          model: User,
+          attributes: ["id", "name"],
+          include: [
+            {
+              model: UserProfile,
+              attributes: ["profileUrl", "title"],
+            },
+          ],
+        },
+        {
+          model: Page,
+          attributes: ["id", "title", "imageUrl", "description", "adminId"],
+        },
+      ],
+    });
+
+ 
+    
 
     if (!feed) {
       return res
@@ -165,7 +185,18 @@ exports.getFeedById = async (req, res) => {
         .json({ success: false, message: "Feed not found" });
     }
 
-    res.status(200).json({ success: true, data: feed });
+    // Get like status for the feed
+    const isLiked = await Likes.findOne({
+      where: {
+        UserId: req.user.id,
+        FeedId: feed.id
+      }
+    });
+
+    const feedData = feed.toJSON();
+    feedData.isLiked = !!isLiked;
+
+    res.status(200).json({ success: true, data: feedData });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

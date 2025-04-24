@@ -555,6 +555,10 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
     return tempDiv.textContent.length;
   };
 
+  const handleShare = (feedId) => {
+    navigate(`/dashboard/feed/${feedId}`);
+  };
+
   return (
     <div className="feed-container">
       {showCreatePost && (
@@ -791,6 +795,13 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
                   >
                     <span className="feed-icon">💬</span>
                     <span className="feed-action-text">Comment</span>
+                  </button>
+                  <button 
+                    className="feed-action-button"
+                    onClick={() => handleShare(feed.id)}
+                  >
+                    <span className="feed-icon">↗️</span>
+                    <span className="feed-action-text">Share</span>
                   </button>
                 </div>
                 
