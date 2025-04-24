@@ -215,7 +215,7 @@
   overflow: hidden;
 }
 
-.feed-item-text.feed-text-collapsed::after {
+.feed-item-text.feed-text-collapsed.has-gradient::after {
   content: '';
   position: absolute;
   bottom: 0;

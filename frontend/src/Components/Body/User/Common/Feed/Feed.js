@@ -54,7 +54,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
       ['bold', 'italic', 'underline', 'strike'],
       [{ 'color': [] }, { 'background': [] }],
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link', 'image'],
+      ['link'],
       ['clean']
     ],
   };
@@ -64,7 +64,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
     'bold', 'italic', 'underline', 'strike',
     'color', 'background',
     'list', 'bullet',
-    'link', 'image'
+    'link'
   ];
 
   // Fetch feeds on component mount and when pageId or pagination changes
@@ -738,7 +738,7 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
                     <>
                       <div 
                         id={`feed-content-${feed.id}`}
-                        className={`feed-item-text ${!expandedFeeds.has(feed.id) ? 'feed-text-collapsed' : ''}`}
+                        className={`feed-item-text ${!expandedFeeds.has(feed.id) ? 'feed-text-collapsed' : ''} ${!expandedFeeds.has(feed.id) && contentHeights[feed.id] > 96 ? 'has-gradient' : ''}`}
                         dangerouslySetInnerHTML={{ __html: feed.content }}
                       />
                       {contentHeights[feed.id] > 96 && (
