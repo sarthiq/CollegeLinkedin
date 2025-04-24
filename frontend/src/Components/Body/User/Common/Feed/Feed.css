@@ -202,6 +202,11 @@
 
 .feed-item-text {
   position: relative;
+  padding: 12px;
+  font-size: 16px;
+  line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
   transition: max-height 0.3s ease-out;
 }
 
@@ -221,6 +226,35 @@
   pointer-events: none;
 }
 
+.feed-item-text p {
+  margin-bottom: 1em;
+}
+
+.feed-item-text img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.feed-item-text a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.feed-item-text a:hover {
+  text-decoration: underline;
+}
+
+.feed-item-text ul,
+.feed-item-text ol {
+  padding-left: 2em;
+  margin-bottom: 1em;
+}
+
+.feed-item-text li {
+  margin-bottom: 0.5em;
+}
+
 .feed-show-more-btn {
   background: none;
   border: none;
@@ -230,17 +264,12 @@
   margin: 4px 0;
   cursor: pointer;
   font-size: 0.9rem;
+  width: 100%;
+  text-align: left;
 }
 
 .feed-show-more-btn:hover {
   text-decoration: underline;
-}
-
-.feed-item-content p {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  line-height: 1.5;
-  margin: 8px 0;
 }
 
 .feed-item-image {
@@ -1148,4 +1177,89 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.feed-post-input .ql-container {
+  min-height: 100px;
+  max-height: 300px;
+  overflow-y: auto;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background-color: white;
+}
+
+.feed-post-input .ql-toolbar {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.feed-post-input .ql-editor {
+  padding: 12px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.feed-post-input .ql-editor p {
+  margin-bottom: 1em;
+}
+
+.feed-edit-input .ql-container {
+  min-height: 100px;
+  max-height: 300px;
+  overflow-y: auto;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  background-color: white;
+}
+
+.feed-edit-input .ql-toolbar {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.feed-edit-input .ql-editor {
+  padding: 12px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.feed-item-text {
+  padding: 12px;
+  font-size: 16px;
+  line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.feed-item-text p {
+  margin-bottom: 1em;
+}
+
+.feed-item-text img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.feed-item-text a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.feed-item-text a:hover {
+  text-decoration: underline;
+}
+
+.feed-item-text ul,
+.feed-item-text ol {
+  padding-left: 2em;
+  margin-bottom: 1em;
+}
+
+.feed-item-text li {
+  margin-bottom: 0.5em;
 } 

@@ -3,6 +3,8 @@ import { getAllFeedsHandler, createFeedHandler, deleteFeedHandler, updateFeedHan
 import { toggleLikeHandler, getLikeStatusHandler, getFeedLikesHandler } from './likeApiHandler';
 import { createCommentHandler, updateCommentHandler, deleteCommentHandler, getFeedCommentsHandler } from './commentApiHandler';
 import { useNavigate } from 'react-router-dom';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import './Feed.css';
 
 export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCreatePost = true }) => {
@@ -44,6 +46,26 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const navigate = useNavigate();
+  const [contentHeights, setContentHeights] = useState({});
+
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['link', 'image'],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike',
+    'color', 'background',
+    'list', 'bullet',
+    'link', 'image'
+  ];
 
   // Fetch feeds on component mount and when pageId or pagination changes
   useEffect(() => {
@@ -61,6 +83,27 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
       document.body.style.overflow = 'unset';
     };
   }, [selectedImagePopup]);
+
+  // Add this effect to measure content heights
+  useEffect(() => {
+    const measureHeights = () => {
+      const heights = {};
+      feeds.forEach(feed => {
+        const element = document.getElementById(`feed-content-${feed.id}`);
+        if (element) {
+          heights[feed.id] = element.scrollHeight;
+        }
+      });
+      setContentHeights(heights);
+    };
+
+    // Measure heights after content is rendered
+    measureHeights();
+    
+    // Re-measure when window is resized
+    window.addEventListener('resize', measureHeights);
+    return () => window.removeEventListener('resize', measureHeights);
+  }, [feeds]);
 
   const fetchFeeds = async () => {
     setIsLoading(true);
@@ -86,27 +129,35 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
         setUserId(response.data.userId);
         
         // Transform the feeds data to match our component's structure
-        const transformedFeeds = feeds.map(feed => ({
-          id: feed.id,
-          user: {
-            id: feed.User?.id,
-            name: feed.User?.name || 'Anonymous',
-            avatar: feed.User?.UserProfile?.profileUrl 
-              ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${feed.User.UserProfile.profileUrl}` 
-              : '/assets/Utils/male.png',
-            title: feed.User?.UserProfile?.title || ''
-          },
-          content: feed.feedData.content || '',
-          image: feed.feedData.imageUrl 
-            ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${feed.feedData.imageUrl}` 
-            : null,
-          like: feed.like || 0,
-          comments: feed.comments || 0,
-          timestamp: new Date(feed.createdAt).toLocaleDateString(),
-          showComments: false,
-          pageInfo:feed.Page,
-          isLiked: feed.isLiked
-        }));
+        const transformedFeeds = feeds.map(feed => {
+          // Create a temporary div to get text content length
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = feed.feedData.content || '';
+          const textContentLength = tempDiv.textContent.length;
+
+          return {
+            id: feed.id,
+            user: {
+              id: feed.User?.id,
+              name: feed.User?.name || 'Anonymous',
+              avatar: feed.User?.UserProfile?.profileUrl 
+                ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${feed.User.UserProfile.profileUrl}` 
+                : '/assets/Utils/male.png',
+              title: feed.User?.UserProfile?.title || ''
+            },
+            content: feed.feedData.content || '',
+            image: feed.feedData.imageUrl 
+              ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${feed.feedData.imageUrl}` 
+              : null,
+            like: feed.like || 0,
+            comments: feed.comments || 0,
+            timestamp: new Date(feed.createdAt).toLocaleDateString(),
+            showComments: false,
+            pageInfo: feed.Page,
+            isLiked: feed.isLiked,
+            contentLength: textContentLength // Add content length to feed object
+          };
+        });
 
         setFeeds(transformedFeeds);
         setPagination(paginationData);
@@ -143,37 +194,34 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
       setIsPosting(true);
       setError(null);
 
-     
-        const formData = new FormData();
-        formData.append('feedData', JSON.stringify({ content: newPost }));
-        
-        if (selectedImage) {
-          // Get the actual file from the file input
-          const file = fileInputRef.current.files[0];
-          if (file) {
-            formData.append('image', file);
-          }
+      const formData = new FormData();
+      formData.append('feedData', JSON.stringify({ content: newPost }));
+      
+      if (selectedImage) {
+        const file = fileInputRef.current.files[0];
+        if (file) {
+          formData.append('image', file);
         }
+      }
 
-        if (pageId) {
-          formData.append('pageId', pageId);
+      if (pageId) {
+        formData.append('pageId', pageId);
+      }
+
+      const response = await createFeedHandler(
+        formData,
+        setIsPosting,
+        (error) => setError(error)
+      );
+
+      if (response && response.success) {
+        setNewPost('');
+        setSelectedImage(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
         }
-
-        const response = await createFeedHandler(
-          formData,
-          setIsPosting,
-          (error) => setError(error)
-        );
-
-        if (response && response.success) {
-          setNewPost('');
-          setSelectedImage(null);
-          if (fileInputRef.current) {
-            fileInputRef.current.value = ''; // Clear the file input
-          }
-          fetchFeeds(); // Refresh feeds after successful post
-        }
-     
+        fetchFeeds();
+      }
     }
   };
 
@@ -497,6 +545,16 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
     navigate(`/dashboard/pages/details/${pageId}`);
   };
 
+  // Add this function to check content length without HTML tags
+  const getTextContentLength = (htmlContent) => {
+    if (!htmlContent) return 0;
+    // Create a temporary div to parse HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    // Get text content and count characters
+    return tempDiv.textContent.length;
+  };
+
   return (
     <div className="feed-container">
       {showCreatePost && (
@@ -504,12 +562,14 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
           <div className="feed-post-creator">
             <div className="feed-input-wrapper">
               <form onSubmit={handleSubmit}>
-                <textarea
-                  placeholder="Share your thoughts..."
+                <ReactQuill
+                  theme="snow"
                   value={newPost}
-                  onChange={(e) => setNewPost(e.target.value)}
+                  onChange={setNewPost}
+                  modules={modules}
+                  formats={formats}
+                  placeholder="Share your thoughts..."
                   className="feed-post-input"
-                  rows="3"
                 />
                 {selectedImage && (
                   <div className="feed-image-preview">
@@ -623,11 +683,13 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
                 <div className="feed-item-content">
                   {editingFeedId === feed.id ? (
                     <div className="feed-edit-form">
-                      <textarea
+                      <ReactQuill
+                        theme="snow"
                         value={editContent}
-                        onChange={(e) => setEditContent(e.target.value)}
+                        onChange={setEditContent}
+                        modules={modules}
+                        formats={formats}
                         className="feed-edit-input"
-                        rows="3"
                       />
                       {editImage && (
                         <div className="feed-edit-image-preview">
@@ -674,10 +736,12 @@ export const Feed = ({ pageId = null,usersFeed = false,othersUserId=null, showCr
                     </div>
                   ) : (
                     <>
-                      <div className={`feed-item-text ${!expandedFeeds.has(feed.id) ? 'feed-text-collapsed' : ''}`}>
-                        <p>{feed.content}</p>
-                      </div>
-                      {feed.content.length > 200 && (
+                      <div 
+                        id={`feed-content-${feed.id}`}
+                        className={`feed-item-text ${!expandedFeeds.has(feed.id) ? 'feed-text-collapsed' : ''}`}
+                        dangerouslySetInnerHTML={{ __html: feed.content }}
+                      />
+                      {contentHeights[feed.id] > 96 && (
                         <button 
                           className="feed-show-more-btn"
                           onClick={() => toggleFeedContent(feed.id)}
