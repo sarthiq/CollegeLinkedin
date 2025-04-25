@@ -1,5 +1,5 @@
 const Feeds = require("../../../Models/Basic/feeds");
-const { saveFile } = require("../../../Utils/fileHandler");
+const { saveFile, safeDeleteFile } = require("../../../Utils/fileHandler");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const Page = require("../../../Models/Basic/pages");
@@ -7,6 +7,7 @@ const User = require("../../../Models/User/users");
 const UserProfile = require("../../../Models/User/userProfile");
 const { sequelize } = require("../../../importantInfo");
 const Likes = require("../../../Models/Basic/likes");
+const { baseDir } = require("../../../importantInfo");
 
 // Create a new feed
 exports.createFeed = async (req, res) => {
@@ -231,6 +232,12 @@ exports.updateFeed = async (req, res) => {
       typeof feedData === "string" ? JSON.parse(feedData) : feedData;
     let currentFeedData = feed.feedData;
 
+    // If there's a new image file, delete the old one if it exists
+    if (imageFile && currentFeedData.imageUrl) {
+      const oldImagePath = path.join(baseDir, currentFeedData.imageUrl.replace("files/", ""));
+      await safeDeleteFile(oldImagePath);
+    }
+
     if (imageFile) {
       const filePath = path.join("CustomFiles", "Feeds");
       const fileName = uuidv4();
@@ -272,8 +279,6 @@ exports.deleteFeed = async (req, res) => {
       isAuthorized = true;
     }
 
-
-
     // If feed belongs to a page, check if user is the page admin
     if (feed.PageId) {
       const page = await Page.findByPk(feed.PageId);
@@ -289,6 +294,13 @@ exports.deleteFeed = async (req, res) => {
           success: false,
           message: "You are not authorized to delete this feed",
         });
+    }
+
+    // Delete the image file if it exists
+    const feedData = feed.feedData;
+    if (feedData.imageUrl) {
+      const imagePath = path.join(baseDir, feedData.imageUrl.replace("files/", ""));
+      await safeDeleteFile(imagePath);
     }
 
     transaction = await sequelize.transaction();

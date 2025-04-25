@@ -3,10 +3,11 @@ const User = require("../../../Models/User/users");
 const { Op } = require("sequelize");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
-const { saveFile } = require("../../../Utils/fileHandler");
+const { saveFile, safeDeleteFile } = require("../../../Utils/fileHandler");
 const Followers = require("../../../Models/Basic/followers");
 const UserProfile = require("../../../Models/User/userProfile");
 const { sequelize } = require("../../../importantInfo");
+const { baseDir } = require("../../../importantInfo");
 
 // Get all pages
 exports.getAllPages = async (req, res) => {
@@ -198,6 +199,12 @@ exports.updatePage = async (req, res) => {
         .json({ success: false, message: "Page not found" });
     }
 
+    // If there's a new image file, delete the old one if it exists
+    if (imageFile && page.imageUrl) {
+      const oldImagePath = path.join(baseDir, page.imageUrl.replace("files/", ""));
+      await safeDeleteFile(oldImagePath);
+    }
+
     let imageUrl = page.imageUrl;
     if (imageFile) {
       const filePath = path.join("CustomFiles", "Pages");
@@ -231,6 +238,12 @@ exports.deletePage = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "Page not found" });
+    }
+
+    // Delete the image file if it exists
+    if (page.imageUrl) {
+      const imagePath = path.join(baseDir, page.imageUrl.replace("files/", ""));
+      await safeDeleteFile(imagePath);
     }
 
     transaction = await sequelize.transaction();

@@ -3,7 +3,7 @@ const User = require("../../../Models/User/users");
 const UserProfile = require("../../../Models/User/userProfile");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
-const { saveFile } = require("../../../Utils/fileHandler");
+const { saveFile, safeDeleteFile } = require("../../../Utils/fileHandler");
 
 
 exports.getProfile = async (req, res) => {
@@ -102,30 +102,52 @@ exports.updateProfile = async (req, res) => {
     });
   }
   
-  
-  
   let transaction;
   try {
     transaction = await sequelize.transaction();
     const commonPath = 'CustomFiles';
     const pathProfile = 'ProfileImages';
     
+    // Get existing profile
+    let userProfile = await UserProfile.findOne({
+      where: { userId },
+      transaction
+    });
+
+    if (!userProfile) {
+      await transaction.rollback();
+      return res.status(404).json({
+        success: false,
+        message: "Profile not found"
+      });
+    }
+    
     // Handle the profile image file if provided
-    let profileUrl = null;
+    let profileUrl = userProfile.profileUrl;
     if (imageFile) {
-      const filePath = path.join( commonPath, pathProfile);
+      // Delete old profile image if exists
+      if (userProfile.profileUrl) {
+        const oldProfilePath = path.join(baseDir, userProfile.profileUrl.replace("files/", ""));
+        await safeDeleteFile(oldProfilePath);
+      }
+      
+      const filePath = path.join(commonPath, pathProfile);
       const fileName = uuidv4();
       profileUrl = saveFile(imageFile, filePath, fileName);
-      //profileUrl = path.join(commonPath, pathProfile, profileUrl);
     }
     
     // Handle the cover image file if provided
-    let coverUrl = null;
+    let coverUrl = userProfile.coverUrl;
     if (coverImageFile) {
-      const filePath = path.join( commonPath, pathProfile);
+      // Delete old cover image if exists
+      if (userProfile.coverUrl) {
+        const oldCoverPath = path.join(baseDir, userProfile.coverUrl.replace("files/", ""));
+        await safeDeleteFile(oldCoverPath);
+      }
+      
+      const filePath = path.join(commonPath, pathProfile);
       const fileName = uuidv4();
       coverUrl = saveFile(coverImageFile, filePath, fileName);
-      //coverUrl = path.join(commonPath, pathProfile, coverUrl);
     }
     
     // Update user name if provided
@@ -136,22 +158,16 @@ exports.updateProfile = async (req, res) => {
       );
     }
     
-    // Check if profile exists
-    let userProfile = await UserProfile.findOne({
-      where: { userId },
-      transaction
-    });
-    
-    
-    userProfile.update({
+    // Update profile
+    await userProfile.update({
       collegeName: collegeName || userProfile.collegeName,
       collegeYear: collegeYear || userProfile.collegeYear,
       courseName: courseName || userProfile.courseName,
       title: title || userProfile.title,
       bio: bio || userProfile.bio,
-      profileUrl: profileUrl || userProfile.profileUrl,
-      coverUrl: coverUrl || userProfile.coverUrl,
-    })
+      profileUrl: profileUrl,
+      coverUrl: coverUrl,
+    }, { transaction });
     
     // Commit the transaction
     await transaction.commit();
