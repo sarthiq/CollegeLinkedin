@@ -23,19 +23,26 @@ exports.checkFileSize = (req, res, next) => {
 };
 
 exports.multipleFileHandler = (fileNames) => {
-  const fields = fileNames.map(name => ({ name, maxCount: 1 }));
   const storage = multer.memoryStorage();
-
+  
   return multer({
     storage: storage,
-  }).fields(fields);
+    fileFilter: (req, file, cb) => {
+      // Check if the field name is in the allowed list
+      if (fileNames.includes(file.fieldname)) {
+        cb(null, true);
+      } else {
+        cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname));
+      }
+    }
+  }).array('image', 10); // Allow up to 10 files with field name 'image'
 };
 
 exports.checkFileExist = (req, res, next) => {
-  return next();
   // Check if at least one file was uploaded
-  if (req.files && Object.keys(req.files).length > 0) {
+  if (req.files && req.files.length > 0) {
     return next();
   }
-  //res.status(404).json({ error: "No files uploaded!" });
+  // If no files are required, proceed
+  return next();
 };

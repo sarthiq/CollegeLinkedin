@@ -14,24 +14,22 @@ exports.createFeed = async (req, res) => {
   let transaction;
   try {
     const { feedData, pageId } = req.body;
-    const userId = req.user.id; // Get user ID from request
+    const userId = req.user.id;
+    const fileNames = req.fileNames;
 
-    const imageFile = req.files && req.files.image ? req.files.image[0] : null;
-
-    if (!feedData) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Feed data is required" });
-    }
-
-    let parsedFeedData =
-      typeof feedData === "string" ? JSON.parse(feedData) : feedData;
-
-    if (imageFile) {
-      const filePath = path.join("CustomFiles", "Feeds");
-      const fileName = uuidv4();
-      const imageUrl = saveFile(imageFile, filePath, fileName);
-      parsedFeedData.imageUrl = imageUrl;
+    let parsedFeedData = typeof feedData === "string" ? JSON.parse(feedData) : feedData;
+    
+    // Handle multiple images
+    if (req.files ) {
+      const imagesUrl = [];
+      for (const imageFile of req.files) {
+        
+        const filePath = path.join("CustomFiles", "Feeds");
+        const fileName = uuidv4();
+        const imageUrl = saveFile(imageFile, filePath, fileName);
+        imagesUrl.push(imageUrl);
+      }
+      parsedFeedData.imagesUrl = imagesUrl;
     }
 
     transaction = await sequelize.transaction();
@@ -44,23 +42,17 @@ exports.createFeed = async (req, res) => {
     };
 
     // Add PageId to feed data if provided
-
     let page;
     if (pageId) {
       feedDataToCreate.PageId = pageId;
       page = await Page.findByPk(pageId);
 
       if (!page) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Page not found" });
+        return res.status(400).json({ success: false, message: "Page not found" });
       }
-
 
       page.increment("posts", { transaction });
     }
-
-
 
     const newFeed = await Feeds.create(feedDataToCreate, { transaction });
     await transaction.commit();
@@ -209,42 +201,54 @@ exports.updateFeed = async (req, res) => {
     const { id } = req.body;
     const { feedData } = req.body;
     const userId = req.user.id;
-    const imageFile = req.files && req.files.image ? req.files.image[0] : null;
+    const imageFiles = req.files || [];
+    console.log(imageFiles);
+    console.log(req.body);
+
+    return res.status(200).json({ success: true, data: req.body });
 
     const feed = await Feeds.findByPk(id);
     if (!feed) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Feed not found" });
+      return res.status(404).json({ success: false, message: "Feed not found" });
     }
 
     // Check if the user is the owner of the feed
     if (feed.UserId !== userId) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "You are not authorized to update this feed",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to update this feed",
+      });
     }
 
-    let parsedFeedData =
-      typeof feedData === "string" ? JSON.parse(feedData) : feedData;
+    let parsedFeedData = typeof feedData === "string" ? JSON.parse(feedData) : feedData;
     let currentFeedData = feed.feedData;
 
-    // If there's a new image file, delete the old one if it exists
-    if (imageFile && currentFeedData.imageUrl) {
-      const oldImagePath = path.join(baseDir, currentFeedData.imageUrl.replace("files/", ""));
-      await safeDeleteFile(oldImagePath);
-    }
+    // Handle image updates
+    if (imageFiles.length > 0 || parsedFeedData.imagesUrl) {
+      const imagesUrl = [];
+      
+      // Add new images
+      for (const imageFile of imageFiles) {
+        const filePath = path.join("CustomFiles", "Feeds");
+        const fileName = uuidv4();
+        const imageUrl = saveFile(imageFile, filePath, fileName);
+        imagesUrl.push(imageUrl);
+      }
 
-    if (imageFile) {
-      const filePath = path.join("CustomFiles", "Feeds");
-      const fileName = uuidv4();
-      const imageUrl = saveFile(imageFile, filePath, fileName);
-      parsedFeedData.imageUrl = imageUrl;
-    } else if (currentFeedData.imageUrl) {
-      parsedFeedData.imageUrl = currentFeedData.imageUrl;
+      // Keep existing images that are still in the feedData
+      if (currentFeedData.imagesUrl) {
+        for (const existingImageUrl of currentFeedData.imagesUrl) {
+          if (parsedFeedData.imagesUrl && parsedFeedData.imagesUrl.includes(existingImageUrl)) {
+            imagesUrl.push(existingImageUrl);
+          } else {
+            // Delete removed images
+            const oldImagePath = path.join(baseDir, existingImageUrl.replace("files/", ""));
+            await safeDeleteFile(oldImagePath);
+          }
+        }
+      }
+
+      parsedFeedData.imagesUrl = imagesUrl;
     }
 
     await feed.update({
@@ -266,9 +270,7 @@ exports.deleteFeed = async (req, res) => {
     const feed = await Feeds.findByPk(id);
 
     if (!feed) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Feed not found" });
+      return res.status(404).json({ success: false, message: "Feed not found" });
     }
 
     // Check if the user is either the page admin or the feed creator
@@ -288,19 +290,19 @@ exports.deleteFeed = async (req, res) => {
     }
 
     if (!isAuthorized) {
-      return res
-        .status(403)
-        .json({
-          success: false,
-          message: "You are not authorized to delete this feed",
-        });
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to delete this feed",
+      });
     }
 
-    // Delete the image file if it exists
+    // Delete all associated images
     const feedData = feed.feedData;
-    if (feedData.imageUrl) {
-      const imagePath = path.join(baseDir, feedData.imageUrl.replace("files/", ""));
-      await safeDeleteFile(imagePath);
+    if (feedData.imagesUrl && feedData.imagesUrl.length > 0) {
+      for (const imageUrl of feedData.imagesUrl) {
+        const imagePath = path.join(baseDir, imageUrl.replace("files/", ""));
+        await safeDeleteFile(imagePath);
+      }
     }
 
     transaction = await sequelize.transaction();
@@ -312,9 +314,7 @@ exports.deleteFeed = async (req, res) => {
 
     await feed.destroy({ transaction });
     await transaction.commit();
-    res
-      .status(200)
-      .json({ success: true, message: "Feed deleted successfully" });
+    res.status(200).json({ success: true, message: "Feed deleted successfully" });
   } catch (error) {
     if (transaction) {
       await transaction.rollback();

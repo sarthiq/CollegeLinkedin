@@ -49,33 +49,48 @@
   position: relative;
   margin: 8px 0;
   width: 100%;
-  height: 400px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
   border-radius: 8px;
   overflow: hidden;
   background-color: #f0f2f5;
+  padding: 8px;
 }
 
-.feed-image-preview img {
+.feed-image-preview-item {
   width: 100%;
-  height: 100%;
+  height: 200px;
   object-fit: cover;
-  object-position: center;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
-.feed-remove-image {
+.feed-image-preview-item:hover {
+  transform: scale(1.05);
+}
+
+.feed-image-preview-item::after {
+  content: '×';
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 4px;
+  right: 4px;
   background-color: rgba(0, 0, 0, 0.6);
   color: white;
-  border: none;
   width: 24px;
   height: 24px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.feed-image-preview-item:hover::after {
+  opacity: 1;
 }
 
 .feed-post-footer {
@@ -737,10 +752,19 @@
 
 /* Feed Edit Form Styles */
 .feed-edit-form {
-  margin-top: 8px;
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
-.feed-edit-input {
+.feed-edit-form .feed-input-wrapper {
+  width: 100%;
+}
+
+.feed-edit-form .feed-post-input {
   width: 100%;
   min-height: 100px;
   padding: 12px 16px;
@@ -753,33 +777,39 @@
   margin-bottom: 12px;
 }
 
-.feed-edit-input:focus {
-  outline: none;
-  background-color: white;
-  border-color: #e4e6eb;
-}
-
-.feed-edit-image-preview {
+.feed-edit-form .feed-image-preview {
   position: relative;
   margin: 8px 0;
   width: 100%;
-  height: 400px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
   border-radius: 8px;
   overflow: hidden;
   background-color: #f0f2f5;
+  padding: 8px;
 }
 
-.feed-edit-image-preview img {
+.feed-edit-form .feed-image-preview-item {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: white;
+}
+
+.feed-edit-form .feed-preview-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  border-radius: 4px;
 }
 
-.feed-edit-remove-image {
+.feed-edit-form .feed-remove-image-btn {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 4px;
+  right: 4px;
   background-color: rgba(0, 0, 0, 0.6);
   color: white;
   border: none;
@@ -790,18 +820,24 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
 }
 
-.feed-edit-actions {
+.feed-edit-form .feed-remove-image-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.feed-edit-form .feed-post-footer {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  border-top: 1px solid #e4e6eb;
   margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid #e0e0e0;
 }
 
-.feed-edit-upload-btn {
+.feed-edit-form .feed-upload-btn {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -812,20 +848,16 @@
   transition: all 0.2s ease;
 }
 
-.feed-edit-upload-btn:hover {
+.feed-edit-form .feed-upload-btn:hover {
   background-color: #f2f3f5;
 }
 
-.feed-edit-upload-btn svg {
-  color: #65676b;
-}
-
-.feed-edit-buttons {
+.feed-edit-form .feed-edit-buttons {
   display: flex;
   gap: 8px;
 }
 
-.feed-edit-cancel-btn {
+.feed-edit-form .feed-cancel-btn {
   background-color: #f3f2ef;
   color: #666;
   border: none;
@@ -836,11 +868,11 @@
   transition: all 0.2s;
 }
 
-.feed-edit-cancel-btn:hover {
+.feed-edit-form .feed-cancel-btn:hover {
   background-color: #e0e0e0;
 }
 
-.feed-edit-save-btn {
+.feed-edit-form .feed-submit-btn {
   background-color: #0a66c2;
   color: white;
   border: none;
@@ -851,13 +883,30 @@
   transition: all 0.2s;
 }
 
-.feed-edit-save-btn:hover:not(:disabled) {
+.feed-edit-form .feed-submit-btn:hover:not(:disabled) {
   background-color: #004182;
 }
 
-.feed-edit-save-btn:disabled {
+.feed-edit-form .feed-submit-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+/* Responsive adjustments for edit form */
+@media (max-width: 768px) {
+  .feed-edit-form .feed-image-preview {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  
+  .feed-edit-form .feed-post-footer {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .feed-edit-form .feed-edit-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 /* Feed Image Thumbnail */
@@ -866,48 +915,122 @@
   height: 100%;
   object-fit: cover;
   cursor: pointer;
-  border-radius: 8px;
   transition: transform 0.2s ease;
 }
 
 .feed-item-thumbnail:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 /* Image Popup */
+.feed-item-images {
+  margin: 12px 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Single image layout */
+.feed-single-image {
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/* Two images layout */
+.feed-two-images {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  width: 100%;
+}
+
+.feed-image-half {
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+/* Three images layout */
+.feed-three-images {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.feed-three-main {
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.feed-three-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+/* Multiple images layout (4 or more) */
+.feed-multiple-images {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.feed-multiple-main {
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.feed-multiple-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  position: relative;
+}
+
+.feed-more-images-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
 .feed-image-popup {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.9);
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 1000;
-  cursor: zoom-out;
 }
 
 .feed-image-popup-content {
   position: relative;
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 90vw;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: default;
-}
-
-.feed-image-popup-img {
-  max-width: 100%;
-  max-height: 80vh;
-  object-fit: contain;
-  transition: transform 0.3s ease;
-  border-radius: 8px;
-  cursor: move;
-  user-select: none;
-  touch-action: none;
 }
 
 .feed-image-popup-controls {
@@ -917,33 +1040,79 @@
   display: flex;
   gap: 10px;
   z-index: 1;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 8px;
-  border-radius: 8px;
 }
 
-.feed-image-zoom-btn,
-.feed-image-close-btn {
-  background: rgba(255, 255, 255, 0.1);
+.feed-image-nav-btn {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
   border: none;
-  border-radius: 50%;
   width: 40px;
   height: 40px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  color: white;
+  transition: background-color 0.2s;
+  z-index: 2;
 }
 
-.feed-image-zoom-btn:hover,
+.feed-image-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.feed-image-prev-btn {
+  left: 20px;
+}
+
+.feed-image-next-btn {
+  right: 20px;
+}
+
+.feed-image-close-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.2s;
+  z-index: 2;
+}
+
 .feed-image-close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.7);
 }
 
-.feed-image-zoom-btn svg,
-.feed-image-close-btn svg {
-  fill: white;
+.feed-image-popup-counter {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  z-index: 2;
+}
+
+.feed-image-popup-img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
 }
 
 /* Like and Comment Styles */
