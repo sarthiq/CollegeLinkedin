@@ -176,7 +176,7 @@ export const Feed = ({
               ? feed.feedData.imagesUrl.map(
                   (url) => `${process.env.REACT_APP_REMOTE_ADDRESS}/${url}`
                 )
-              : [],
+              : feed.feedData.imageUrl?[`${process.env.REACT_APP_REMOTE_ADDRESS}/${feed.feedData.imageUrl}`]:[],
             like: feed.like || 0,
             comments: feed.comments || 0,
             timestamp: new Date(feed.createdAt).toLocaleDateString(),

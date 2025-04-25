@@ -12,6 +12,7 @@ const { setupRoutes } = require("./Routes/setupRoutes");
 const db = require("./database");
 const infoRoutes = require("./infoRoutes");
 const {setupModels} = require("./Models/setModels");
+const Feeds = require("./Models/Basic/feeds");
 
 
 
@@ -86,10 +87,15 @@ setupRoutes(app);
 
 setupModels();
 
+
+
+
 db.sync({})
-  .then(() => {
+  .then(async () => {
     app.listen(process.env.APP_PORT);
     console.log(`Lisining to the port : ${process.env.APP_PORT}`);
+    
+    
     //console.log("Alter is on for the databases");
   })
   .catch((err) => console.log(err));
