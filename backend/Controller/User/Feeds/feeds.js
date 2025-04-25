@@ -204,7 +204,8 @@ exports.updateFeed = async (req, res) => {
     const imageFiles = req.files || [];
     const existingImages = req.body.existingImages || [];
     
-    console.log(feedData);
+    
+    
     
 
     const feed = await Feeds.findByPk(id);

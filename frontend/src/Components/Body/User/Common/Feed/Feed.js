@@ -788,8 +788,7 @@ export const Feed = ({
                             placeholder="Edit your post..."
                             className="feed-post-input"
                           />
-                          {(editImages.length > 0 ||
-                            editImageFiles.length > 0) && (
+                          {(editImages.length > 0 || editImageFiles.length > 0) && (
                             <div className="feed-image-preview">
                               {editImages.map((image, index) => (
                                 <div
@@ -824,7 +823,6 @@ export const Feed = ({
                                     onClick={(e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
-                                      console.log('Removing existing image at index:', index);
                                       removeEditImage(index, true);
                                     }}
                                   >
@@ -865,7 +863,6 @@ export const Feed = ({
                                     onClick={(e) => {
                                       e.preventDefault();
                                       e.stopPropagation();
-                                      console.log('Removing new image at index:', index);
                                       removeEditImage(index, false);
                                     }}
                                   >
@@ -886,10 +883,7 @@ export const Feed = ({
                                 style={{ display: "none" }}
                               />
                               <svg viewBox="0 0 24 24" width="22" height="22">
-                                <path
-                                  fill="currentColor"
-                                  d="M18 15v3H6v-3H4v3c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-3h-2zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5-5 5z"
-                                />
+                                <path fill="currentColor" d="M18 15v3H6v-3H4v3c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-3h-2zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5-5 5z"/>
                               </svg>
                               <span>Photos</span>
                             </label>
@@ -928,6 +922,20 @@ export const Feed = ({
                     </div>
                   ) : (
                     <>
+                      <div 
+                        id={`feed-content-${feed.id}`}
+                        className={`feed-item-text ${!expandedFeeds.has(feed.id) ? 'feed-text-collapsed' : ''} ${!expandedFeeds.has(feed.id) && contentHeights[feed.id] > 192 ? 'has-gradient' : ''}`}
+                      >
+                        <div dangerouslySetInnerHTML={{ __html: feed.content }} />
+                      </div>
+                      {contentHeights[feed.id] > 222 && (
+                        <button 
+                          className="feed-show-more-btn"
+                          onClick={() => toggleFeedContent(feed.id)}
+                        >
+                          {expandedFeeds.has(feed.id) ? 'Show less' : 'Show more'}
+                        </button>
+                      )}
                       {feed.images.length > 0 && (
                         <div className="feed-item-images">
                           {feed.images.length === 1 ? (
@@ -946,9 +954,7 @@ export const Feed = ({
                                   <img
                                     src={image}
                                     alt={`Post content ${index + 1}`}
-                                    onClick={() =>
-                                      handleImageClick(feed.images, index)
-                                    }
+                                    onClick={() => handleImageClick(feed.images, index)}
                                     className="feed-item-thumbnail"
                                   />
                                 </div>
@@ -960,9 +966,7 @@ export const Feed = ({
                                 <img
                                   src={feed.images[0]}
                                   alt="Post content 1"
-                                  onClick={() =>
-                                    handleImageClick(feed.images, 0)
-                                  }
+                                  onClick={() => handleImageClick(feed.images, 0)}
                                   className="feed-item-thumbnail"
                                 />
                               </div>
@@ -972,9 +976,7 @@ export const Feed = ({
                                     <img
                                       src={image}
                                       alt={`Post content ${index + 2}`}
-                                      onClick={() =>
-                                        handleImageClick(feed.images, index + 1)
-                                      }
+                                      onClick={() => handleImageClick(feed.images, index + 1)}
                                       className="feed-item-thumbnail"
                                     />
                                   </div>
@@ -987,9 +989,7 @@ export const Feed = ({
                                 <img
                                   src={feed.images[0]}
                                   alt="Post content 1"
-                                  onClick={() =>
-                                    handleImageClick(feed.images, 0)
-                                  }
+                                  onClick={() => handleImageClick(feed.images, 0)}
                                   className="feed-item-thumbnail"
                                 />
                               </div>
@@ -999,17 +999,13 @@ export const Feed = ({
                                     <img
                                       src={image}
                                       alt={`Post content ${index + 2}`}
-                                      onClick={() =>
-                                        handleImageClick(feed.images, index + 1)
-                                      }
+                                      onClick={() => handleImageClick(feed.images, index + 1)}
                                       className="feed-item-thumbnail"
                                     />
                                     {index === 1 && feed.images.length > 3 && (
                                       <div
                                         className="feed-more-images-overlay"
-                                        onClick={() =>
-                                          handleImageClick(feed.images, 3)
-                                        }
+                                        onClick={() => handleImageClick(feed.images, 3)}
                                       >
                                         +{feed.images.length - 3}
                                       </div>
