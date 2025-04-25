@@ -17,7 +17,7 @@ const safeDeleteFile = async (filePath, maxRetries = 3) => {
     try {
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
-        console.log(`Successfully deleted file: ${filePath}`);
+        //console.log(`Successfully deleted file: ${filePath}`);
         return;
       }
     } catch (error) {

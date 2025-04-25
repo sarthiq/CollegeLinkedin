@@ -202,10 +202,10 @@ exports.updateFeed = async (req, res) => {
     const { feedData } = req.body;
     const userId = req.user.id;
     const imageFiles = req.files || [];
-    console.log(imageFiles);
-    console.log(req.body);
-
-    return res.status(200).json({ success: true, data: req.body });
+    const existingImages = req.body.existingImages || [];
+    
+    console.log(feedData);
+    
 
     const feed = await Feeds.findByPk(id);
     if (!feed) {
@@ -224,32 +224,36 @@ exports.updateFeed = async (req, res) => {
     let currentFeedData = feed.feedData;
 
     // Handle image updates
-    if (imageFiles.length > 0 || parsedFeedData.imagesUrl) {
-      const imagesUrl = [];
-      
-      // Add new images
+    // Process existing images to get the correct path after 'files/'
+    const processedExistingImages = existingImages.map(url => {
+      const parts = url.split('files/');
+      return parts.length > 1 ? 'files/' + parts[1] : url;
+    });
+
+    const imagesUrl = [...processedExistingImages]; // Start with processed existing images
+
+    // Add new images
+    if (imageFiles.length > 0) {
       for (const imageFile of imageFiles) {
         const filePath = path.join("CustomFiles", "Feeds");
         const fileName = uuidv4();
         const imageUrl = saveFile(imageFile, filePath, fileName);
         imagesUrl.push(imageUrl);
       }
+    }
 
-      // Keep existing images that are still in the feedData
-      if (currentFeedData.imagesUrl) {
-        for (const existingImageUrl of currentFeedData.imagesUrl) {
-          if (parsedFeedData.imagesUrl && parsedFeedData.imagesUrl.includes(existingImageUrl)) {
-            imagesUrl.push(existingImageUrl);
-          } else {
-            // Delete removed images
-            const oldImagePath = path.join(baseDir, existingImageUrl.replace("files/", ""));
-            await safeDeleteFile(oldImagePath);
-          }
+    // Delete images that are no longer in existingImages
+    if (currentFeedData.imagesUrl) {
+      for (const oldImageUrl of currentFeedData.imagesUrl) {
+        if (!processedExistingImages.includes(oldImageUrl)) {
+          const oldImagePath = path.join(baseDir, oldImageUrl.replace("files/", ""));
+          await safeDeleteFile(oldImagePath);
         }
       }
-
-      parsedFeedData.imagesUrl = imagesUrl;
     }
+
+    // Update the feed data with new images
+    parsedFeedData.imagesUrl = imagesUrl;
 
     await feed.update({
       feedData: parsedFeedData,
@@ -257,6 +261,7 @@ exports.updateFeed = async (req, res) => {
 
     res.status(200).json({ success: true, data: feed });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ success: false, error: error.message });
   }
 };

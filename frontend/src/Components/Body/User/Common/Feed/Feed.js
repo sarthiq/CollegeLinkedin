@@ -440,6 +440,7 @@ export const Feed = ({
   };
 
   const handleEditClick = (feed) => {
+    console.log('Edit clicked, feed images:', feed.images);
     setEditingFeedId(feed.id);
     setEditContent(feed.content);
     setEditImages(feed.images || []);
@@ -448,20 +449,33 @@ export const Feed = ({
 
   const handleEditImageUpload = (e) => {
     const files = Array.from(e.target.files);
+    console.log('Files selected:', files);
     if (files.length > 0) {
       const newImages = files.map((file) => ({
         file,
         preview: URL.createObjectURL(file),
       }));
+      console.log('New images to add:', newImages);
       setEditImageFiles((prev) => [...prev, ...newImages]);
     }
   };
 
   const removeEditImage = (index, isExistingImage) => {
+    console.log('Removing image:', { index, isExistingImage });
+    console.log('Current editImages:', editImages);
+    console.log('Current editImageFiles:', editImageFiles);
+
     if (isExistingImage) {
-      setEditImages((prev) => prev.filter((_, i) => i !== index));
+      const newImages = [...editImages];
+      newImages.splice(index, 1);
+      setEditImages(newImages);
     } else {
-      setEditImageFiles((prev) => prev.filter((_, i) => i !== index));
+      const newFiles = [...editImageFiles];
+      if (newFiles[index] && newFiles[index].preview) {
+        URL.revokeObjectURL(newFiles[index].preview);
+      }
+      newFiles.splice(index, 1);
+      setEditImageFiles(newFiles);
     }
   };
 
@@ -781,6 +795,7 @@ export const Feed = ({
                                 <div
                                   key={`existing-${index}`}
                                   className="feed-image-preview-item"
+                                  style={{ position: 'relative' }}
                                 >
                                   <img
                                     src={image}
@@ -788,8 +803,30 @@ export const Feed = ({
                                     className="feed-preview-image"
                                   />
                                   <button
+                                    type="button"
                                     className="feed-remove-image-btn"
-                                    onClick={() => removeEditImage(index, true)}
+                                    style={{
+                                      position: 'absolute',
+                                      top: '5px',
+                                      right: '5px',
+                                      background: 'rgba(0, 0, 0, 0.5)',
+                                      color: 'white',
+                                      border: 'none',
+                                      borderRadius: '50%',
+                                      width: '24px',
+                                      height: '24px',
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      zIndex: 10
+                                    }}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      console.log('Removing existing image at index:', index);
+                                      removeEditImage(index, true);
+                                    }}
                                   >
                                     ×
                                   </button>
@@ -799,6 +836,7 @@ export const Feed = ({
                                 <div
                                   key={`new-${index}`}
                                   className="feed-image-preview-item"
+                                  style={{ position: 'relative' }}
                                 >
                                   <img
                                     src={image.preview}
@@ -806,10 +844,30 @@ export const Feed = ({
                                     className="feed-preview-image"
                                   />
                                   <button
+                                    type="button"
                                     className="feed-remove-image-btn"
-                                    onClick={() =>
-                                      removeEditImage(index, false)
-                                    }
+                                    style={{
+                                      position: 'absolute',
+                                      top: '5px',
+                                      right: '5px',
+                                      background: 'rgba(0, 0, 0, 0.5)',
+                                      color: 'white',
+                                      border: 'none',
+                                      borderRadius: '50%',
+                                      width: '24px',
+                                      height: '24px',
+                                      cursor: 'pointer',
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      zIndex: 10
+                                    }}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      console.log('Removing new image at index:', index);
+                                      removeEditImage(index, false);
+                                    }}
                                   >
                                     ×
                                   </button>
