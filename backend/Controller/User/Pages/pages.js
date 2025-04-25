@@ -133,7 +133,7 @@ exports.getPageById = async (req, res) => {
 // Create page
 exports.createPage = async (req, res) => {
   try {
-    const { title } = req.body;
+    const { title,description ,category} = req.body;
     const userId = req.user.id;
     const imageFile = req.files && req.files.image ? req.files.image[0] : null;
 
@@ -166,9 +166,11 @@ exports.createPage = async (req, res) => {
 
     const page = await Pages.create({
       title: trimmedTitle,
+      description: description,
       imageUrl,
       followers: 0,
       adminId: userId,
+      category: category,
     });
 
     // Add the creator as a follower
