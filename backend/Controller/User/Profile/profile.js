@@ -4,41 +4,65 @@ const UserProfile = require("../../../Models/User/userProfile");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const { saveFile, safeDeleteFile } = require("../../../Utils/fileHandler");
+const Education = require("../../../Models/User/education");
+const Experience = require("../../../Models/User/experience");
+const Skills = require("../../../Models/User/skills");
+const Interests = require("../../../Models/User/interests");
+const Projects = require("../../../Models/User/projects");
+const ProjectMember = require("../../../Models/User/projectMember");
+const Achievements = require("../../../Models/User/achievments");
+
 
 
 exports.getProfile = async (req, res) => {
   try {
-    // Get userId from either req.body or req.user.id
-    const userId = req.body.userId || req.user.id;
-    
-    const userProfile = await UserProfile.findOne({
-      where: { userId },
+    const userId = req.user.id;
+
+    const user = await User.findByPk(userId, {
       include: [
         {
-          model: User,
-          attributes: ["name", "email", "phone"]
-        }
-      ]
+          model: UserProfile,
+          attributes: ['bio', 'profilePicture', 'coverPicture', 'location', 'website'],
+        },
+        {
+          model: Education,
+          attributes: ['id', 'institution', 'degree', 'fieldOfStudy', 'startDate', 'endDate', 'grade', 'description'],
+        },
+        {
+          model: Experience,
+          attributes: ['id', 'company', 'position', 'startDate', 'endDate', 'description', 'location', 'employmentType'],
+        },
+        {
+          model: Skills,
+          attributes: ['id', 'name', 'level', 'yearsOfExperience', 'category'],
+        },
+        {
+          model: Interests,
+          attributes: ['id', 'preferredJobTypes', 'preferredLocations', 'preferredIndustries', 'preferredRoles', 'workMode', 'expectedSalary', 'currentSalary'],
+        },
+        {
+          model: Projects,
+          attributes: ['id', 'title', 'description', 'startDate', 'endDate', 'status', 'technologies'],
+          include: [{
+            model: ProjectMember,
+            attributes: ['id', 'role', 'type', 'description', 'joinDate'],
+          }],
+        },
+        {
+          model: Achievements,
+          attributes: ['id', 'title', 'description', 'date', 'issuer'],
+        },
+      ],
     });
-    
-    if (!userProfile) {
-      return res.status(404).json({
-        success: false,
-        message: "Profile not found"
-      });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
-    
-    return res.status(200).json({
-      success: true,
-      data: userProfile
-    });
+
+    res.status(200).json(user);
   } catch (error) {
-    console.error("Error fetching profile:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch profile",
-      error: error.message
-    });
+    console.error('Error fetching profile:', error);
+    res.status(500).json({ message: 'Error fetching profile', error: error.message });
   }
 };
 
@@ -188,3 +212,5 @@ exports.updateProfile = async (req, res) => {
     });
   }
 };
+
+
