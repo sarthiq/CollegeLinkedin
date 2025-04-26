@@ -47,13 +47,16 @@ const UserProfile = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    
+
+    yearOfExperience: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     timestamps: true,
     tableName: "userProfiles",
   }
 );
-
 
 module.exports = UserProfile;

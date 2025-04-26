@@ -1,54 +1,47 @@
 const Sequelize = require("sequelize");
 const { sequelize } = require("../../importantInfo");
 
-const Pages = sequelize.define(
-  "Pages",
+const Experience = sequelize.define(
+  "Experience",
   {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    title: {
+    company: {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    imageUrl: {
+    position: {
       type: Sequelize.STRING,
+      allowNull: false,
+    },
+    startDate: {
+      type: Sequelize.DATE,
+      allowNull: false,
+    },
+    endDate: {
+      type: Sequelize.DATE,
       allowNull: true,
-    },
-    followers: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-    },
-    posts: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
     },
     description: {
       type: Sequelize.TEXT,
       allowNull: true,
     },
-    category: {
+    location: {
       type: Sequelize.STRING,
       allowNull: true,
     },
-    type: {
+    employmentType: {
       type: Sequelize.STRING,
-      allowNull: false,
-      defaultValue: "page",
-    },
-    adminId: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
     timestamps: true,
-    tableName: "pages",
+    tableName: "experience",
   }
 );
 
-module.exports = Pages;
+module.exports = Experience;

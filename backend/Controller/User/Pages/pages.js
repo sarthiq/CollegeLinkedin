@@ -28,6 +28,7 @@ exports.getAllPages = async (req, res) => {
       const userId = req.user.id;
       whereCondition.adminId = userId;
     }
+    whereCondition.type = "page";
     // Get pages with pagination and search
     const { count, rows: pages } = await Pages.findAndCountAll({
       where: whereCondition,
@@ -171,6 +172,7 @@ exports.createPage = async (req, res) => {
       followers: 0,
       adminId: userId,
       category: category,
+      type: "page",
     });
 
     // Add the creator as a follower

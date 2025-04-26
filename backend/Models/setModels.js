@@ -8,6 +8,13 @@ const Feeds = require("./Basic/feeds");
 const Likes = require("./Basic/likes");
 const Comments = require("./Basic/comments");
 const Followers = require("./Basic/followers");
+const Achievements = require("./User/achievments");
+const Education = require("./User/education");
+const Experience = require("./User/experience");
+const Interests = require("./User/interests");
+const Projects = require("./User/projects");
+const ProjectMember = require("./User/projectMember");
+const Skills = require("./User/skills");
 
 exports.setupModels = async () => {
   // Define associations
@@ -20,8 +27,8 @@ exports.setupModels = async () => {
   User.hasMany(UserActivity);
   UserActivity.belongsTo(User);
 
-  User.belongsToMany(Pages, { through:Followers });
-  Pages.belongsToMany(User, { through:Followers });
+  User.belongsToMany(Pages, { through: Followers });
+  Pages.belongsToMany(User, { through: Followers });
 
   User.hasMany(Feeds);
   Feeds.belongsTo(User);
@@ -40,4 +47,29 @@ exports.setupModels = async () => {
 
   User.hasMany(Comments);
   Comments.belongsTo(User);
+
+  // New associations
+  User.hasMany(Achievements);
+  Achievements.belongsTo(User);
+
+  User.hasMany(Education);
+  Education.belongsTo(User);
+
+  User.hasMany(Experience);
+  Experience.belongsTo(User);
+
+  User.hasOne(Interests);
+  Interests.belongsTo(User);
+
+  User.hasMany(Projects);
+  Projects.belongsTo(User);
+
+  User.hasMany(ProjectMember);
+  ProjectMember.belongsTo(User);
+
+  Projects.hasMany(ProjectMember);
+  ProjectMember.belongsTo(Projects);
+
+  User.hasMany(Skills);
+  Skills.belongsTo(User);
 };
