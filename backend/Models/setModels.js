@@ -17,6 +17,7 @@ const ProjectMember = require("./User/projectMember");
 const Skills = require("./User/skills");
 const Internship = require("./Basic/internship");
 const AppliedInternship = require("./Basic/appliedInternship");
+const ProjectFeedback = require("./User/projectFeedback");
 
 exports.setupModels = async () => {
   // Define associations
@@ -71,6 +72,12 @@ exports.setupModels = async () => {
 
   Projects.hasMany(ProjectMember);
   ProjectMember.belongsTo(Projects);
+
+  Projects.hasMany(ProjectFeedback);
+  ProjectFeedback.belongsTo(Projects);
+
+  User.hasMany(ProjectFeedback);
+  ProjectFeedback.belongsTo(User);
 
   User.hasMany(Skills);
   Skills.belongsTo(User);

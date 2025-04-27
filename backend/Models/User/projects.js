@@ -17,6 +17,10 @@ const Projects = sequelize.define(
       type: Sequelize.TEXT,
       allowNull: false,
     },
+    imagesUrl:{
+      type: Sequelize.JSON,
+      allowNull: true,
+    },
     startDate: {
       type: Sequelize.DATE,
       allowNull: false,
@@ -33,6 +37,20 @@ const Projects = sequelize.define(
     technologies: {
       type: Sequelize.JSON,
       allowNull: true,
+    },
+    githubUrl: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    isSourceCodePublic: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+    isPublic: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
    
   },

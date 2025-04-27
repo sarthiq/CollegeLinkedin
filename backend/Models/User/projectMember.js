@@ -26,6 +26,11 @@ const ProjectMember = sequelize.define(
       allowNull: false,
       defaultValue: Sequelize.NOW,
     },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      defaultValue: "pending",
+    },
   },
   {
     timestamps: true,
