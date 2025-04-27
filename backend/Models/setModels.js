@@ -78,4 +78,7 @@ exports.setupModels = async () => {
   // Internship associations
   User.belongsToMany(Internship, { through: AppliedInternship });
   Internship.belongsToMany(User, { through: AppliedInternship });
+
+  User.hasMany(Internship);
+  Internship.belongsTo(User);
 };

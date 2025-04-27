@@ -23,7 +23,7 @@ exports.addAchievements = async (req, res) => {
   try {
     const { title, description, date, issuer } = req.body;
 
-    const achievementFile = req.files && req.files[0] ? req.files[0] : null;
+    const achievementFile = req.files && req.files ? req.files.image[0] : null;
     let imageUrl = null;
 
     if (achievementFile) {
@@ -61,7 +61,7 @@ exports.updateAchievements = async (req, res) => {
   try {
     const { id } = req.body;
     const { title, description, date, issuer } = req.body;
-    const achievementFile = req.files && req.files[0] ? req.files[0] : null;
+    const achievementFile = req.files && req.files ? req.files.image[0] : null;
 
     const achievement = await Achievements.findOne({
       where: { id, UserId: req.user.id },

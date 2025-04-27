@@ -35,6 +35,10 @@ const AppliedInternship = sequelize.define(
       type: Sequelize.TEXT,
       allowNull: true,
     },
+    resumeUrl: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
     appliedAt: {
       type: Sequelize.DATE,
       allowNull: false,

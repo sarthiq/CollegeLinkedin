@@ -15,15 +15,14 @@ exports.createFeed = async (req, res) => {
   try {
     const { feedData, pageId } = req.body;
     const userId = req.user.id;
-    const fileNames = req.fileNames;
 
-    let parsedFeedData = typeof feedData === "string" ? JSON.parse(feedData) : feedData;
-    
+    let parsedFeedData =
+      typeof feedData === "string" ? JSON.parse(feedData) : feedData;
+
     // Handle multiple images
-    if (req.files ) {
+    if (req.files.image) {
       const imagesUrl = [];
-      for (const imageFile of req.files) {
-        
+      for (const imageFile of req.files.image) {
         const filePath = path.join("CustomFiles", "Feeds");
         const fileName = uuidv4();
         const imageUrl = saveFile(imageFile, filePath, fileName);
@@ -48,7 +47,9 @@ exports.createFeed = async (req, res) => {
       page = await Page.findByPk(pageId);
 
       if (!page) {
-        return res.status(400).json({ success: false, message: "Page not found" });
+        return res
+          .status(400)
+          .json({ success: false, message: "Page not found" });
       }
 
       page.increment("posts", { transaction });
@@ -70,7 +71,13 @@ exports.createFeed = async (req, res) => {
 // Get all feeds with pagination
 exports.getAllFeeds = async (req, res) => {
   try {
-    const { page = 1, limit = 10,usersFeed = false, userId, pageId } = req.body;
+    const {
+      page = 1,
+      limit = 10,
+      usersFeed = false,
+      userId,
+      pageId,
+    } = req.body;
     const offset = (page - 1) * limit;
 
     // Build where condition
@@ -109,18 +116,20 @@ exports.getAllFeeds = async (req, res) => {
     });
 
     // Get like status for each feed
-    
-    const feedsWithLikeStatus = await Promise.all(feeds.map(async (feed) => {
-      const isLiked = await Likes.findOne({
-        where: {
-          UserId: req.user.id,
-          FeedId: feed.id
-        }
-      });
-      const feedData = feed.toJSON();
-      feedData.isLiked = !!isLiked;
-      return feedData;
-    }));
+
+    const feedsWithLikeStatus = await Promise.all(
+      feeds.map(async (feed) => {
+        const isLiked = await Likes.findOne({
+          where: {
+            UserId: req.user.id,
+            FeedId: feed.id,
+          },
+        });
+        const feedData = feed.toJSON();
+        feedData.isLiked = !!isLiked;
+        return feedData;
+      })
+    );
 
     const totalPages = Math.ceil(count / limit);
     const hasNextPage = page < totalPages;
@@ -169,9 +178,6 @@ exports.getFeedById = async (req, res) => {
       ],
     });
 
- 
-    
-
     if (!feed) {
       return res
         .status(404)
@@ -182,8 +188,8 @@ exports.getFeedById = async (req, res) => {
     const isLiked = await Likes.findOne({
       where: {
         UserId: req.user.id,
-        FeedId: feed.id
-      }
+        FeedId: feed.id,
+      },
     });
 
     const feedData = feed.toJSON();
@@ -203,14 +209,12 @@ exports.updateFeed = async (req, res) => {
     const userId = req.user.id;
     const imageFiles = req.files || [];
     const existingImages = req.body.existingImages || [];
-    
-    
-    
-    
 
     const feed = await Feeds.findByPk(id);
     if (!feed) {
-      return res.status(404).json({ success: false, message: "Feed not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Feed not found" });
     }
 
     // Check if the user is the owner of the feed
@@ -221,14 +225,15 @@ exports.updateFeed = async (req, res) => {
       });
     }
 
-    let parsedFeedData = typeof feedData === "string" ? JSON.parse(feedData) : feedData;
+    let parsedFeedData =
+      typeof feedData === "string" ? JSON.parse(feedData) : feedData;
     let currentFeedData = feed.feedData;
 
     // Handle image updates
     // Process existing images to get the correct path after 'files/'
-    const processedExistingImages = existingImages.map(url => {
-      const parts = url.split('files/');
-      return parts.length > 1 ? 'files/' + parts[1] : url;
+    const processedExistingImages = existingImages.map((url) => {
+      const parts = url.split("files/");
+      return parts.length > 1 ? "files/" + parts[1] : url;
     });
 
     const imagesUrl = [...processedExistingImages]; // Start with processed existing images
@@ -247,7 +252,10 @@ exports.updateFeed = async (req, res) => {
     if (currentFeedData.imagesUrl) {
       for (const oldImageUrl of currentFeedData.imagesUrl) {
         if (!processedExistingImages.includes(oldImageUrl)) {
-          const oldImagePath = path.join(baseDir, oldImageUrl.replace("files/", ""));
+          const oldImagePath = path.join(
+            baseDir,
+            oldImageUrl.replace("files/", "")
+          );
           await safeDeleteFile(oldImagePath);
         }
       }
@@ -276,7 +284,9 @@ exports.deleteFeed = async (req, res) => {
     const feed = await Feeds.findByPk(id);
 
     if (!feed) {
-      return res.status(404).json({ success: false, message: "Feed not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Feed not found" });
     }
 
     // Check if the user is either the page admin or the feed creator
@@ -320,7 +330,9 @@ exports.deleteFeed = async (req, res) => {
 
     await feed.destroy({ transaction });
     await transaction.commit();
-    res.status(200).json({ success: true, message: "Feed deleted successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Feed deleted successfully" });
   } catch (error) {
     if (transaction) {
       await transaction.rollback();

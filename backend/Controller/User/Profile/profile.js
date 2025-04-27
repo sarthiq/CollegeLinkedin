@@ -14,50 +14,78 @@ const Achievements = require("../../../Models/User/achievments");
 
 exports.getProfile = async (req, res) => {
   try {
-    const userId = req.user.id;
+    // Get userId from either req.body or req.user.id
+    const userId = req.body.userId || req.user.id;
 
-    const user = await User.findByPk(userId, {
+    const userProfile = await UserProfile.findOne({
+      where: { userId },
       include: [
         {
-          model: UserProfile,
-        },
-        {
-          model: Education,
-        },
-        {
-          model: Experience,
-        },
-        {
-          model: Skills,
-        },
-        {
-          model: Interests,
-        },
-        {
-          model: Projects,
-
-          include: [
-            {
-              model: ProjectMember,
-            },
-          ],
-        },
-        {
-          model: Achievements,
+          model: User,
+          attributes: ["name", "email", "phone"],
         },
       ],
     });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    const profileInfo = {
+      experience: await Experience.findAll({
+        where: {
+          userId,
+        },
+      }),
+      education: await Education.findAll({
+        where: {
+          userId,
+        },
+      }),
+      skills: await Skills.findAll({
+        where: {
+          userId,
+        },
+      }),
+      interests: await Interests.findAll({
+        where: {
+          userId,
+        },
+      }),
+      achievments: await Achievements.findAll({
+        where: {
+          userId,
+        },
+      }),
+      projects: await Projects.findAll({
+        where: {
+          userId,
+        },
+      }),
+      projectMembers: await ProjectMember.findAll({
+        where: {
+          userId,
+        },
+      }),
+    };
 
-    res.status(200).json(user);
+    if (!userProfile) {
+      return res.status(404).json({
+        success: false,
+        message: "Profile not found",
+      });
+    }
+    
+    const jsonUserProfile = userProfile.toJSON();
+    jsonUserProfile.otherInfo = profileInfo;
+
+    return res.status(200).json({
+      success: true,
+      data: jsonUserProfile,
+    });
   } catch (error) {
     console.error("Error fetching profile:", error);
-    res
-      .status(500)
-      .json({ message: "Error fetching profile", error: error.message });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch profile",
+      error: error.message,
+    });
   }
 };
 

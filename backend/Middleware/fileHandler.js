@@ -28,19 +28,29 @@ exports.multipleFileHandler = (fileNames) => {
   return multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
-      // Check if the field name is in the allowed list
-      if (fileNames.includes(file.fieldname)) {
-        cb(null, true);
-      } else {
-        cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname));
+      // If fileNames is a string, treat it as a single field name
+      if (typeof fileNames === 'string') {
+        if (file.fieldname === fileNames) {
+          cb(null, true);
+        } else {
+          cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname));
+        }
+      } 
+      // If fileNames is an array, check if the field name is in the array
+      else if (Array.isArray(fileNames)) {
+        if (fileNames.includes(file.fieldname)) {
+          cb(null, true);
+        } else {
+          cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname));
+        }
       }
     }
-  }).array('image', 10); // Allow up to 10 files with field name 'image'
+  }).fields(fileNames.map(name => ({ name, maxCount: 10 })));
 };
 
 exports.checkFileExist = (req, res, next) => {
   // Check if at least one file was uploaded
-  if (req.files && req.files.length > 0) {
+  if (req.files && Object.keys(req.files).length > 0) {
     return next();
   }
   // If no files are required, proceed

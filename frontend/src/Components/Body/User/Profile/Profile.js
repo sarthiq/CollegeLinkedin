@@ -65,9 +65,8 @@ export const Profile = () => {
         collegeYear: profileData.collegeYear || "",
         courseName: profileData.courseName || "",
       });
-    } else {
-      setError("Failed to fetch profile data");
     }
+    console.log(response);
   };
 
   const [feeds, setFeeds] = useState([
@@ -166,52 +165,50 @@ export const Profile = () => {
     setIsUpdating(true);
     setError(null);
 
-   
-      const formData = new FormData();
+    const formData = new FormData();
 
-      // Add text fields
-      formData.append("name", e.target.name.value);
-      formData.append("title", e.target.title.value);
-      formData.append("bio", e.target.description.value);
-      formData.append("collegeName", e.target.collegeName.value);
-      formData.append("collegeYear", e.target.collegeYear.value);
-      formData.append("courseName", e.target.courseName.value);
+    // Add text fields
+    formData.append("name", e.target.name.value);
+    formData.append("title", e.target.title.value);
+    formData.append("bio", e.target.description.value);
+    formData.append("collegeName", e.target.collegeName.value);
+    formData.append("collegeYear", e.target.collegeYear.value);
+    formData.append("courseName", e.target.courseName.value);
 
-      // Add files if they were changed
-      if (profileImageInputRef.current.files.length > 0) {
-        formData.append("image", profileImageInputRef.current.files[0]);
+    // Add files if they were changed
+    if (profileImageInputRef.current.files.length > 0) {
+      formData.append("image", profileImageInputRef.current.files[0]);
+    }
+
+    if (coverImageInputRef.current.files.length > 0) {
+      formData.append("coverImage", coverImageInputRef.current.files[0]);
+    }
+
+    const response = await updateProfileHandler(
+      formData,
+      setIsUpdating,
+      (error) => {
+        setError(error);
       }
+    );
 
-      if (coverImageInputRef.current.files.length > 0) {
-        formData.append("coverImage", coverImageInputRef.current.files[0]);
-      }
+    if (response && response.success) {
+      // Update local state with new data
+      setProfile((prev) => ({
+        ...prev,
+        name: e.target.name.value,
+        title: e.target.title.value,
+        description: e.target.description.value,
+        collegeName: e.target.collegeName.value,
+        collegeYear: e.target.collegeYear.value,
+        courseName: e.target.courseName.value,
+        // Image URLs will be updated after a successful fetch
+      }));
 
-      const response = await updateProfileHandler(
-        formData,
-        setIsUpdating,
-        (error) => {
-          setError(error);
-        }
-      );
-
-      if (response && response.success) {
-        // Update local state with new data
-        setProfile((prev) => ({
-          ...prev,
-          name: e.target.name.value,
-          title: e.target.title.value,
-          description: e.target.description.value,
-          collegeName: e.target.collegeName.value,
-          collegeYear: e.target.collegeYear.value,
-          courseName: e.target.courseName.value,
-          // Image URLs will be updated after a successful fetch
-        }));
-
-        // Refresh profile data to get updated image URLs
-        await fetchProfile();
-        setIsEditing(false);
-      } 
-    
+      // Refresh profile data to get updated image URLs
+      await fetchProfile();
+      setIsEditing(false);
+    }
   };
 
   const handleCoverImageChange = (e) => {
