@@ -17,6 +17,10 @@ exports.addEducation = async (req, res) => {
   try {
     const { institution, degree, fieldOfStudy, startDate, endDate, grade, description } = req.body;
     
+   
+    if(!institution ||!startDate){
+      return res.status(400).json({ message: 'Institution and start date are required' });
+    }
     const education = await Education.create({
       institution,
       degree,
@@ -37,8 +41,12 @@ exports.addEducation = async (req, res) => {
 
 exports.updateEducation = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     const { institution, degree, fieldOfStudy, startDate, endDate, grade, description } = req.body;
+
+    if(!id){
+      return res.status(400).json({ message: 'Id is required' });
+    }
 
     const education = await Education.findOne({
       where: { id, UserId: req.user.id }

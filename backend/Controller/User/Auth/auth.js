@@ -82,6 +82,10 @@ exports.userLogin = async (req, res, next) => {
   try {
     // Step 1: Start a transaction
 
+    if (!emailOrPhone || !password) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
     // Step 2: Find the user by phone number
     const user = await User.findOne({
       where: { [Op.or]: [{ email: emailOrPhone }, { phone: emailOrPhone }] },

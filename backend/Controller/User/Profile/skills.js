@@ -16,7 +16,11 @@ exports.getSkills = async (req, res) => {
 exports.addSkills = async (req, res) => {
   try {
     const { name, level, yearsOfExperience, category } = req.body;
-    
+
+    if(!name){
+      return res.status(400).json({ message: 'Name is required' });
+    }
+
     const skill = await Skills.create({
       name,
       level,
@@ -34,8 +38,12 @@ exports.addSkills = async (req, res) => {
 
 exports.updateSkills = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     const { name, level, yearsOfExperience, category } = req.body;
+
+    if(!id){
+      return res.status(400).json({ message: 'Id is required' });
+    }
 
     const skill = await Skills.findOne({
       where: { id, UserId: req.user.id }
@@ -61,7 +69,11 @@ exports.updateSkills = async (req, res) => {
 
 exports.deleteSkills = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
+
+    if(!id){
+      return res.status(400).json({ message: 'Id is required' });
+    }
 
     const skill = await Skills.findOne({
       where: { id, UserId: req.user.id }

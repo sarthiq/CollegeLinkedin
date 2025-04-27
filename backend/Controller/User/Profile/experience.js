@@ -17,6 +17,10 @@ exports.addExperience = async (req, res) => {
   try {
     const { company, position, startDate, endDate, description, location, employmentType } = req.body;
     
+    if(!company || !position || !startDate){
+      return res.status(400).json({ message: 'Company, position and start date are required' });
+    }
+
     const experience = await Experience.create({
       company,
       position,
@@ -37,8 +41,12 @@ exports.addExperience = async (req, res) => {
 
 exports.updateExperience = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     const { company, position, startDate, endDate, description, location, employmentType } = req.body;
+
+    if(!id){
+      return res.status(400).json({ message: 'Id is required' });
+    }
 
     const experience = await Experience.findOne({
       where: { id, UserId: req.user.id }
@@ -67,7 +75,11 @@ exports.updateExperience = async (req, res) => {
 
 exports.deleteExperience = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
+
+    if(!id){
+      return res.status(400).json({ message: 'Id is required' });
+    }
 
     const experience = await Experience.findOne({
       where: { id, UserId: req.user.id }

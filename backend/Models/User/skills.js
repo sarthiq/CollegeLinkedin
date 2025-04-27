@@ -15,7 +15,7 @@ const Skills = sequelize.define(
     },
     level: {
       type: Sequelize.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     yearsOfExperience: {
       type: Sequelize.INTEGER,
