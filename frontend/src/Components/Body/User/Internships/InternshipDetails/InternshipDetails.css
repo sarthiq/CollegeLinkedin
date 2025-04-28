@@ -1012,4 +1012,136 @@
 
 .internship-details-applicants-button:hover {
   background-color: #218838;
+}
+
+/* Apply Modal Styles */
+.internship-details-apply-modal {
+  max-width: 600px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.internship-details-apply-modal .internship-details-modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.internship-details-apply-modal .internship-details-modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.internship-details-apply-modal .internship-details-close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.internship-details-apply-modal .internship-details-close-button:hover {
+  color: #333;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.internship-details-apply-modal form {
+  padding: 20px;
+}
+
+.internship-details-apply-modal .internship-details-form-group {
+  margin-bottom: 20px;
+}
+
+.internship-details-apply-modal .internship-details-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.internship-details-apply-modal .internship-details-form-group input,
+.internship-details-apply-modal .internship-details-form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.internship-details-apply-modal .internship-details-form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.internship-details-apply-modal .internship-details-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.internship-details-cancel-button {
+  padding: 8px 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.internship-details-cancel-button:hover {
+  background-color: #5a6268;
+}
+
+.internship-details-submit-button {
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.internship-details-submit-button:hover {
+  background-color: #218838;
+}
+
+/* Fix for all close buttons */
+.internship-details-modal .internship-details-close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.internship-details-modal .internship-details-close-button:hover {
+  color: #333;
+  background-color: rgba(0, 0, 0, 0.05);
 } 

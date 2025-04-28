@@ -1093,10 +1093,13 @@ export const InternshipDetails = () => {
       {/* Apply Modal */}
       {showApplyModal && (
         <div className="internship-details-modal">
-          <div className="internship-details-modal-content">
-            <h2>Apply for Internship</h2>
+          <div className="internship-details-modal-content internship-details-apply-modal">
+            <div className="internship-details-modal-header">
+              <h2>Apply for Internship</h2>
+              <button className="internship-details-close-button" onClick={() => setShowApplyModal(false)}>×</button>
+            </div>
             <form onSubmit={handleApply}>
-              <div className="form-group">
+              <div className="internship-details-form-group">
                 <label>Notice Period</label>
                 <input
                   type="text"
@@ -1107,7 +1110,7 @@ export const InternshipDetails = () => {
                   required
                 />
               </div>
-              <div className="form-group">
+              <div className="internship-details-form-group">
                 <label>Current Salary</label>
                 <input
                   type="text"
@@ -1121,7 +1124,7 @@ export const InternshipDetails = () => {
                   required
                 />
               </div>
-              <div className="form-group">
+              <div className="internship-details-form-group">
                 <label>Expected Salary</label>
                 <input
                   type="text"
@@ -1135,7 +1138,7 @@ export const InternshipDetails = () => {
                   required
                 />
               </div>
-              <div className="form-group">
+              <div className="internship-details-form-group">
                 <label>Availability</label>
                 <input
                   type="text"
@@ -1146,7 +1149,7 @@ export const InternshipDetails = () => {
                   required
                 />
               </div>
-              <div className="form-group">
+              <div className="internship-details-form-group">
                 <label>Cover Letter</label>
                 <textarea
                   value={applyData.coverLetter}
@@ -1156,7 +1159,7 @@ export const InternshipDetails = () => {
                   required
                 />
               </div>
-              <div className="form-group">
+              <div className="internship-details-form-group">
                 <label>Resume</label>
                 <input
                   type="file"
@@ -1166,11 +1169,20 @@ export const InternshipDetails = () => {
                   required
                 />
               </div>
-              <div className="form-actions">
-                <button type="button" onClick={() => setShowApplyModal(false)}>
+              <div className="internship-details-form-actions">
+                <button 
+                  type="button" 
+                  className="internship-details-cancel-button" 
+                  onClick={() => setShowApplyModal(false)}
+                >
                   Cancel
                 </button>
-                <button type="submit">Submit Application</button>
+                <button 
+                  type="submit" 
+                  className="internship-details-submit-button"
+                >
+                  Submit Application
+                </button>
               </div>
             </form>
           </div>
