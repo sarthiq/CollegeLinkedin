@@ -77,7 +77,8 @@ export const InternshipHome = () => {
   }, [showUserInternships, pagination.currentPage]);
 
   const fetchInternships = async () => {
-    try {
+   
+    
       setError(null);
       const response = await getAllInternshipsHandler(
         { 
@@ -94,9 +95,8 @@ export const InternshipHome = () => {
         setInternships(internships);
         setPagination(paginationData);
       }
-    } catch (err) {
-      setError(err.message || 'An error occurred while fetching internships');
-    }
+   
+      
   };
 
   const handleImageUpload = (e) => {
@@ -150,73 +150,67 @@ export const InternshipHome = () => {
 
   const handleCreateInternship = async (e) => {
     e.preventDefault();
-    try {
-      setIsLoading(true);
-      setCreateInternshipError(null);
+    setIsLoading(true);
+    setCreateInternshipError(null);
 
-      const formData = new FormData();
-      
-      // Append all fields except images
-      Object.keys(newInternship).forEach(key => {
-        if (key !== 'images') {
-          if (Array.isArray(newInternship[key])) {
-            // For array fields, append each item separately
-            newInternship[key].forEach((item, index) => {
-              formData.append(`${key}[${index}]`, item);
-            });
-          } else {
-            formData.append(key, newInternship[key]);
-          }
+    const formData = new FormData();
+    
+    // Append all fields except images
+    Object.keys(newInternship).forEach(key => {
+      if (key !== 'images') {
+        if (Array.isArray(newInternship[key])) {
+          // For array fields, append each item separately
+          newInternship[key].forEach((item, index) => {
+            formData.append(`${key}[${index}]`, item);
+          });
+        } else {
+          formData.append(key, newInternship[key]);
         }
-      });
-
-      // Append images
-      newInternship.images.forEach((image, index) => {
-        formData.append('image', image);
-      });
-
-      const response = await createInternshipHandler(
-        formData,
-        setIsLoading,
-        (error) => setCreateInternshipError(error)
-      );
-
-      if (response && response.success) {
-        // Reset form and close modal
-        setNewInternship({
-          title: '',
-          companyName: '',
-          description: '',
-          role: '',
-          responsibilities: [],
-          requirements: [],
-          perksOrBenefits: [],
-          otherDetails: '',
-          location: '',
-          jobType: 'Full-time',
-          remote: false,
-          salary: '',
-          duration: '',
-          skills: [],
-          deadline: '',
-          status: 'active',
-          category: 'Technology',
-          experienceLevel: 'Entry Level',
-          images: []
-        });
-        setTempInput({
-          responsibility: '',
-          requirement: '',
-          perk: '',
-          skill: ''
-        });
-        setShowCreateInternship(false);
-        fetchInternships(); // Refresh the list
       }
-    } catch (err) {
-      setCreateInternshipError(err.message || 'An error occurred while creating the internship');
-    } finally {
-      setIsLoading(false);
+    });
+
+    // Append images
+    newInternship.images.forEach((image, index) => {
+      formData.append('image', image);
+    });
+
+    const response = await createInternshipHandler(
+      formData,
+      setIsLoading,
+      (error) => setCreateInternshipError(error)
+    );
+
+    if (response && response.success) {
+      // Reset form and close modal
+      setNewInternship({
+        title: '',
+        companyName: '',
+        description: '',
+        role: '',
+        responsibilities: [],
+        requirements: [],
+        perksOrBenefits: [],
+        otherDetails: '',
+        location: '',
+        jobType: 'Full-time',
+        remote: false,
+        salary: '',
+        duration: '',
+        skills: [],
+        deadline: '',
+        status: 'active',
+        category: 'Technology',
+        experienceLevel: 'Entry Level',
+        images: []
+      });
+      setTempInput({
+        responsibility: '',
+        requirement: '',
+        perk: '',
+        skill: ''
+      });
+      setShowCreateInternship(false);
+      fetchInternships(); // Refresh the list
     }
   };
 
@@ -298,6 +292,7 @@ export const InternshipHome = () => {
                   onChange={(e) => setNewInternship({ ...newInternship, title: e.target.value })}
                   placeholder="Enter internship title"
                   required
+                  className={createInternshipError ? 'error-input' : ''}
                 />
               </div>
               <div className="form-group">
@@ -308,6 +303,7 @@ export const InternshipHome = () => {
                   onChange={(e) => setNewInternship({ ...newInternship, companyName: e.target.value })}
                   placeholder="Enter company name"
                   required
+                  className={createInternshipError ? 'error-input' : ''}
                 />
               </div>
               <div className="form-group">
@@ -318,6 +314,7 @@ export const InternshipHome = () => {
                   modules={modules}
                   formats={formats}
                   placeholder="Enter internship description"
+                  className={createInternshipError ? 'error-input' : ''}
                 />
               </div>
               <div className="form-group">
@@ -328,6 +325,7 @@ export const InternshipHome = () => {
                   onChange={(e) => setNewInternship({ ...newInternship, role: e.target.value })}
                   placeholder="Enter role"
                   required
+                  className={createInternshipError ? 'error-input' : ''}
                 />
               </div>
               <div className="form-group">
@@ -337,9 +335,10 @@ export const InternshipHome = () => {
                     <input
                       type="text"
                       value={tempInput.responsibility}
-                      onChange={(e) => setTempInput(prev => ({ ...prev, responsibility: e.target.value }))}
+                      onChange={(e) => setTempInput({ ...tempInput, responsibility: e.target.value })}
                       onKeyPress={(e) => handleKeyPress(e, 'responsibilities')}
                       placeholder="Add responsibility and press Enter"
+                      className={createInternshipError ? 'error-input' : ''}
                     />
                     <button 
                       type="button" 
@@ -372,9 +371,10 @@ export const InternshipHome = () => {
                     <input
                       type="text"
                       value={tempInput.requirement}
-                      onChange={(e) => setTempInput(prev => ({ ...prev, requirement: e.target.value }))}
+                      onChange={(e) => setTempInput({ ...tempInput, requirement: e.target.value })}
                       onKeyPress={(e) => handleKeyPress(e, 'requirements')}
                       placeholder="Add requirement and press Enter"
+                      className={createInternshipError ? 'error-input' : ''}
                     />
                     <button 
                       type="button" 
@@ -407,9 +407,10 @@ export const InternshipHome = () => {
                     <input
                       type="text"
                       value={tempInput.perk}
-                      onChange={(e) => setTempInput(prev => ({ ...prev, perk: e.target.value }))}
+                      onChange={(e) => setTempInput({ ...tempInput, perk: e.target.value })}
                       onKeyPress={(e) => handleKeyPress(e, 'perksOrBenefits')}
                       placeholder="Add perk/benefit and press Enter"
+                      className={createInternshipError ? 'error-input' : ''}
                     />
                     <button 
                       type="button" 
@@ -440,7 +441,10 @@ export const InternshipHome = () => {
                 <ReactQuill
                   value={newInternship.otherDetails}
                   onChange={(value) => setNewInternship({ ...newInternship, otherDetails: value })}
+                  modules={modules}
+                  formats={formats}
                   placeholder="Enter other details"
+                  className={createInternshipError ? 'error-input' : ''}
                 />
               </div>
               <div className="form-row">
@@ -451,6 +455,7 @@ export const InternshipHome = () => {
                     value={newInternship.location}
                     onChange={(e) => setNewInternship({ ...newInternship, location: e.target.value })}
                     placeholder="Enter location"
+                    className={createInternshipError ? 'error-input' : ''}
                   />
                 </div>
                 <div className="form-group">
@@ -458,6 +463,7 @@ export const InternshipHome = () => {
                   <select
                     value={newInternship.jobType}
                     onChange={(e) => setNewInternship({ ...newInternship, jobType: e.target.value })}
+                    className={createInternshipError ? 'error-input' : ''}
                   >
                     {jobTypes.map(type => (
                       <option key={type} value={type}>{type}</option>
@@ -473,6 +479,7 @@ export const InternshipHome = () => {
                     value={newInternship.salary}
                     onChange={(e) => setNewInternship({ ...newInternship, salary: e.target.value })}
                     placeholder="Enter salary"
+                    className={createInternshipError ? 'error-input' : ''}
                   />
                 </div>
                 <div className="form-group">
@@ -482,6 +489,7 @@ export const InternshipHome = () => {
                     value={newInternship.duration}
                     onChange={(e) => setNewInternship({ ...newInternship, duration: e.target.value })}
                     placeholder="Enter duration"
+                    className={createInternshipError ? 'error-input' : ''}
                   />
                 </div>
               </div>
@@ -491,6 +499,7 @@ export const InternshipHome = () => {
                   <select
                     value={newInternship.category}
                     onChange={(e) => setNewInternship({ ...newInternship, category: e.target.value })}
+                    className={createInternshipError ? 'error-input' : ''}
                   >
                     {categories.map(category => (
                       <option key={category} value={category}>{category}</option>
@@ -502,6 +511,7 @@ export const InternshipHome = () => {
                   <select
                     value={newInternship.experienceLevel}
                     onChange={(e) => setNewInternship({ ...newInternship, experienceLevel: e.target.value })}
+                    className={createInternshipError ? 'error-input' : ''}
                   >
                     {experienceLevels.map(level => (
                       <option key={level} value={level}>{level}</option>
@@ -516,9 +526,10 @@ export const InternshipHome = () => {
                     <input
                       type="text"
                       value={tempInput.skill}
-                      onChange={(e) => setTempInput(prev => ({ ...prev, skill: e.target.value }))}
+                      onChange={(e) => setTempInput({ ...tempInput, skill: e.target.value })}
                       onKeyPress={(e) => handleKeyPress(e, 'skills')}
                       placeholder="Add skill and press Enter"
+                      className={createInternshipError ? 'error-input' : ''}
                     />
                     <button 
                       type="button" 
@@ -550,6 +561,7 @@ export const InternshipHome = () => {
                   type="date"
                   value={newInternship.deadline}
                   onChange={(e) => setNewInternship({ ...newInternship, deadline: e.target.value })}
+                  className={createInternshipError ? 'error-input' : ''}
                 />
               </div>
               <div className="form-group">
