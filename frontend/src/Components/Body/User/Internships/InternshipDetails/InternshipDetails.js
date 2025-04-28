@@ -483,7 +483,7 @@ export const InternshipDetails = () => {
       <div className="internship-details-container">
         <div className="error-message">
           <p>{error}</p>
-          <button className="try-again-button" onClick={fetchInternshipDetails}>Try Again</button>
+          <button className="internship-details-try-again-button" onClick={fetchInternshipDetails}>Try Again</button>
         </div>
       </div>
     );
@@ -503,47 +503,35 @@ export const InternshipDetails = () => {
   return (
     <div className="internship-details-container">
       {/* Header Section */}
-      <div className="internship-header">
-        <div className="header-content">
+      <div className="internship-details-header">
+        <div className="internship-details-header-content">
           <h1>{internship?.title || "Loading..."}</h1>
-          <p className="company-name">{internship?.companyName || ""}</p>
+          <p className="internship-details-company-name">{internship?.companyName || ""}</p>
         </div>
-        <div className="header-actions">
+        <div className="internship-details-header-actions">
           {internship?.isUserCreated ? (
             <>
-              <button className="edit-button" onClick={handleEditClick}>
+              <button className="internship-details-edit-button" onClick={handleEditClick}>
                 Edit Internship
               </button>
-              <button
-                className="delete-button"
-                onClick={handleDeleteInternship}
-              >
+              <button className="internship-details-delete-button" onClick={handleDeleteInternship}>
                 Delete Internship
               </button>
-              <button
-                className="applicants-button"
-                onClick={() => setShowApplicantsModal(true)}
-              >
+              <button className="internship-details-applicants-button" onClick={() => setShowApplicantsModal(true)}>
                 View Applicants
               </button>
             </>
           ) : internship?.isApplied ? (
             <>
-              <button
-                className="status-button"
-                onClick={() => setShowStatusModal(true)}
-              >
+              <button className="internship-details-status-button" onClick={() => setShowStatusModal(true)}>
                 View Application Status
               </button>
-              <button className="withdraw-button" onClick={handleWithdraw}>
+              <button className="internship-details-withdraw-button" onClick={handleWithdraw}>
                 Withdraw Application
               </button>
             </>
           ) : (
-            <button
-              className="apply-button"
-              onClick={() => setShowApplyModal(true)}
-            >
+            <button className="internship-details-apply-button" onClick={() => setShowApplyModal(true)}>
               Apply Now
             </button>
           )}
@@ -551,13 +539,13 @@ export const InternshipDetails = () => {
       </div>
 
       {/* Main Content */}
-      <div className="internship-content">
-        <div className="internship-images">
-          <div className="image-slider">
+      <div className="internship-details-content">
+        <div className="internship-details-images">
+          <div className="internship-details-image-slider">
             {(internship?.imagesUrl || []).map((image, index) => (
               <div
                 key={index}
-                className={`slider-image ${
+                className={`internship-details-slider-image ${
                   index === currentImageIndex ? "active" : ""
                 }`}
                 onClick={() => handleImageClick(internship.imagesUrl, index)}
@@ -570,24 +558,24 @@ export const InternshipDetails = () => {
             ))}
             {(internship?.imagesUrl || []).length > 1 && (
               <>
-                <button className="slider-nav prev" onClick={handlePrevImage}>
+                <button className="internship-details-slider-nav prev" onClick={handlePrevImage}>
                   &lt;
                 </button>
-                <button className="slider-nav next" onClick={handleNextImage}>
+                <button className="internship-details-slider-nav next" onClick={handleNextImage}>
                   &gt;
                 </button>
-                <div className="slider-controls">
+                <div className="internship-details-slider-controls">
                   <button
-                    className={`auto-slide-toggle ${autoSlide ? "active" : ""}`}
+                    className={`internship-details-auto-slide-toggle ${autoSlide ? "active" : ""}`}
                     onClick={toggleAutoSlide}
                   >
                     {autoSlide ? "⏸️" : "▶️"}
                   </button>
-                  <div className="slider-dots">
+                  <div className="internship-details-slider-dots">
                     {(internship?.imagesUrl || []).map((_, index) => (
                       <button
                         key={index}
-                        className={`dot ${
+                        className={`internship-details-dot ${
                           index === currentImageIndex ? "active" : ""
                         }`}
                         onClick={() => setCurrentImageIndex(index)}
@@ -600,16 +588,16 @@ export const InternshipDetails = () => {
           </div>
         </div>
 
-        <div className="internship-info">
-          <div className="info-section">
+        <div className="internship-details-info">
+          <div className="internship-details-info-section">
             <h2>About the Role</h2>
             <div
-              className="description"
+              className="internship-details-description"
               dangerouslySetInnerHTML={{ __html: internship.description }}
             />
           </div>
 
-          <div className="info-section">
+          <div className="internship-details-info-section">
             <h2>Responsibilities</h2>
             <ul>
               {(internship?.responsibilities || []).map((item, index) => (
@@ -618,7 +606,7 @@ export const InternshipDetails = () => {
             </ul>
           </div>
 
-          <div className="info-section">
+          <div className="internship-details-info-section">
             <h2>Requirements</h2>
             <ul>
               {(internship?.requirements || []).map((item, index) => (
@@ -627,7 +615,7 @@ export const InternshipDetails = () => {
             </ul>
           </div>
 
-          <div className="info-section">
+          <div className="internship-details-info-section">
             <h2>Perks & Benefits</h2>
             <ul>
               {(internship?.perksOrBenefits || []).map((item, index) => (
@@ -636,40 +624,40 @@ export const InternshipDetails = () => {
             </ul>
           </div>
 
-          <div className="info-section">
+          <div className="internship-details-info-section">
             <h2>Other Details</h2>
             <div
-              className="other-details"
+              className="internship-details-other-details"
               dangerouslySetInnerHTML={{ __html: internship.otherDetails }}
             />
           </div>
 
-          <div className="info-grid">
-            <div className="info-item">
+          <div className="internship-details-info-grid">
+            <div className="internship-details-info-item">
               <span className="label">Location:</span>
               <span className="value">{internship.location}</span>
             </div>
-            <div className="info-item">
+            <div className="internship-details-info-item">
               <span className="label">Job Type:</span>
               <span className="value">{internship.jobType}</span>
             </div>
-            <div className="info-item">
+            <div className="internship-details-info-item">
               <span className="label">Salary:</span>
               <span className="value">{internship.salary}</span>
             </div>
-            <div className="info-item">
+            <div className="internship-details-info-item">
               <span className="label">Duration:</span>
               <span className="value">{internship.duration}</span>
             </div>
-            <div className="info-item">
+            <div className="internship-details-info-item">
               <span className="label">Category:</span>
               <span className="value">{internship.category}</span>
             </div>
-            <div className="info-item">
+            <div className="internship-details-info-item">
               <span className="label">Experience Level:</span>
               <span className="value">{internship.experienceLevel}</span>
             </div>
-            <div className="info-item">
+            <div className="internship-details-info-item">
               <span className="label">Deadline:</span>
               <span className="value">
                 {new Date(internship.deadline).toLocaleDateString()}
@@ -677,11 +665,11 @@ export const InternshipDetails = () => {
             </div>
           </div>
 
-          <div className="info-section">
+          <div className="internship-details-info-section">
             <h2>Required Skills</h2>
-            <div className="skills-list">
+            <div className="internship-details-skills-list">
               {(internship?.skills || []).map((skill, index) => (
-                <span key={index} className="skill-tag">
+                <span key={index} className="internship-details-skill-tag">
                   {skill}
                 </span>
               ))}
@@ -692,11 +680,11 @@ export const InternshipDetails = () => {
 
       {/* Edit Modal */}
       {showEditModal && (
-        <div className="modal">
-          <div className="modal-content edit-modal">
-            <div className="modal-header">
+        <div className="internship-details-modal">
+          <div className="internship-details-modal-content internship-details-edit-modal">
+            <div className="internship-details-modal-header">
               <h2>Edit Internship</h2>
-              <button className="close-button" onClick={() => setShowEditModal(false)}>×</button>
+              <button className="internship-details-close-button" onClick={() => setShowEditModal(false)}>×</button>
             </div>
             {error && (
               <div className="error-message">
@@ -1104,8 +1092,8 @@ export const InternshipDetails = () => {
 
       {/* Apply Modal */}
       {showApplyModal && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="internship-details-modal">
+          <div className="internship-details-modal-content">
             <h2>Apply for Internship</h2>
             <form onSubmit={handleApply}>
               <div className="form-group">
@@ -1191,16 +1179,16 @@ export const InternshipDetails = () => {
 
       {/* Applicants Modal */}
       {showApplicantsModal && (
-        <div className="modal">
-          <div className="modal-content applicants-modal">
-            <div className="modal-header">
+        <div className="internship-details-modal">
+          <div className="internship-details-modal-content internship-details-applicants-modal">
+            <div className="internship-details-modal-header">
               <h2>Applicants List</h2>
-              <button className="close-button" onClick={() => setShowApplicantsModal(false)}>×</button>
+              <button className="internship-details-close-button" onClick={() => setShowApplicantsModal(false)}>×</button>
             </div>
-            <div className="applicants-list">
+            <div className="internship-details-applicants-list">
               {internship?.applicants?.map((applicant) => (
-                <div key={applicant.id} className="applicant-card">
-                  <div className="applicant-info">
+                <div key={applicant.id} className="internship-details-applicant-card">
+                  <div className="internship-details-applicant-info">
                     <img
                       src={
                         applicant.UserProfile?.profileUrl
@@ -1208,78 +1196,71 @@ export const InternshipDetails = () => {
                           : "/assets/Utils/male.png"
                       }
                       alt={applicant.name}
-                      className="applicant-profile"
+                      className="internship-details-applicant-profile"
                     />
-                    <div className="applicant-details">
+                    <div className="internship-details-applicant-details">
                       <h3>{applicant.name}</h3>
                       <p>{applicant.email}</p>
-                      <p
-                        className={`status-badge ${applicant.application.status}`}
-                      >
+                      <p className={`internship-details-status-badge ${applicant.application.status}`}>
                         {applicant.application.status}
                       </p>
                     </div>
                   </div>
 
-                  <div className="application-details">
-                    <div className="detail-row">
-                      <span className="detail-label">Notice Period:</span>
-                      <span className="detail-value">
+                  <div className="internship-details-application-details">
+                    <div className="internship-details-detail-row">
+                      <span className="internship-details-detail-label">Notice Period:</span>
+                      <span className="internship-details-detail-value">
                         {applicant.application.noticePeriod || "Not specified"}
                       </span>
                     </div>
-                    <div className="detail-row">
-                      <span className="detail-label">Current Salary:</span>
-                      <span className="detail-value">
+                    <div className="internship-details-detail-row">
+                      <span className="internship-details-detail-label">Current Salary:</span>
+                      <span className="internship-details-detail-value">
                         {applicant.application.currentSalary || "Not specified"}
                       </span>
                     </div>
-                    <div className="detail-row">
-                      <span className="detail-label">Expected Salary:</span>
-                      <span className="detail-value">
-                        {applicant.application.expectedSalary ||
-                          "Not specified"}
+                    <div className="internship-details-detail-row">
+                      <span className="internship-details-detail-label">Expected Salary:</span>
+                      <span className="internship-details-detail-value">
+                        {applicant.application.expectedSalary || "Not specified"}
                       </span>
                     </div>
-                    <div className="detail-row">
-                      <span className="detail-label">Availability:</span>
-                      <span className="detail-value">
+                    <div className="internship-details-detail-row">
+                      <span className="internship-details-detail-label">Availability:</span>
+                      <span className="internship-details-detail-value">
                         {applicant.application.availability || "Not specified"}
                       </span>
                     </div>
-                    <div className="detail-row">
-                      <span className="detail-label">Applied At:</span>
-                      <span className="detail-value">
-                        {new Date(
-                          applicant.application.appliedAt
-                        ).toLocaleDateString()}
+                    <div className="internship-details-detail-row">
+                      <span className="internship-details-detail-label">Applied At:</span>
+                      <span className="internship-details-detail-value">
+                        {new Date(applicant.application.appliedAt).toLocaleDateString()}
                       </span>
                     </div>
                     {applicant.application.interviewDate && (
-                      <div className="detail-row">
-                        <span className="detail-label">Interview Date:</span>
-                        <span className="detail-value">
-                          {new Date(
-                            applicant.application.interviewDate
-                          ).toLocaleDateString()}
+                      <div className="internship-details-detail-row">
+                        <span className="internship-details-detail-label">Interview Date:</span>
+                        <span className="internship-details-detail-value">
+                          {new Date(applicant.application.interviewDate).toLocaleDateString()}
                         </span>
                       </div>
                     )}
                     {applicant.application.coverLetter && (
-                      <div className="detail-row">
-                        <span className="detail-label">Cover Letter:</span>
-                        <div className="cover-letter">
+                      <div className="internship-details-detail-row">
+                        <span className="internship-details-detail-label">Cover Letter:</span>
+                        <div className="internship-details-cover-letter">
                           {applicant.application.coverLetter}
                         </div>
                       </div>
                     )}
                     {applicant.application.resumeUrl && (
-                      <div className="detail-row">
+                      <div className="internship-details-detail-row">
                         <a
                           href={`${process.env.REACT_APP_REMOTE_ADDRESS}/${applicant.application.resumeUrl}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="view-resume-button"
+                          className="internship-details-view-resume-button"
                         >
                           View Resume
                         </a>
@@ -1287,9 +1268,9 @@ export const InternshipDetails = () => {
                     )}
                   </div>
 
-                  <div className="applicant-actions">
+                  <div className="internship-details-applicant-actions">
                     <button
-                      className="update-status-button"
+                      className="internship-details-update-status-button"
                       onClick={() => {
                         setSelectedApplicant(applicant);
                         setStatusData({
@@ -1311,96 +1292,87 @@ export const InternshipDetails = () => {
 
       {/* Status Update Modal */}
       {showStatusModal && (
-        <div className="modal">
-          <div className="modal-content status-modal">
-            <div className="modal-header">
+        <div className="internship-details-modal">
+          <div className="internship-details-modal-content internship-details-status-modal">
+            <div className="internship-details-modal-header">
               <h2>
                 {internship?.isUserCreated
                   ? `Update Status for ${selectedApplicant?.name}`
                   : "Your Application Status"}
               </h2>
-              <button className="close-button" onClick={() => setShowStatusModal(false)}>×</button>
+              <button className="internship-details-close-button" onClick={() => setShowStatusModal(false)}>×</button>
             </div>
 
             {!internship?.isUserCreated && (
-              <div className="application-details">
-                <div className="detail-row">
-                  <span className="detail-label">Notice Period:</span>
-                  <span className="detail-value">
+              <div className="internship-details-application-details">
+                <div className="internship-details-detail-row">
+                  <span className="internship-details-detail-label">Notice Period:</span>
+                  <span className="internship-details-detail-value">
                     {internship?.applicationInfo?.noticePeriod || "Not specified"}
                   </span>
                 </div>
-                <div className="detail-row">
-                  <span className="detail-label">Current Salary:</span>
-                  <span className="detail-value">
-                    {internship?.applicationInfo?.currentSalary ||
-                      "Not specified"}
+                <div className="internship-details-detail-row">
+                  <span className="internship-details-detail-label">Current Salary:</span>
+                  <span className="internship-details-detail-value">
+                    {internship?.applicationInfo?.currentSalary || "Not specified"}
                   </span>
                 </div>
-                <div className="detail-row">
-                  <span className="detail-label">Expected Salary:</span>
-                  <span className="detail-value">
-                    {internship?.applicationInfo?.expectedSalary ||
-                      "Not specified"}
+                <div className="internship-details-detail-row">
+                  <span className="internship-details-detail-label">Expected Salary:</span>
+                  <span className="internship-details-detail-value">
+                    {internship?.applicationInfo?.expectedSalary || "Not specified"}
                   </span>
                 </div>
-                <div className="detail-row">
-                  <span className="detail-label">Availability:</span>
-                  <span className="detail-value">
-                    {internship?.applicationInfo?.availability ||
-                      "Not specified"}
+                <div className="internship-details-detail-row">
+                  <span className="internship-details-detail-label">Availability:</span>
+                  <span className="internship-details-detail-value">
+                    {internship?.applicationInfo?.availability || "Not specified"}
                   </span>
                 </div>
-                <div className="detail-row">
-                  <span className="detail-label">Applied At:</span>
-                  <span className="detail-value">
-                    {new Date(
-                      internship?.applicationInfo?.appliedAt
-                    ).toLocaleDateString()}
+                <div className="internship-details-detail-row">
+                  <span className="internship-details-detail-label">Applied At:</span>
+                  <span className="internship-details-detail-value">
+                    {new Date(internship?.applicationInfo?.appliedAt).toLocaleDateString()}
                   </span>
                 </div>
                 {internship?.applicationInfo?.interviewDate && (
-                  <div className="detail-row">
-                    <span className="detail-label">Interview Date:</span>
-                    <span className="detail-value">
-                      {new Date(
-                        internship?.applicationInfo?.interviewDate
-                      ).toLocaleDateString()}
+                  <div className="internship-details-detail-row">
+                    <span className="internship-details-detail-label">Interview Date:</span>
+                    <span className="internship-details-detail-value">
+                      {new Date(internship?.applicationInfo?.interviewDate).toLocaleDateString()}
                     </span>
                   </div>
                 )}
                 {internship?.applicationInfo?.coverLetter && (
-                  <div className="detail-row">
-                    <span className="detail-label">Cover Letter:</span>
-                    <div className="cover-letter">
+                  <div className="internship-details-detail-row">
+                    <span className="internship-details-detail-label">Cover Letter:</span>
+                    <div className="internship-details-cover-letter">
                       {internship?.applicationInfo?.coverLetter}
                     </div>
                   </div>
                 )}
                 {internship?.applicationInfo?.resumeUrl && (
-                  <div className="detail-row">
+                  <div className="internship-details-detail-row">
                     <a
                       href={`${process.env.REACT_APP_REMOTE_ADDRESS}/${internship?.applicationInfo?.resumeUrl}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="view-resume-button"
+                      className="internship-details-view-resume-button"
                     >
                       View Your Resume
                     </a>
                   </div>
                 )}
-                <div className="detail-row">
-                  <span className="detail-label">Current Status:</span>
-                  <span
-                    className={`status-badge ${internship?.applicationInfo?.status}`}
-                  >
+                <div className="internship-details-detail-row">
+                  <span className="internship-details-detail-label">Current Status:</span>
+                  <span className={`internship-details-status-badge ${internship?.applicationInfo?.status}`}>
                     {internship?.applicationInfo?.status}
                   </span>
                 </div>
                 {internship?.applicationInfo?.feedback && (
-                  <div className="detail-row">
-                    <span className="detail-label">Feedback:</span>
-                    <div className="feedback-text">
+                  <div className="internship-details-detail-row">
+                    <span className="internship-details-detail-label">Feedback:</span>
+                    <div className="internship-details-feedback-text">
                       {internship?.applicationInfo?.feedback}
                     </div>
                   </div>
@@ -1459,15 +1431,11 @@ export const InternshipDetails = () => {
       )}
 
       {selectedImagePopup && (
-        <div
-          className="image-popup"
-          ref={imagePopupRef}
-          onClick={handleClosePopup}
-        >
-          <div className="image-popup-content">
-            <button className="image-popup-close">×</button>
+        <div className="internship-details-image-popup" ref={imagePopupRef} onClick={handleClosePopup}>
+          <div className="internship-details-image-popup-content">
+            <button className="internship-details-image-popup-close">×</button>
             <button
-              className="image-popup-nav prev"
+              className="internship-details-image-popup-nav prev"
               onClick={(e) => {
                 e.stopPropagation();
                 handlePrevImage();
@@ -1476,7 +1444,7 @@ export const InternshipDetails = () => {
               ←
             </button>
             <button
-              className="image-popup-nav next"
+              className="internship-details-image-popup-nav next"
               onClick={(e) => {
                 e.stopPropagation();
                 handleNextImage();
@@ -1484,7 +1452,7 @@ export const InternshipDetails = () => {
             >
               →
             </button>
-            <div className="image-popup-counter">
+            <div className="internship-details-image-popup-counter">
               {currentImageIndex + 1} / {selectedImagePopup.length}
             </div>
             <img
@@ -1499,9 +1467,9 @@ export const InternshipDetails = () => {
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
             />
-            <div className="image-popup-zoom-controls">
-              <button className="zoom-button" onClick={handleZoomIn}>+</button>
-              <button className="zoom-button" onClick={handleZoomOut}>-</button>
+            <div className="internship-details-image-popup-zoom-controls">
+              <button className="internship-details-zoom-button" onClick={handleZoomIn}>+</button>
+              <button className="internship-details-zoom-button" onClick={handleZoomOut}>-</button>
             </div>
           </div>
         </div>
