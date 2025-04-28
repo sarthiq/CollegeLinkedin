@@ -9,7 +9,6 @@ const { baseDir } = require("../../../importantInfo");
 const { Op } = require("sequelize");
 const UserProfile = require("../../../Models/User/userProfile");
 
-
 //Internship related controllers
 exports.createInternship = async (req, res) => {
   let transaction;
@@ -168,25 +167,25 @@ exports.getInternships = async (req, res) => {
     });
 
     // Get all internship IDs
-    const internshipIds = internships.map(internship => internship.id);
+    const internshipIds = internships.map((internship) => internship.id);
 
     // Find all applied internships for the current user
     const appliedInternships = await AppliedInternship.findAll({
       where: {
         UserId: userId,
-        InternshipId: internshipIds
+        InternshipId: internshipIds,
       },
-      attributes: ['InternshipId', 'status']
+      attributes: ["InternshipId", "status"],
     });
 
     // Create a map of applied internships for quick lookup
     const appliedInternshipMap = {};
-    appliedInternships.forEach(applied => {
+    appliedInternships.forEach((applied) => {
       appliedInternshipMap[applied.InternshipId] = applied.status;
     });
 
     // Transform the data to include isApplied flag
-    const transformedInternships = internships.map(internship => {
+    const transformedInternships = internships.map((internship) => {
       const jsonData = internship.toJSON();
       jsonData.isUserCreated = jsonData.UserId === req.user.id;
       jsonData.isApplied = appliedInternshipMap[jsonData.id] !== undefined;
@@ -222,22 +221,26 @@ exports.getInternshipById = async (req, res) => {
   try {
     const { id } = req.body;
 
-    if(!id){
+    if (!id) {
       return res.status(400).json({
         success: false,
-        message: "Internship ID is required"
+        message: "Internship ID is required",
       });
     }
 
     const internship = await Internship.findByPk(id, {
-      include: [{
-        model: User,
-        attributes: ['name', 'email'],
-        include: [{
-          model: UserProfile,
-          attributes: ['profileUrl']
-        }]
-      }],
+      include: [
+        {
+          model: User,
+          attributes: ["name", "email"],
+          include: [
+            {
+              model: UserProfile,
+              attributes: ["profileUrl"],
+            },
+          ],
+        },
+      ],
     });
 
     if (!internship) {
@@ -245,53 +248,51 @@ exports.getInternshipById = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Internship not found" });
     }
-    
+
     // Check if user has applied to this internship
     const appliedInternship = await AppliedInternship.findOne({
       where: {
         UserId: req.user.id,
-        InternshipId: id
+        InternshipId: id,
       },
-      attributes: ['status']
     });
 
-   
-    
     // First find all applied internships for this internship
     const allAppliedInternships = await AppliedInternship.findAll({
       where: { InternshipId: id },
-    
     });
 
     // Get all user IDs from applied internships
-    const userIds = allAppliedInternships.map(app => app.UserId);
+    const userIds = allAppliedInternships.map((app) => app.UserId);
 
     // Fetch user information for all applicants
     const applicants = await User.findAll({
       where: { id: userIds },
-      attributes: ['id', 'name', 'email'],
-      include: [{
-        model: UserProfile,
-        attributes: ['profileUrl']
-      }]
+      attributes: ["id", "name", "email"],
+      include: [
+        {
+          model: UserProfile,
+          attributes: ["profileUrl"],
+        },
+      ],
     });
 
     // Create a map of user information
     const userMap = {};
-    applicants.forEach(user => {
+    applicants.forEach((user) => {
       userMap[user.id] = user.toJSON();
     });
 
     const jsonData = internship.toJSON();
-    
+
     jsonData.isUserCreated = jsonData.UserId === req.user.id;
     jsonData.isApplied = appliedInternship !== null;
-    jsonData.applicationStatus = appliedInternship ? appliedInternship.status : null;
-    
+    jsonData.applicationInfo = appliedInternship || null;
+
     // Add applicants information
-    jsonData.applicants = allAppliedInternships.map(app => ({
+    jsonData.applicants = allAppliedInternships.map((app) => ({
       ...userMap[app.UserId],
-      application: app
+      application: app,
     }));
 
     res.status(200).json({ success: true, data: jsonData });

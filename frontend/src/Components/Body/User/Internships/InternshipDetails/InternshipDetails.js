@@ -1,37 +1,42 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  getInternshipByIdHandler, 
-  updateInternshipHandler, 
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  getInternshipByIdHandler,
+  updateInternshipHandler,
   deleteInternshipHandler,
   applyForInternshipHandler,
   withdrawInternshipHandler,
-  updateUserStatusHandler
-} from '../internshipsApiHandler';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import './InternshipDetails.css';
+  updateUserStatusHandler,
+} from "../internshipsApiHandler";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import "./InternshipDetails.css";
 
 const modules = {
   toolbar: [
-    [{ 'header': [1, 2, 3, false] }],
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    ['link', 'image'],
-    ['clean']
-  ]
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link", "image"],
+    ["clean"],
+  ],
 };
 
 const formats = [
-  'header',
-  'bold', 'italic', 'underline', 'strike',
-  'list', 'bullet',
-  'link', 'image'
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "list",
+  "bullet",
+  "link",
+  "image",
 ];
 
-const jobTypes = ['Full-time', 'Part-time', 'Contract', 'Freelance'];
-const categories = ['Technology', 'Business', 'Design', 'Marketing', 'Other'];
-const experienceLevels = ['Entry Level', 'Intermediate', 'Expert'];
+const jobTypes = ["Full-time", "Part-time", "Contract", "Freelance"];
+const categories = ["Technology", "Business", "Design", "Marketing", "Other"];
+const experienceLevels = ["Entry Level", "Intermediate", "Expert"];
 
 export const InternshipDetails = () => {
   const { id } = useParams();
@@ -41,56 +46,58 @@ export const InternshipDetails = () => {
     responsibilities: [],
     requirements: [],
     perksOrBenefits: [],
-    skills: []
+    skills: [],
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showApplicantsModal, setShowApplicantsModal] = useState(false);
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [tempInput, setTempInput] = useState({
-    responsibility: '',
-    requirement: '',
-    perk: '',
-    skill: ''
+    responsibility: "",
+    requirement: "",
+    perk: "",
+    skill: "",
   });
 
   const [editData, setEditData] = useState({
-    title: '',
-    companyName: '',
-    description: '',
-    role: '',
+    title: "",
+    companyName: "",
+    description: "",
+    role: "",
     responsibilities: [],
     requirements: [],
     perksOrBenefits: [],
-    otherDetails: '',
-    location: '',
-    jobType: '',
+    otherDetails: "",
+    location: "",
+    jobType: "",
     remote: false,
-    salary: '',
-    duration: '',
+    salary: "",
+    duration: "",
     skills: [],
-    deadline: '',
-    status: 'active',
-    category: '',
-    experienceLevel: '',
+    deadline: "",
+    status: "active",
+    category: "",
+    experienceLevel: "",
     existingImages: [],
-    newImages: []
+    newImages: [],
   });
 
   const [applyData, setApplyData] = useState({
-    noticePeriod: '',
-    currentSalary: '',
-    expectedSalary: '',
-    availability: '',
-    coverLetter: '',
-    resume: null
+    noticePeriod: "",
+    currentSalary: "",
+    expectedSalary: "",
+    availability: "",
+    coverLetter: "",
+    resume: null,
   });
 
   const [statusData, setStatusData] = useState({
-    status: 'pending',
-    feedback: ''
+    status: "",
+    feedback: "",
+    interviewDate: "",
   });
 
   const [selectedImagePopup, setSelectedImagePopup] = useState(null);
@@ -111,66 +118,71 @@ export const InternshipDetails = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await getInternshipByIdHandler({ id }, setIsLoading, setError);
+      const response = await getInternshipByIdHandler(
+        { id },
+        setIsLoading,
+        setError
+      );
       if (response && response.success) {
+        console.log(response.data);
         setInternship({
           ...response.data,
           imagesUrl: response.data.imagesUrl || [],
           responsibilities: response.data.responsibilities || [],
           requirements: response.data.requirements || [],
           perksOrBenefits: response.data.perksOrBenefits || [],
-          skills: response.data.skills || []
+          skills: response.data.skills || [],
         });
         setEditData({
-          title: response.data.title || '',
-          companyName: response.data.companyName || '',
-          description: response.data.description || '',
-          role: response.data.role || '',
+          title: response.data.title || "",
+          companyName: response.data.companyName || "",
+          description: response.data.description || "",
+          role: response.data.role || "",
           responsibilities: response.data.responsibilities || [],
           requirements: response.data.requirements || [],
           perksOrBenefits: response.data.perksOrBenefits || [],
-          otherDetails: response.data.otherDetails || '',
-          location: response.data.location || '',
-          jobType: response.data.jobType || '',
+          otherDetails: response.data.otherDetails || "",
+          location: response.data.location || "",
+          jobType: response.data.jobType || "",
           remote: response.data.remote || false,
-          salary: response.data.salary || '',
-          duration: response.data.duration || '',
+          salary: response.data.salary || "",
+          duration: response.data.duration || "",
           skills: response.data.skills || [],
-          deadline: response.data.deadline || '',
-          status: response.data.status || 'active',
-          category: response.data.category || '',
-          experienceLevel: response.data.experienceLevel || '',
+          deadline: response.data.deadline || "",
+          status: response.data.status || "active",
+          category: response.data.category || "",
+          experienceLevel: response.data.experienceLevel || "",
           existingImages: response.data.imagesUrl || [],
-          newImages: []
+          newImages: [],
         });
       }
     } catch (err) {
-      setError(err.message || 'Failed to fetch internship details');
+      setError(err.message || "Failed to fetch internship details");
     }
   };
 
   const handleEditClick = () => {
     setEditData({
-      title: internship?.title || '',
-      companyName: internship?.companyName || '',
-      description: internship?.description || '',
-      role: internship?.role || '',
+      title: internship?.title || "",
+      companyName: internship?.companyName || "",
+      description: internship?.description || "",
+      role: internship?.role || "",
       responsibilities: internship?.responsibilities || [],
       requirements: internship?.requirements || [],
       perksOrBenefits: internship?.perksOrBenefits || [],
-      otherDetails: internship?.otherDetails || '',
-      location: internship?.location || '',
-      jobType: internship?.jobType || '',
+      otherDetails: internship?.otherDetails || "",
+      location: internship?.location || "",
+      jobType: internship?.jobType || "",
       remote: internship?.remote || false,
-      salary: internship?.salary || '',
-      duration: internship?.duration || '',
+      salary: internship?.salary || "",
+      duration: internship?.duration || "",
       skills: internship?.skills || [],
-      deadline: internship?.deadline || '',
-      status: internship?.status || 'active',
-      category: internship?.category || '',
-      experienceLevel: internship?.experienceLevel || '',
+      deadline: internship?.deadline || "",
+      status: internship?.status || "active",
+      category: internship?.category || "",
+      experienceLevel: internship?.experienceLevel || "",
       existingImages: internship?.imagesUrl || [],
-      newImages: []
+      newImages: [],
     });
     setShowEditModal(true);
   };
@@ -178,54 +190,58 @@ export const InternshipDetails = () => {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
-      setEditData(prev => ({
+      setEditData((prev) => ({
         ...prev,
-        newImages: [...prev.newImages, ...files]
+        newImages: [...prev.newImages, ...files],
       }));
     }
   };
 
   const removeImage = (index, isExisting) => {
     if (isExisting) {
-      setEditData(prev => ({
+      setEditData((prev) => ({
         ...prev,
-        existingImages: prev.existingImages.filter((_, i) => i !== index)
+        existingImages: prev.existingImages.filter((_, i) => i !== index),
       }));
     } else {
-      setEditData(prev => ({
+      setEditData((prev) => ({
         ...prev,
-        newImages: prev.newImages.filter((_, i) => i !== index)
+        newImages: prev.newImages.filter((_, i) => i !== index),
       }));
     }
   };
 
   const handleAddItem = (field) => {
-    const inputField = field === 'responsibilities' ? 'responsibility' :
-                      field === 'requirements' ? 'requirement' :
-                      field === 'perksOrBenefits' ? 'perk' :
-                      'skill';
+    const inputField =
+      field === "responsibilities"
+        ? "responsibility"
+        : field === "requirements"
+        ? "requirement"
+        : field === "perksOrBenefits"
+        ? "perk"
+        : "skill";
 
-    if (tempInput[inputField] && tempInput[inputField].trim() !== '') {
-      setEditData(prev => ({
+    if (tempInput[inputField] && tempInput[inputField].trim() !== "") {
+      setEditData((prev) => ({
         ...prev,
-        [field]: [...prev[field], tempInput[inputField].trim()]
+        [field]: [...prev[field], tempInput[inputField].trim()],
       }));
-      setTempInput(prev => ({
+      setTempInput((prev) => ({
         ...prev,
-        [inputField]: ''
+        [inputField]: "",
       }));
     }
   };
 
   const handleRemoveItem = (field, index) => {
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
+      [field]: prev[field].filter((_, i) => i !== index),
     }));
   };
 
   const handleKeyPress = (e, field) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleAddItem(field);
     }
@@ -237,10 +253,10 @@ export const InternshipDetails = () => {
     setError(null);
 
     const formData = new FormData();
-    
+
     // Append all fields except images
-    Object.keys(editData).forEach(key => {
-      if (key !== 'existingImages' && key !== 'newImages') {
+    Object.keys(editData).forEach((key) => {
+      if (key !== "existingImages" && key !== "newImages") {
         if (Array.isArray(editData[key])) {
           // For array fields, append each item separately
           editData[key].forEach((item, index) => {
@@ -259,10 +275,10 @@ export const InternshipDetails = () => {
 
     // Append new images
     editData.newImages.forEach((image, index) => {
-      formData.append('image', image);
+      formData.append("image", image);
     });
 
-    formData.append('id', id);
+    formData.append("id", id);
 
     const response = await updateInternshipHandler(
       formData,
@@ -277,16 +293,20 @@ export const InternshipDetails = () => {
   };
 
   const handleDeleteInternship = async () => {
-    if (window.confirm('Are you sure you want to delete this internship?')) {
+    if (window.confirm("Are you sure you want to delete this internship?")) {
       try {
         setIsLoading(true);
         setError(null);
-        const response = await deleteInternshipHandler({ id }, setIsLoading, setError);
+        const response = await deleteInternshipHandler(
+          { id },
+          setIsLoading,
+          setError
+        );
         if (response && response.success) {
-          navigate('/dashboard/internships');
+          navigate("/dashboard/internships");
         }
       } catch (err) {
-        setError(err.message || 'Failed to delete internship');
+        setError(err.message || "Failed to delete internship");
       }
     }
   };
@@ -297,38 +317,46 @@ export const InternshipDetails = () => {
       setIsLoading(true);
       setError(null);
       const formData = new FormData();
-      
-      Object.keys(applyData).forEach(key => {
-        if (key !== 'resume') {
+
+      Object.keys(applyData).forEach((key) => {
+        if (key !== "resume") {
           formData.append(key, applyData[key]);
         }
       });
 
       if (applyData.resume) {
-        formData.append('resume', applyData.resume);
+        formData.append("resume", applyData.resume);
       }
-      formData.append('internshipId', id);
-      const response = await applyForInternshipHandler(formData, setIsLoading, setError);
+      formData.append("internshipId", id);
+      const response = await applyForInternshipHandler(
+        formData,
+        setIsLoading,
+        setError
+      );
       if (response && response.success) {
         setShowApplyModal(false);
         fetchInternshipDetails();
       }
     } catch (err) {
-      setError(err.message || 'Failed to apply for internship');
+      setError(err.message || "Failed to apply for internship");
     }
   };
 
   const handleWithdraw = async () => {
-    if (window.confirm('Are you sure you want to withdraw your application?')) {
+    if (window.confirm("Are you sure you want to withdraw your application?")) {
       try {
         setIsLoading(true);
         setError(null);
-        const response = await withdrawInternshipHandler({ internshipId: id }, setIsLoading, setError);
+        const response = await withdrawInternshipHandler(
+          { internshipId: id },
+          setIsLoading,
+          setError
+        );
         if (response && response.success) {
           fetchInternshipDetails();
         }
       } catch (err) {
-        setError(err.message || 'Failed to withdraw application');
+        setError(err.message || "Failed to withdraw application");
       }
     }
   };
@@ -338,19 +366,24 @@ export const InternshipDetails = () => {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await updateUserStatusHandler({
-        internshipId: id,
-        userId: selectedApplicant.id,
-        status: statusData.status,
-        feedback: statusData.feedback
-      }, setIsLoading, setError);
-      
+      const response = await updateUserStatusHandler(
+        {
+          internshipId: id,
+          userId: selectedApplicant.id,
+          status: statusData.status,
+          feedback: statusData.feedback,
+          interviewDate: statusData.interviewDate,
+        },
+        setIsLoading,
+        setError
+      );
+
       if (response && response.success) {
         setShowStatusModal(false);
         fetchInternshipDetails();
       }
     } catch (err) {
-      setError(err.message || 'Failed to update status');
+      setError(err.message || "Failed to update status");
     }
   };
 
@@ -362,7 +395,10 @@ export const InternshipDetails = () => {
   };
 
   const handleClosePopup = (e) => {
-    if (e.target === imagePopupRef.current || e.target.closest('.image-popup-close')) {
+    if (
+      e.target === imagePopupRef.current ||
+      e.target.closest(".image-popup-close")
+    ) {
       setSelectedImagePopup(null);
       setImageZoom(1);
       setImagePosition({ x: 0, y: 0 });
@@ -371,7 +407,7 @@ export const InternshipDetails = () => {
   };
 
   const handlePrevImage = () => {
-    setCurrentImageIndex(prev => 
+    setCurrentImageIndex((prev) =>
       prev === 0 ? internship.imagesUrl.length - 1 : prev - 1
     );
     setImageZoom(1);
@@ -379,7 +415,7 @@ export const InternshipDetails = () => {
   };
 
   const handleNextImage = () => {
-    setCurrentImageIndex(prev => 
+    setCurrentImageIndex((prev) =>
       prev === internship.imagesUrl.length - 1 ? 0 : prev + 1
     );
     setImageZoom(1);
@@ -387,11 +423,11 @@ export const InternshipDetails = () => {
   };
 
   const handleZoomIn = () => {
-    setImageZoom(prev => Math.min(prev + 0.25, 3));
+    setImageZoom((prev) => Math.min(prev + 0.25, 3));
   };
 
   const handleZoomOut = () => {
-    setImageZoom(prev => Math.max(prev - 0.25, 0.5));
+    setImageZoom((prev) => Math.max(prev - 0.25, 0.5));
   };
 
   const handleMouseDown = (e) => {
@@ -421,7 +457,7 @@ export const InternshipDetails = () => {
   useEffect(() => {
     if (autoSlide && internship?.imagesUrl?.length > 1) {
       const interval = setInterval(() => {
-        setCurrentImageIndex(prev => 
+        setCurrentImageIndex((prev) =>
           prev === internship.imagesUrl.length - 1 ? 0 : prev + 1
         );
       }, 5000);
@@ -431,7 +467,7 @@ export const InternshipDetails = () => {
   }, [autoSlide, internship?.imagesUrl]);
 
   const toggleAutoSlide = () => {
-    setAutoSlide(prev => !prev);
+    setAutoSlide((prev) => !prev);
   };
 
   if (isLoading) {
@@ -447,7 +483,7 @@ export const InternshipDetails = () => {
       <div className="internship-details-container">
         <div className="error-message">
           <p>{error}</p>
-          <button onClick={fetchInternshipDetails}>Try Again</button>
+          <button className="try-again-button" onClick={fetchInternshipDetails}>Try Again</button>
         </div>
       </div>
     );
@@ -462,48 +498,49 @@ export const InternshipDetails = () => {
       </div>
     );
   }
+  
 
   return (
     <div className="internship-details-container">
       {/* Header Section */}
       <div className="internship-header">
         <div className="header-content">
-          <h1>{internship?.title || 'Loading...'}</h1>
-          <p className="company-name">{internship?.companyName || ''}</p>
+          <h1>{internship?.title || "Loading..."}</h1>
+          <p className="company-name">{internship?.companyName || ""}</p>
         </div>
         <div className="header-actions">
           {internship?.isUserCreated ? (
             <>
-              <button 
-                className="edit-button"
-                onClick={handleEditClick}
-              >
+              <button className="edit-button" onClick={handleEditClick}>
                 Edit Internship
               </button>
-              <button 
+              <button
                 className="delete-button"
                 onClick={handleDeleteInternship}
               >
                 Delete Internship
               </button>
+              <button
+                className="applicants-button"
+                onClick={() => setShowApplicantsModal(true)}
+              >
+                View Applicants
+              </button>
             </>
           ) : internship?.isApplied ? (
             <>
-              <button 
+              <button
                 className="status-button"
                 onClick={() => setShowStatusModal(true)}
               >
                 View Application Status
               </button>
-              <button 
-                className="withdraw-button"
-                onClick={handleWithdraw}
-              >
+              <button className="withdraw-button" onClick={handleWithdraw}>
                 Withdraw Application
               </button>
             </>
           ) : (
-            <button 
+            <button
               className="apply-button"
               onClick={() => setShowApplyModal(true)}
             >
@@ -518,13 +555,15 @@ export const InternshipDetails = () => {
         <div className="internship-images">
           <div className="image-slider">
             {(internship?.imagesUrl || []).map((image, index) => (
-              <div 
+              <div
                 key={index}
-                className={`slider-image ${index === currentImageIndex ? 'active' : ''}`}
+                className={`slider-image ${
+                  index === currentImageIndex ? "active" : ""
+                }`}
                 onClick={() => handleImageClick(internship.imagesUrl, index)}
               >
-                <img 
-                  src={`${process.env.REACT_APP_REMOTE_ADDRESS}/${image}`} 
+                <img
+                  src={`${process.env.REACT_APP_REMOTE_ADDRESS}/${image}`}
                   alt={`Internship ${index + 1}`}
                 />
               </div>
@@ -538,17 +577,19 @@ export const InternshipDetails = () => {
                   &gt;
                 </button>
                 <div className="slider-controls">
-                  <button 
-                    className={`auto-slide-toggle ${autoSlide ? 'active' : ''}`}
+                  <button
+                    className={`auto-slide-toggle ${autoSlide ? "active" : ""}`}
                     onClick={toggleAutoSlide}
                   >
-                    {autoSlide ? '⏸️' : '▶️'}
+                    {autoSlide ? "⏸️" : "▶️"}
                   </button>
                   <div className="slider-dots">
                     {(internship?.imagesUrl || []).map((_, index) => (
                       <button
                         key={index}
-                        className={`dot ${index === currentImageIndex ? 'active' : ''}`}
+                        className={`dot ${
+                          index === currentImageIndex ? "active" : ""
+                        }`}
                         onClick={() => setCurrentImageIndex(index)}
                       />
                     ))}
@@ -562,7 +603,7 @@ export const InternshipDetails = () => {
         <div className="internship-info">
           <div className="info-section">
             <h2>About the Role</h2>
-            <div 
+            <div
               className="description"
               dangerouslySetInnerHTML={{ __html: internship.description }}
             />
@@ -597,7 +638,7 @@ export const InternshipDetails = () => {
 
           <div className="info-section">
             <h2>Other Details</h2>
-            <div 
+            <div
               className="other-details"
               dangerouslySetInnerHTML={{ __html: internship.otherDetails }}
             />
@@ -630,7 +671,9 @@ export const InternshipDetails = () => {
             </div>
             <div className="info-item">
               <span className="label">Deadline:</span>
-              <span className="value">{new Date(internship.deadline).toLocaleDateString()}</span>
+              <span className="value">
+                {new Date(internship.deadline).toLocaleDateString()}
+              </span>
             </div>
           </div>
 
@@ -638,7 +681,9 @@ export const InternshipDetails = () => {
             <h2>Required Skills</h2>
             <div className="skills-list">
               {(internship?.skills || []).map((skill, index) => (
-                <span key={index} className="skill-tag">{skill}</span>
+                <span key={index} className="skill-tag">
+                  {skill}
+                </span>
               ))}
             </div>
           </div>
@@ -648,15 +693,10 @@ export const InternshipDetails = () => {
       {/* Edit Modal */}
       {showEditModal && (
         <div className="modal">
-          <div className="modal-content">
+          <div className="modal-content edit-modal">
             <div className="modal-header">
               <h2>Edit Internship</h2>
-              <button 
-                className="close-button"
-                onClick={() => setShowEditModal(false)}
-              >
-                ×
-              </button>
+              <button className="close-button" onClick={() => setShowEditModal(false)}>×</button>
             </div>
             {error && (
               <div className="error-message">
@@ -669,7 +709,9 @@ export const InternshipDetails = () => {
                 <input
                   type="text"
                   value={editData.title}
-                  onChange={(e) => setEditData({ ...editData, title: e.target.value })}
+                  onChange={(e) =>
+                    setEditData({ ...editData, title: e.target.value })
+                  }
                   placeholder="Enter internship title"
                   required
                 />
@@ -679,7 +721,9 @@ export const InternshipDetails = () => {
                 <input
                   type="text"
                   value={editData.companyName}
-                  onChange={(e) => setEditData({ ...editData, companyName: e.target.value })}
+                  onChange={(e) =>
+                    setEditData({ ...editData, companyName: e.target.value })
+                  }
                   placeholder="Enter company name"
                   required
                 />
@@ -688,7 +732,9 @@ export const InternshipDetails = () => {
                 <label>Description</label>
                 <ReactQuill
                   value={editData.description}
-                  onChange={(value) => setEditData({ ...editData, description: value })}
+                  onChange={(value) =>
+                    setEditData({ ...editData, description: value })
+                  }
                   modules={modules}
                   formats={formats}
                   placeholder="Enter internship description"
@@ -699,7 +745,9 @@ export const InternshipDetails = () => {
                 <input
                   type="text"
                   value={editData.role}
-                  onChange={(e) => setEditData({ ...editData, role: e.target.value })}
+                  onChange={(e) =>
+                    setEditData({ ...editData, role: e.target.value })
+                  }
                   placeholder="Enter role"
                   required
                 />
@@ -711,14 +759,19 @@ export const InternshipDetails = () => {
                     <input
                       type="text"
                       value={tempInput.responsibility}
-                      onChange={(e) => setTempInput({ ...tempInput, responsibility: e.target.value })}
-                      onKeyPress={(e) => handleKeyPress(e, 'responsibilities')}
+                      onChange={(e) =>
+                        setTempInput({
+                          ...tempInput,
+                          responsibility: e.target.value,
+                        })
+                      }
+                      onKeyPress={(e) => handleKeyPress(e, "responsibilities")}
                       placeholder="Add responsibility and press Enter"
                     />
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="add-item-button"
-                      onClick={() => handleAddItem('responsibilities')}
+                      onClick={() => handleAddItem("responsibilities")}
                     >
                       <i className="fas fa-plus"></i>
                     </button>
@@ -727,10 +780,12 @@ export const InternshipDetails = () => {
                     {(editData?.responsibilities || []).map((item, index) => (
                       <div key={index} className="array-item">
                         <span>{item}</span>
-                        <button 
+                        <button
                           type="button"
                           className="remove-item-button"
-                          onClick={() => handleRemoveItem('responsibilities', index)}
+                          onClick={() =>
+                            handleRemoveItem("responsibilities", index)
+                          }
                         >
                           <i className="fas fa-times"></i>
                         </button>
@@ -746,14 +801,19 @@ export const InternshipDetails = () => {
                     <input
                       type="text"
                       value={tempInput.requirement}
-                      onChange={(e) => setTempInput({ ...tempInput, requirement: e.target.value })}
-                      onKeyPress={(e) => handleKeyPress(e, 'requirements')}
+                      onChange={(e) =>
+                        setTempInput({
+                          ...tempInput,
+                          requirement: e.target.value,
+                        })
+                      }
+                      onKeyPress={(e) => handleKeyPress(e, "requirements")}
                       placeholder="Add requirement and press Enter"
                     />
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="add-item-button"
-                      onClick={() => handleAddItem('requirements')}
+                      onClick={() => handleAddItem("requirements")}
                     >
                       <i className="fas fa-plus"></i>
                     </button>
@@ -762,10 +822,12 @@ export const InternshipDetails = () => {
                     {(editData?.requirements || []).map((item, index) => (
                       <div key={index} className="array-item">
                         <span>{item}</span>
-                        <button 
+                        <button
                           type="button"
                           className="remove-item-button"
-                          onClick={() => handleRemoveItem('requirements', index)}
+                          onClick={() =>
+                            handleRemoveItem("requirements", index)
+                          }
                         >
                           <i className="fas fa-times"></i>
                         </button>
@@ -781,14 +843,16 @@ export const InternshipDetails = () => {
                     <input
                       type="text"
                       value={tempInput.perk}
-                      onChange={(e) => setTempInput({ ...tempInput, perk: e.target.value })}
-                      onKeyPress={(e) => handleKeyPress(e, 'perksOrBenefits')}
+                      onChange={(e) =>
+                        setTempInput({ ...tempInput, perk: e.target.value })
+                      }
+                      onKeyPress={(e) => handleKeyPress(e, "perksOrBenefits")}
                       placeholder="Add perk/benefit and press Enter"
                     />
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="add-item-button"
-                      onClick={() => handleAddItem('perksOrBenefits')}
+                      onClick={() => handleAddItem("perksOrBenefits")}
                     >
                       <i className="fas fa-plus"></i>
                     </button>
@@ -797,10 +861,12 @@ export const InternshipDetails = () => {
                     {(editData?.perksOrBenefits || []).map((item, index) => (
                       <div key={index} className="array-item">
                         <span>{item}</span>
-                        <button 
+                        <button
                           type="button"
                           className="remove-item-button"
-                          onClick={() => handleRemoveItem('perksOrBenefits', index)}
+                          onClick={() =>
+                            handleRemoveItem("perksOrBenefits", index)
+                          }
                         >
                           <i className="fas fa-times"></i>
                         </button>
@@ -813,7 +879,9 @@ export const InternshipDetails = () => {
                 <label>Other Details</label>
                 <ReactQuill
                   value={editData.otherDetails}
-                  onChange={(value) => setEditData({ ...editData, otherDetails: value })}
+                  onChange={(value) =>
+                    setEditData({ ...editData, otherDetails: value })
+                  }
                   modules={modules}
                   formats={formats}
                   placeholder="Enter other details"
@@ -825,7 +893,9 @@ export const InternshipDetails = () => {
                   <input
                     type="text"
                     value={editData.location}
-                    onChange={(e) => setEditData({ ...editData, location: e.target.value })}
+                    onChange={(e) =>
+                      setEditData({ ...editData, location: e.target.value })
+                    }
                     placeholder="Enter location"
                   />
                 </div>
@@ -833,10 +903,14 @@ export const InternshipDetails = () => {
                   <label>Job Type</label>
                   <select
                     value={editData.jobType}
-                    onChange={(e) => setEditData({ ...editData, jobType: e.target.value })}
+                    onChange={(e) =>
+                      setEditData({ ...editData, jobType: e.target.value })
+                    }
                   >
-                    {jobTypes.map(type => (
-                      <option key={type} value={type}>{type}</option>
+                    {jobTypes.map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -847,7 +921,9 @@ export const InternshipDetails = () => {
                   <input
                     type="text"
                     value={editData.salary}
-                    onChange={(e) => setEditData({ ...editData, salary: e.target.value })}
+                    onChange={(e) =>
+                      setEditData({ ...editData, salary: e.target.value })
+                    }
                     placeholder="Enter salary"
                   />
                 </div>
@@ -856,7 +932,9 @@ export const InternshipDetails = () => {
                   <input
                     type="text"
                     value={editData.duration}
-                    onChange={(e) => setEditData({ ...editData, duration: e.target.value })}
+                    onChange={(e) =>
+                      setEditData({ ...editData, duration: e.target.value })
+                    }
                     placeholder="Enter duration"
                   />
                 </div>
@@ -866,10 +944,14 @@ export const InternshipDetails = () => {
                   <label>Category</label>
                   <select
                     value={editData.category}
-                    onChange={(e) => setEditData({ ...editData, category: e.target.value })}
+                    onChange={(e) =>
+                      setEditData({ ...editData, category: e.target.value })
+                    }
                   >
-                    {categories.map(category => (
-                      <option key={category} value={category}>{category}</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -877,10 +959,17 @@ export const InternshipDetails = () => {
                   <label>Experience Level</label>
                   <select
                     value={editData.experienceLevel}
-                    onChange={(e) => setEditData({ ...editData, experienceLevel: e.target.value })}
+                    onChange={(e) =>
+                      setEditData({
+                        ...editData,
+                        experienceLevel: e.target.value,
+                      })
+                    }
                   >
-                    {experienceLevels.map(level => (
-                      <option key={level} value={level}>{level}</option>
+                    {experienceLevels.map((level) => (
+                      <option key={level} value={level}>
+                        {level}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -889,8 +978,14 @@ export const InternshipDetails = () => {
                 <label>Deadline</label>
                 <input
                   type="date"
-                  value={editData.deadline ? new Date(editData.deadline).toISOString().split('T')[0] : ''}
-                  onChange={(e) => setEditData({ ...editData, deadline: e.target.value })}
+                  value={
+                    editData.deadline
+                      ? new Date(editData.deadline).toISOString().split("T")[0]
+                      : ""
+                  }
+                  onChange={(e) =>
+                    setEditData({ ...editData, deadline: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -901,14 +996,16 @@ export const InternshipDetails = () => {
                     <input
                       type="text"
                       value={tempInput.skill}
-                      onChange={(e) => setTempInput({ ...tempInput, skill: e.target.value })}
-                      onKeyPress={(e) => handleKeyPress(e, 'skills')}
+                      onChange={(e) =>
+                        setTempInput({ ...tempInput, skill: e.target.value })
+                      }
+                      onKeyPress={(e) => handleKeyPress(e, "skills")}
                       placeholder="Add skill and press Enter"
                     />
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="add-item-button"
-                      onClick={() => handleAddItem('skills')}
+                      onClick={() => handleAddItem("skills")}
                     >
                       <i className="fas fa-plus"></i>
                     </button>
@@ -917,10 +1014,10 @@ export const InternshipDetails = () => {
                     {(editData?.skills || []).map((item, index) => (
                       <div key={index} className="array-item">
                         <span>{item}</span>
-                        <button 
+                        <button
                           type="button"
                           className="remove-item-button"
-                          onClick={() => handleRemoveItem('skills', index)}
+                          onClick={() => handleRemoveItem("skills", index)}
                         >
                           <i className="fas fa-times"></i>
                         </button>
@@ -935,12 +1032,12 @@ export const InternshipDetails = () => {
                   {/* Existing Images */}
                   {(editData?.existingImages || []).map((image, index) => (
                     <div key={`existing-${index}`} className="image-preview">
-                      <img 
-                        src={`${process.env.REACT_APP_REMOTE_ADDRESS}/${image}`} 
-                        alt={`Existing ${index + 1}`} 
+                      <img
+                        src={`${process.env.REACT_APP_REMOTE_ADDRESS}/${image}`}
+                        alt={`Existing ${index + 1}`}
                       />
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         onClick={() => removeImage(index, true)}
                         className="remove-image"
                       >
@@ -951,9 +1048,12 @@ export const InternshipDetails = () => {
                   {/* New Images */}
                   {(editData?.newImages || []).map((image, index) => (
                     <div key={`new-${index}`} className="image-preview">
-                      <img src={URL.createObjectURL(image)} alt={`New ${index + 1}`} />
-                      <button 
-                        type="button" 
+                      <img
+                        src={URL.createObjectURL(image)}
+                        alt={`New ${index + 1}`}
+                      />
+                      <button
+                        type="button"
                         onClick={() => removeImage(index, false)}
                         className="remove-image"
                       >
@@ -967,9 +1067,14 @@ export const InternshipDetails = () => {
                       accept="image/*"
                       onChange={handleImageUpload}
                       multiple
-                      style={{ display: 'none' }}
+                      style={{ display: "none" }}
                     />
-                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                    <svg
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                    >
                       <path d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
                     </svg>
                     <span>Upload Images</span>
@@ -977,19 +1082,19 @@ export const InternshipDetails = () => {
                 </div>
               </div>
               <div className="form-actions">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="cancel-button"
                   onClick={() => setShowEditModal(false)}
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="update-button"
                   disabled={isLoading}
                 >
-                  {isLoading ? 'Updating...' : 'Update Internship'}
+                  {isLoading ? "Updating..." : "Update Internship"}
                 </button>
               </div>
             </form>
@@ -1008,7 +1113,9 @@ export const InternshipDetails = () => {
                 <input
                   type="text"
                   value={applyData.noticePeriod}
-                  onChange={(e) => setApplyData({ ...applyData, noticePeriod: e.target.value })}
+                  onChange={(e) =>
+                    setApplyData({ ...applyData, noticePeriod: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -1017,7 +1124,12 @@ export const InternshipDetails = () => {
                 <input
                   type="text"
                   value={applyData.currentSalary}
-                  onChange={(e) => setApplyData({ ...applyData, currentSalary: e.target.value })}
+                  onChange={(e) =>
+                    setApplyData({
+                      ...applyData,
+                      currentSalary: e.target.value,
+                    })
+                  }
                   required
                 />
               </div>
@@ -1026,7 +1138,12 @@ export const InternshipDetails = () => {
                 <input
                   type="text"
                   value={applyData.expectedSalary}
-                  onChange={(e) => setApplyData({ ...applyData, expectedSalary: e.target.value })}
+                  onChange={(e) =>
+                    setApplyData({
+                      ...applyData,
+                      expectedSalary: e.target.value,
+                    })
+                  }
                   required
                 />
               </div>
@@ -1035,7 +1152,9 @@ export const InternshipDetails = () => {
                 <input
                   type="text"
                   value={applyData.availability}
-                  onChange={(e) => setApplyData({ ...applyData, availability: e.target.value })}
+                  onChange={(e) =>
+                    setApplyData({ ...applyData, availability: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -1043,7 +1162,9 @@ export const InternshipDetails = () => {
                 <label>Cover Letter</label>
                 <textarea
                   value={applyData.coverLetter}
-                  onChange={(e) => setApplyData({ ...applyData, coverLetter: e.target.value })}
+                  onChange={(e) =>
+                    setApplyData({ ...applyData, coverLetter: e.target.value })
+                  }
                   required
                 />
               </div>
@@ -1051,12 +1172,16 @@ export const InternshipDetails = () => {
                 <label>Resume</label>
                 <input
                   type="file"
-                  onChange={(e) => setApplyData({ ...applyData, resume: e.target.files[0] })}
+                  onChange={(e) =>
+                    setApplyData({ ...applyData, resume: e.target.files[0] })
+                  }
                   required
                 />
               </div>
               <div className="form-actions">
-                <button type="button" onClick={() => setShowApplyModal(false)}>Cancel</button>
+                <button type="button" onClick={() => setShowApplyModal(false)}>
+                  Cancel
+                </button>
                 <button type="submit">Submit Application</button>
               </div>
             </form>
@@ -1064,49 +1189,284 @@ export const InternshipDetails = () => {
         </div>
       )}
 
-      {/* Status Modal */}
+      {/* Applicants Modal */}
+      {showApplicantsModal && (
+        <div className="modal">
+          <div className="modal-content applicants-modal">
+            <div className="modal-header">
+              <h2>Applicants List</h2>
+              <button className="close-button" onClick={() => setShowApplicantsModal(false)}>×</button>
+            </div>
+            <div className="applicants-list">
+              {internship?.applicants?.map((applicant) => (
+                <div key={applicant.id} className="applicant-card">
+                  <div className="applicant-info">
+                    <img
+                      src={
+                        applicant.UserProfile?.profileUrl
+                          ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${applicant.UserProfile?.profileUrl}`
+                          : "/assets/Utils/male.png"
+                      }
+                      alt={applicant.name}
+                      className="applicant-profile"
+                    />
+                    <div className="applicant-details">
+                      <h3>{applicant.name}</h3>
+                      <p>{applicant.email}</p>
+                      <p
+                        className={`status-badge ${applicant.application.status}`}
+                      >
+                        {applicant.application.status}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="application-details">
+                    <div className="detail-row">
+                      <span className="detail-label">Notice Period:</span>
+                      <span className="detail-value">
+                        {applicant.application.noticePeriod || "Not specified"}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Current Salary:</span>
+                      <span className="detail-value">
+                        {applicant.application.currentSalary || "Not specified"}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Expected Salary:</span>
+                      <span className="detail-value">
+                        {applicant.application.expectedSalary ||
+                          "Not specified"}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Availability:</span>
+                      <span className="detail-value">
+                        {applicant.application.availability || "Not specified"}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Applied At:</span>
+                      <span className="detail-value">
+                        {new Date(
+                          applicant.application.appliedAt
+                        ).toLocaleDateString()}
+                      </span>
+                    </div>
+                    {applicant.application.interviewDate && (
+                      <div className="detail-row">
+                        <span className="detail-label">Interview Date:</span>
+                        <span className="detail-value">
+                          {new Date(
+                            applicant.application.interviewDate
+                          ).toLocaleDateString()}
+                        </span>
+                      </div>
+                    )}
+                    {applicant.application.coverLetter && (
+                      <div className="detail-row">
+                        <span className="detail-label">Cover Letter:</span>
+                        <div className="cover-letter">
+                          {applicant.application.coverLetter}
+                        </div>
+                      </div>
+                    )}
+                    {applicant.application.resumeUrl && (
+                      <div className="detail-row">
+                        <a
+                          href={`${process.env.REACT_APP_REMOTE_ADDRESS}/${applicant.application.resumeUrl}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="view-resume-button"
+                        >
+                          View Resume
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="applicant-actions">
+                    <button
+                      className="update-status-button"
+                      onClick={() => {
+                        setSelectedApplicant(applicant);
+                        setStatusData({
+                          status: applicant.application.status,
+                          feedback: applicant.application.feedback || "",
+                        });
+                        setShowStatusModal(true);
+                      }}
+                    >
+                      Update Status
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Status Update Modal */}
       {showStatusModal && (
         <div className="modal">
-          <div className="modal-content">
-            <h2>Update Application Status</h2>
-            <form onSubmit={handleUpdateStatus}>
-              <div className="form-group">
-                <label>Status</label>
-                <select
-                  value={statusData.status}
-                  onChange={(e) => setStatusData({ ...statusData, status: e.target.value })}
-                >
-                  <option value="pending">Pending</option>
-                  <option value="shortlisted">Shortlisted</option>
-                  <option value="rejected">Rejected</option>
-                  <option value="hired">Hired</option>
-                </select>
+          <div className="modal-content status-modal">
+            <div className="modal-header">
+              <h2>
+                {internship?.isUserCreated
+                  ? `Update Status for ${selectedApplicant?.name}`
+                  : "Your Application Status"}
+              </h2>
+              <button className="close-button" onClick={() => setShowStatusModal(false)}>×</button>
+            </div>
+
+            {!internship?.isUserCreated && (
+              <div className="application-details">
+                <div className="detail-row">
+                  <span className="detail-label">Notice Period:</span>
+                  <span className="detail-value">
+                    {internship?.applicationInfo?.noticePeriod || "Not specified"}
+                  </span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Current Salary:</span>
+                  <span className="detail-value">
+                    {internship?.applicationInfo?.currentSalary ||
+                      "Not specified"}
+                  </span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Expected Salary:</span>
+                  <span className="detail-value">
+                    {internship?.applicationInfo?.expectedSalary ||
+                      "Not specified"}
+                  </span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Availability:</span>
+                  <span className="detail-value">
+                    {internship?.applicationInfo?.availability ||
+                      "Not specified"}
+                  </span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Applied At:</span>
+                  <span className="detail-value">
+                    {new Date(
+                      internship?.applicationInfo?.appliedAt
+                    ).toLocaleDateString()}
+                  </span>
+                </div>
+                {internship?.applicationInfo?.interviewDate && (
+                  <div className="detail-row">
+                    <span className="detail-label">Interview Date:</span>
+                    <span className="detail-value">
+                      {new Date(
+                        internship?.applicationInfo?.interviewDate
+                      ).toLocaleDateString()}
+                    </span>
+                  </div>
+                )}
+                {internship?.applicationInfo?.coverLetter && (
+                  <div className="detail-row">
+                    <span className="detail-label">Cover Letter:</span>
+                    <div className="cover-letter">
+                      {internship?.applicationInfo?.coverLetter}
+                    </div>
+                  </div>
+                )}
+                {internship?.applicationInfo?.resumeUrl && (
+                  <div className="detail-row">
+                    <a
+                      href={`${process.env.REACT_APP_REMOTE_ADDRESS}/${internship?.applicationInfo?.resumeUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="view-resume-button"
+                    >
+                      View Your Resume
+                    </a>
+                  </div>
+                )}
+                <div className="detail-row">
+                  <span className="detail-label">Current Status:</span>
+                  <span
+                    className={`status-badge ${internship?.applicationInfo?.status}`}
+                  >
+                    {internship?.applicationInfo?.status}
+                  </span>
+                </div>
+                {internship?.applicationInfo?.feedback && (
+                  <div className="detail-row">
+                    <span className="detail-label">Feedback:</span>
+                    <div className="feedback-text">
+                      {internship?.applicationInfo?.feedback}
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="form-group">
-                <label>Feedback</label>
-                <textarea
-                  value={statusData.feedback}
-                  onChange={(e) => setStatusData({ ...statusData, feedback: e.target.value })}
-                />
-              </div>
-              <div className="form-actions">
-                <button type="button" onClick={() => setShowStatusModal(false)}>Cancel</button>
-                <button type="submit">Update Status</button>
-              </div>
-            </form>
+            )}
+
+            {internship?.isUserCreated && (
+              <form onSubmit={handleUpdateStatus}>
+                <div className="form-group">
+                  <label>Status</label>
+                  <select
+                    value={statusData.status}
+                    onChange={(e) =>
+                      setStatusData({ ...statusData, status: e.target.value })
+                    }
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="shortlisted">Shortlisted</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="hired">Hired</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Interview Date (Optional)</label>
+                  <input
+                    type="date"
+                    value={statusData.interviewDate || ""}
+                    onChange={(e) =>
+                      setStatusData({
+                        ...statusData,
+                        interviewDate: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Feedback</label>
+                  <textarea
+                    value={statusData.feedback}
+                    onChange={(e) =>
+                      setStatusData({ ...statusData, feedback: e.target.value })
+                    }
+                    placeholder="Enter feedback (optional)"
+                  />
+                </div>
+                <div className="form-actions">
+                  <button type="submit" className="update-button">
+                    Update Status
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
 
       {selectedImagePopup && (
-        <div 
-          className="image-popup" 
+        <div
+          className="image-popup"
           ref={imagePopupRef}
           onClick={handleClosePopup}
         >
           <div className="image-popup-content">
             <button className="image-popup-close">×</button>
-            <button 
+            <button
               className="image-popup-nav prev"
               onClick={(e) => {
                 e.stopPropagation();
@@ -1115,7 +1475,7 @@ export const InternshipDetails = () => {
             >
               ←
             </button>
-            <button 
+            <button
               className="image-popup-nav next"
               onClick={(e) => {
                 e.stopPropagation();
@@ -1132,7 +1492,7 @@ export const InternshipDetails = () => {
               alt="Full size"
               style={{
                 transform: `scale(${imageZoom}) translate(${imagePosition.x}px, ${imagePosition.y}px)`,
-                cursor: imageZoom > 1 ? 'move' : 'default'
+                cursor: imageZoom > 1 ? "move" : "default",
               }}
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
@@ -1140,8 +1500,8 @@ export const InternshipDetails = () => {
               onMouseLeave={handleMouseUp}
             />
             <div className="image-popup-zoom-controls">
-              <button onClick={handleZoomIn}>+</button>
-              <button onClick={handleZoomOut}>-</button>
+              <button className="zoom-button" onClick={handleZoomIn}>+</button>
+              <button className="zoom-button" onClick={handleZoomOut}>-</button>
             </div>
           </div>
         </div>
@@ -1149,5 +1509,3 @@ export const InternshipDetails = () => {
     </div>
   );
 };
-
-
