@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { getProfileHandler } from "../profileApiHandler";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import "./Profile.css";
 import { Feed } from "../../Common/Feed/Feed";
-import { getInterestsHandler } from "../interestsApiHandler";
-import { getAchievementsHandler } from "../achievmentsApiHandler";
-import { getEducationHandler } from "../educationApiHandler";
-import { getExperienceHandler } from "../experienceApiHandler";
-import { getSkillsHandler } from "../skillsApiHandler";
+import "./Profile.css";
 
 export const Profile = () => {
   const [searchParams] = useSearchParams();
@@ -51,7 +46,11 @@ export const Profile = () => {
     try {
       setIsLoading(true);
       // Fetch basic profile
-      const profileData = await getProfileHandler({ userId }, setIsLoading, setError);
+      const profileData = await getProfileHandler(
+        { userId },
+        setIsLoading,
+        setError
+      );
       if (profileData && profileData.success) {
         setProfile({
           name: profileData.data.User?.name || "",
@@ -60,6 +59,8 @@ export const Profile = () => {
           collegeName: profileData.data.collegeName || "",
           collegeYear: profileData.data.collegeYear || "",
           courseName: profileData.data.courseName || "",
+          followers: profileData.data.followers || 0,
+          following: profileData.data.following || 0,
           image: profileData.data.profileUrl
             ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.data.profileUrl}`
             : "/assets/Utils/male.png",
@@ -67,7 +68,7 @@ export const Profile = () => {
             ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.data.coverUrl}`
             : "https://placehold.co/1200x300",
         });
-        
+
         setInterests(profileData.data.otherInfo.interests[0]);
         setAchievements(profileData.data.otherInfo.achievments);
         setEducation(profileData.data.otherInfo.education);
@@ -75,7 +76,6 @@ export const Profile = () => {
         setSkills(profileData.data.otherInfo.skills);
 
         console.log(profileData.data.otherInfo);
-        
       }
 
       // // Fetch interests
@@ -101,97 +101,6 @@ export const Profile = () => {
       setError("Error fetching data");
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const [feeds, setFeeds] = useState([
-    {
-      id: 1,
-      user: {
-        name: "John Doe",
-        avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-        title: "Computer Science Student",
-      },
-      content: "Just completed my final year project on machine learning!",
-      image:
-        "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-      likes: [
-        { id: 1, user: "Alice Smith" },
-        { id: 2, user: "Bob Johnson" },
-      ],
-      comments: [
-        {
-          id: 1,
-          user: {
-            name: "Alice Smith",
-            avatar: "https://randomuser.me/api/portraits/women/1.jpg",
-          },
-          text: "Great work!",
-          timestamp: "1h ago",
-        },
-      ],
-      timestamp: "2h ago",
-      showComments: false,
-    },
-  ]);
-
-  const handlePostSubmit = (content, image, callback) => {
-    if (content.trim() || image) {
-      const newFeed = {
-        id: feeds.length + 1,
-        user: {
-          name: profile.name,
-          avatar: profile.image,
-          title: profile.title,
-        },
-        content,
-        image,
-        likes: [],
-        comments: [],
-        timestamp: "Just now",
-        showComments: false,
-      };
-      setFeeds([newFeed, ...feeds]);
-      callback();
-    }
-  };
-
-  const handleLike = (feedId) => {
-    setFeeds(
-      feeds.map((feed) =>
-        feed.id === feedId
-          ? {
-              ...feed,
-              likes: [...feed.likes, { id: Date.now(), user: "Current User" }],
-            }
-          : feed
-      )
-    );
-  };
-
-  const handleComment = (feedId, commentText) => {
-    if (commentText.trim()) {
-      setFeeds(
-        feeds.map((feed) =>
-          feed.id === feedId
-            ? {
-                ...feed,
-                comments: [
-                  ...feed.comments,
-                  {
-                    id: Date.now(),
-                    user: {
-                      name: profile.name,
-                      avatar: profile.image,
-                    },
-                    text: commentText,
-                    timestamp: "Just now",
-                  },
-                ],
-              }
-            : feed
-        )
-      );
     }
   };
 
@@ -269,14 +178,17 @@ export const Profile = () => {
                   <div className="profile-interest-group">
                     <h3>Preferred Job Types</h3>
                     <div className="profile-interest-tags">
-                      {Array.isArray(interests.preferredJobTypes) 
-                        ? interests.preferredJobTypes.map((type, index) => (
-                            <span key={index} className="profile-interest-tag">
-                              {type}
-                            </span>
-                          ))
-                        : <span className="profile-interest-tag">{interests.preferredJobTypes}</span>
-                      }
+                      {Array.isArray(interests.preferredJobTypes) ? (
+                        interests.preferredJobTypes.map((type, index) => (
+                          <span key={index} className="profile-interest-tag">
+                            {type}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="profile-interest-tag">
+                          {interests.preferredJobTypes}
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
@@ -284,14 +196,17 @@ export const Profile = () => {
                   <div className="profile-interest-group">
                     <h3>Preferred Locations</h3>
                     <div className="profile-interest-tags">
-                      {Array.isArray(interests.preferredLocations)
-                        ? interests.preferredLocations.map((location, index) => (
-                            <span key={index} className="profile-interest-tag">
-                              {location}
-                            </span>
-                          ))
-                        : <span className="profile-interest-tag">{interests.preferredLocations}</span>
-                      }
+                      {Array.isArray(interests.preferredLocations) ? (
+                        interests.preferredLocations.map((location, index) => (
+                          <span key={index} className="profile-interest-tag">
+                            {location}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="profile-interest-tag">
+                          {interests.preferredLocations}
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
@@ -299,14 +214,17 @@ export const Profile = () => {
                   <div className="profile-interest-group">
                     <h3>Preferred Industries</h3>
                     <div className="profile-interest-tags">
-                      {Array.isArray(interests.preferredIndustries)
-                        ? interests.preferredIndustries.map((industry, index) => (
-                            <span key={index} className="profile-interest-tag">
-                              {industry}
-                            </span>
-                          ))
-                        : <span className="profile-interest-tag">{interests.preferredIndustries}</span>
-                      }
+                      {Array.isArray(interests.preferredIndustries) ? (
+                        interests.preferredIndustries.map((industry, index) => (
+                          <span key={index} className="profile-interest-tag">
+                            {industry}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="profile-interest-tag">
+                          {interests.preferredIndustries}
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
@@ -314,14 +232,17 @@ export const Profile = () => {
                   <div className="profile-interest-group">
                     <h3>Preferred Roles</h3>
                     <div className="profile-interest-tags">
-                      {Array.isArray(interests.preferredRoles)
-                        ? interests.preferredRoles.map((role, index) => (
-                            <span key={index} className="profile-interest-tag">
-                              {role}
-                            </span>
-                          ))
-                        : <span className="profile-interest-tag">{interests.preferredRoles}</span>
-                      }
+                      {Array.isArray(interests.preferredRoles) ? (
+                        interests.preferredRoles.map((role, index) => (
+                          <span key={index} className="profile-interest-tag">
+                            {role}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="profile-interest-tag">
+                          {interests.preferredRoles}
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}
@@ -353,21 +274,27 @@ export const Profile = () => {
               <h2>Achievements</h2>
               <div className="profile-achievements">
                 {achievements.map((achievement) => (
-                  <div key={achievement.id} className="profile-achievement-card">
+                  <div
+                    key={achievement.id}
+                    className="profile-achievement-card"
+                  >
                     <h3>{achievement.title}</h3>
                     <p>{achievement.description}</p>
                     <p className="date">
                       <i className="fas fa-calendar"></i>
-                      {new Date(achievement.date).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
+                      {new Date(achievement.date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
                       })}
                     </p>
                     <p>Issuer: {achievement.issuer}</p>
                     {achievement.imageUrl && (
                       <div className="profile-achievement-image">
-                        <img src={`${process.env.REACT_APP_REMOTE_ADDRESS}/${achievement.imageUrl}`} alt={achievement.title} />
+                        <img
+                          src={`${process.env.REACT_APP_REMOTE_ADDRESS}/${achievement.imageUrl}`}
+                          alt={achievement.title}
+                        />
                       </div>
                     )}
                   </div>
@@ -394,12 +321,14 @@ export const Profile = () => {
                     </p>
                     <p className="duration">
                       <i className="fas fa-calendar"></i>
-                      {new Date(edu.startDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long'
-                      })} - {new Date(edu.endDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long'
+                      {new Date(edu.startDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                      })}{" "}
+                      -{" "}
+                      {new Date(edu.endDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
                       })}
                     </p>
                     <p className="grade">
@@ -432,12 +361,14 @@ export const Profile = () => {
                     </p>
                     <p className="duration">
                       <i className="fas fa-calendar"></i>
-                      {new Date(exp.startDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long'
-                      })} - {new Date(exp.endDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long'
+                      {new Date(exp.startDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                      })}{" "}
+                      -{" "}
+                      {new Date(exp.endDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
                       })}
                     </p>
                     <p className="location">

@@ -494,14 +494,20 @@ export const Feed = ({
       formData.append("feedData", JSON.stringify({ content: editContent }));
 
       // Append existing images that weren't removed
-      editImages.forEach((image) => {
-        formData.append("existingImages", image);
-      });
+      if (editImages.length > 0) {
+        // Ensure we're always sending an array of images
+        editImages.forEach((image) => {
+          formData.append("existingImages[]", image);
+        });
+      }
 
       // Append new image files
-      editImageFiles.forEach((image) => {
-        formData.append("image", image.file);
-      });
+      if (editImageFiles.length > 0) {
+        // Ensure we're always sending an array of images
+        editImageFiles.forEach((image) => {
+          formData.append("image", image.file);
+        });
+      }
 
       const response = await updateFeedHandler(
         formData,
