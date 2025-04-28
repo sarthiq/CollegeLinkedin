@@ -23,7 +23,7 @@ exports.addAchievements = async (req, res) => {
   try {
     const { title, description, date, issuer } = req.body;
 
-    const achievementFile = req.files && req.files ? req.files.image[0] : null;
+    const achievementFile = req.files && req.files.image ? req.files.image[0] : null;
     let imageUrl = null;
 
     if (achievementFile) {
