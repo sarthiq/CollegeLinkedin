@@ -209,7 +209,8 @@ exports.updateFeed = async (req, res) => {
     const userId = req.user.id;
     const imageFiles = req.files || [];
     const existingImages = req.body.existingImages || [];
-
+    
+    
     const feed = await Feeds.findByPk(id);
     if (!feed) {
       return res
@@ -239,8 +240,8 @@ exports.updateFeed = async (req, res) => {
     const imagesUrl = [...processedExistingImages]; // Start with processed existing images
 
     // Add new images
-    if (imageFiles.length > 0) {
-      for (const imageFile of imageFiles) {
+    if (imageFiles.image && imageFiles.image.length > 0) {
+      for (const imageFile of imageFiles.image) {
         const filePath = path.join("CustomFiles", "Feeds");
         const fileName = uuidv4();
         const imageUrl = saveFile(imageFile, filePath, fileName);

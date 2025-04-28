@@ -3,6 +3,11 @@ import { getProfileHandler } from "../profileApiHandler";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import "./Profile.css";
 import { Feed } from "../../Common/Feed/Feed";
+import { getInterestsHandler } from "../interestsApiHandler";
+import { getAchievementsHandler } from "../achievmentsApiHandler";
+import { getEducationHandler } from "../educationApiHandler";
+import { getExperienceHandler } from "../experienceApiHandler";
+import { getSkillsHandler } from "../skillsApiHandler";
 
 export const Profile = () => {
   const [searchParams] = useSearchParams();
@@ -24,42 +29,78 @@ export const Profile = () => {
     collegeYear: "",
     courseName: "",
   });
+  const [interests, setInterests] = useState({
+    preferredJobTypes: [],
+    preferredLocations: [],
+    preferredIndustries: [],
+    preferredRoles: [],
+    workMode: "",
+    expectedSalary: "",
+    currentSalary: "",
+  });
+  const [achievements, setAchievements] = useState([]);
+  const [education, setEducation] = useState([]);
+  const [experience, setExperience] = useState([]);
+  const [skills, setSkills] = useState([]);
 
   useEffect(() => {
-    fetchProfile();
+    fetchAllData();
   }, [userId]);
 
-  const fetchProfile = async () => {
-    setIsLoading(true);
-    setError(null);
-    const response = await getProfileHandler(
-      { userId },
-      setIsLoading,
-      (error) => {
-        setError(error);
-      }
-    );
+  const fetchAllData = async () => {
+    try {
+      setIsLoading(true);
+      // Fetch basic profile
+      const profileData = await getProfileHandler({ userId }, setIsLoading, setError);
+      if (profileData && profileData.success) {
+        setProfile({
+          name: profileData.data.User?.name || "",
+          title: profileData.data.title || "",
+          description: profileData.data.bio || "",
+          collegeName: profileData.data.collegeName || "",
+          collegeYear: profileData.data.collegeYear || "",
+          courseName: profileData.data.courseName || "",
+          image: profileData.data.profileUrl
+            ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.data.profileUrl}`
+            : "/assets/Utils/male.png",
+          coverImage: profileData.data.coverUrl
+            ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.data.coverUrl}`
+            : "https://placehold.co/1200x300",
+        });
+        
+        setInterests(profileData.data.otherInfo.interests[0]);
+        setAchievements(profileData.data.otherInfo.achievments);
+        setEducation(profileData.data.otherInfo.education);
+        setExperience(profileData.data.otherInfo.experience);
+        setSkills(profileData.data.otherInfo.skills);
 
-    if (response && response.success) {
-      const profileData = response.data;
-      setProfile({
-        name: profileData.User?.name || "",
-        title: profileData.title || "",
-        email: profileData.User?.email || "",
-        phone: profileData.User?.phone || "",
-        description: profileData.bio || "",
-        followers: 0,
-        following: 0,
-        image: profileData.profileUrl
-          ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.profileUrl}`
-          : "/assets/Utils/male.png",
-        coverImage: profileData.coverUrl
-          ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.coverUrl}`
-          : "https://placehold.co/1200x300",
-        collegeName: profileData.collegeName || "",
-        collegeYear: profileData.collegeYear || "",
-        courseName: profileData.courseName || "",
-      });
+        console.log(profileData.data.otherInfo);
+        
+      }
+
+      // // Fetch interests
+      // const interestsData = await getInterestsHandler({ userId }, setIsLoading, setError);
+      // if (interestsData) setInterests(interestsData);
+
+      // // Fetch achievements
+      // const achievementsData = await getAchievementsHandler({ userId }, setIsLoading, setError);
+      // if (achievementsData) setAchievements(achievementsData);
+
+      // // Fetch education
+      // const educationData = await getEducationHandler({ userId }, setIsLoading, setError);
+      // if (educationData) setEducation(educationData);
+
+      // // Fetch experience
+      // const experienceData = await getExperienceHandler({ userId }, setIsLoading, setError);
+      // if (experienceData) setExperience(experienceData);
+
+      // // Fetch skills
+      // const skillsData = await getSkillsHandler({ userId }, setIsLoading, setError);
+      // if (skillsData) setSkills(skillsData);
+    } catch (error) {
+      setError("Error fetching data");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -168,7 +209,7 @@ export const Profile = () => {
       {error && (
         <div className="profile-error">
           <p>{error}</p>
-          <button onClick={fetchProfile}>Try Again</button>
+          <button onClick={fetchAllData}>Try Again</button>
         </div>
       )}
 
@@ -213,33 +254,237 @@ export const Profile = () => {
       </div>
 
       <div className="profile-content">
-        <div className="profile-about">
-          <h2>About</h2>
-          <p className="profile-description">{profile.description}</p>
-          <div className="profile-contact-info">
-            <div className="profile-info-item">
-              <svg
-                viewBox="0 0 24 24"
-                width="20"
-                height="20"
-                fill="currentColor"
-              >
-                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-              </svg>
-              <span>{profile.email}</span>
-            </div>
-            <div className="profile-info-item">
-              <svg
-                viewBox="0 0 24 24"
-                width="20"
-                height="20"
-                fill="currentColor"
-              >
-                <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z" />
-              </svg>
-              <span>{profile.phone}</span>
-            </div>
+        <div className="profile-left-panel">
+          <div className="profile-about">
+            <h2>About</h2>
+            <p className="profile-description">{profile.description}</p>
           </div>
+
+          {/* Interests Section */}
+          {interests && (
+            <div className="profile-section">
+              <h2>Interests</h2>
+              <div className="profile-interests">
+                {interests.preferredJobTypes && (
+                  <div className="profile-interest-group">
+                    <h3>Preferred Job Types</h3>
+                    <div className="profile-interest-tags">
+                      {Array.isArray(interests.preferredJobTypes) 
+                        ? interests.preferredJobTypes.map((type, index) => (
+                            <span key={index} className="profile-interest-tag">
+                              {type}
+                            </span>
+                          ))
+                        : <span className="profile-interest-tag">{interests.preferredJobTypes}</span>
+                      }
+                    </div>
+                  </div>
+                )}
+                {interests.preferredLocations && (
+                  <div className="profile-interest-group">
+                    <h3>Preferred Locations</h3>
+                    <div className="profile-interest-tags">
+                      {Array.isArray(interests.preferredLocations)
+                        ? interests.preferredLocations.map((location, index) => (
+                            <span key={index} className="profile-interest-tag">
+                              {location}
+                            </span>
+                          ))
+                        : <span className="profile-interest-tag">{interests.preferredLocations}</span>
+                      }
+                    </div>
+                  </div>
+                )}
+                {interests.preferredIndustries && (
+                  <div className="profile-interest-group">
+                    <h3>Preferred Industries</h3>
+                    <div className="profile-interest-tags">
+                      {Array.isArray(interests.preferredIndustries)
+                        ? interests.preferredIndustries.map((industry, index) => (
+                            <span key={index} className="profile-interest-tag">
+                              {industry}
+                            </span>
+                          ))
+                        : <span className="profile-interest-tag">{interests.preferredIndustries}</span>
+                      }
+                    </div>
+                  </div>
+                )}
+                {interests.preferredRoles && (
+                  <div className="profile-interest-group">
+                    <h3>Preferred Roles</h3>
+                    <div className="profile-interest-tags">
+                      {Array.isArray(interests.preferredRoles)
+                        ? interests.preferredRoles.map((role, index) => (
+                            <span key={index} className="profile-interest-tag">
+                              {role}
+                            </span>
+                          ))
+                        : <span className="profile-interest-tag">{interests.preferredRoles}</span>
+                      }
+                    </div>
+                  </div>
+                )}
+                {interests.workMode && (
+                  <div className="profile-interest-group">
+                    <h3>Work Mode</h3>
+                    <p>{interests.workMode}</p>
+                  </div>
+                )}
+                {interests.expectedSalary && (
+                  <div className="profile-interest-group">
+                    <h3>Expected Salary</h3>
+                    <p>{interests.expectedSalary}</p>
+                  </div>
+                )}
+                {interests.currentSalary && (
+                  <div className="profile-interest-group">
+                    <h3>Current Salary</h3>
+                    <p>{interests.currentSalary}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Achievements Section */}
+          {achievements.length > 0 && (
+            <div className="profile-section">
+              <h2>Achievements</h2>
+              <div className="profile-achievements">
+                {achievements.map((achievement) => (
+                  <div key={achievement.id} className="profile-achievement-card">
+                    <h3>{achievement.title}</h3>
+                    <p>{achievement.description}</p>
+                    <p className="date">
+                      <i className="fas fa-calendar"></i>
+                      {new Date(achievement.date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </p>
+                    <p>Issuer: {achievement.issuer}</p>
+                    {achievement.imageUrl && (
+                      <div className="profile-achievement-image">
+                        <img src={`${process.env.REACT_APP_REMOTE_ADDRESS}/${achievement.imageUrl}`} alt={achievement.title} />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Education Section */}
+          {education.length > 0 && (
+            <div className="profile-section">
+              <h2>Education</h2>
+              <div className="profile-education">
+                {education.map((edu) => (
+                  <div key={edu.id} className="profile-education-card">
+                    <h3>{edu.institution}</h3>
+                    <p className="degree">
+                      <i className="fas fa-graduation-cap"></i>
+                      {edu.degree}
+                    </p>
+                    <p className="field">
+                      <i className="fas fa-book"></i>
+                      {edu.fieldOfStudy}
+                    </p>
+                    <p className="duration">
+                      <i className="fas fa-calendar"></i>
+                      {new Date(edu.startDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long'
+                      })} - {new Date(edu.endDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long'
+                      })}
+                    </p>
+                    <p className="grade">
+                      <i className="fas fa-star"></i>
+                      Grade: {edu.grade}
+                    </p>
+                    {edu.description && (
+                      <p className="description">
+                        <i className="fas fa-info-circle"></i>
+                        {edu.description}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Experience Section */}
+          {experience.length > 0 && (
+            <div className="profile-section">
+              <h2>Experience</h2>
+              <div className="profile-experience">
+                {experience.map((exp) => (
+                  <div key={exp.id} className="profile-experience-card">
+                    <h3>{exp.company}</h3>
+                    <p className="position">
+                      <i className="fas fa-briefcase"></i>
+                      {exp.position}
+                    </p>
+                    <p className="duration">
+                      <i className="fas fa-calendar"></i>
+                      {new Date(exp.startDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long'
+                      })} - {new Date(exp.endDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long'
+                      })}
+                    </p>
+                    <p className="location">
+                      <i className="fas fa-map-marker-alt"></i>
+                      {exp.location}
+                    </p>
+                    <p className="type">
+                      <i className="fas fa-clock"></i>
+                      {exp.employmentType}
+                    </p>
+                    {exp.description && (
+                      <p className="description">
+                        <i className="fas fa-info-circle"></i>
+                        {exp.description}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Skills Section */}
+          {skills.length > 0 && (
+            <div className="profile-section">
+              <h2>Skills</h2>
+              <div className="profile-skills">
+                {skills.map((skill) => (
+                  <div key={skill.id} className="profile-skill-card">
+                    <h3>{skill.name}</h3>
+                    <p className="level">
+                      <i className="fas fa-star"></i>
+                      Level: {skill.level}
+                    </p>
+                    <p className="experience">
+                      <i className="fas fa-clock"></i>
+                      Experience: {skill.yearsOfExperience} years
+                    </p>
+                    <p className="category">
+                      <i className="fas fa-tag"></i>
+                      Category: {skill.category}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="profile-feeds">
