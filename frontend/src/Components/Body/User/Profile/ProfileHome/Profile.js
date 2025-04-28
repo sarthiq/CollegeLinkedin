@@ -164,7 +164,7 @@ export const Profile = () => {
 
       <div className="profile-content">
         <div className="profile-left-panel">
-          <div className="profile-about">
+          <div className="profile-section">
             <h2>About</h2>
             <p className="profile-description">{profile.description}</p>
           </div>

@@ -102,7 +102,7 @@ export const applyForInternshipHandler = async (data, setIsLoading, showAlert) =
   const token = localStorage.getItem("token");
 
   try {
-    const response = await apiRequest(url, obj, token, "post");
+    const response = await apiUploadRequest(url, obj, token);
     const data = response.data;
     return data;
   } catch (e) {

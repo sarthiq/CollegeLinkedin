@@ -2,10 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProfileHandler, updateProfileHandler } from "../profileApiHandler";
 import { updateInterestsHandler, getInterestsHandler } from "../interestsApiHandler";
-import { updateAchievementsHandler, getAchievementsHandler, addAchievementsHandler, deleteAchievementsHandler } from "../achievmentsApiHandler";
-import { updateEducationHandler, getEducationHandler, addEducationHandler, deleteEducationHandler } from "../educationApiHandler";
-import { updateExperienceHandler, getExperienceHandler, addExperienceHandler, deleteExperienceHandler } from "../experienceApiHandler";
-import { updateSkillsHandler, getSkillsHandler, addSkillsHandler, deleteSkillsHandler } from "../skillsApiHandler";
+import {  getAchievementsHandler, addAchievementsHandler, deleteAchievementsHandler } from "../achievmentsApiHandler";
+import {  getEducationHandler, addEducationHandler, deleteEducationHandler } from "../educationApiHandler";
+import {  getExperienceHandler, addExperienceHandler, deleteExperienceHandler } from "../experienceApiHandler";
+import {  getSkillsHandler, addSkillsHandler, deleteSkillsHandler } from "../skillsApiHandler";
 import "./EditProfile.css";
 
 const formatDate = (dateString) => {

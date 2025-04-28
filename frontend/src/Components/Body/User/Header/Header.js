@@ -2,7 +2,16 @@ import React, { useState, useEffect } from 'react';
 import './Header.css';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { userLogin, setUserAuthToken, userLogOut } from '../../../../Store/User/auth';
+import { setUserAuthToken, userLogOut } from '../../../../Store/User/auth';
+
+// New Badge Component
+const NewBadge = () => {
+  return (
+    <div className="new-badge">
+      New
+    </div>
+  );
+};
 
 export const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,22 +37,6 @@ export const Header = () => {
     const handleNavClick = () => {
         setIsMenuOpen(false);
         document.body.style.overflow = 'auto';
-    };
-
-    const handleSignIn = () => {
-        dispatch(userLogin());
-        dispatch(setUserAuthToken('dummy-token'));
-        localStorage.setItem('token', 'dummy-token');
-        navigate('/home');
-        handleNavClick();
-    };
-
-    const handleJoinNow = () => {
-        dispatch(userLogin());
-        dispatch(setUserAuthToken('dummy-token'));
-        localStorage.setItem('token', 'dummy-token');
-        navigate('/home');
-        handleNavClick();
     };
 
     const handleLogout = () => {
@@ -84,16 +77,18 @@ export const Header = () => {
                             <span className="dashboard-nav-text">Learning</span>
                         </div>
                     </Link>
-                    <Link to="/" className="dashboard-nav-link" onClick={handleNavClick}>
+                    <Link to="/dashboard/internships" className="dashboard-nav-link" onClick={handleNavClick}>
                         <div className="dashboard-nav-icon-container">
                             <span className="dashboard-nav-icon">💼</span>
                             <span className="dashboard-nav-text">Internships</span>
+                            <NewBadge />
                         </div>
                     </Link>
-                    <Link to="/" className="dashboard-nav-link" onClick={handleNavClick}>
+                    <Link to="/dashboard/projects" className="dashboard-nav-link" onClick={handleNavClick}>
                         <div className="dashboard-nav-icon-container">
                             <span className="dashboard-nav-icon">💡</span>
                             <span className="dashboard-nav-text">Projects</span>
+                            <NewBadge />
                         </div>
                     </Link>
                     <Link to="/" className="dashboard-nav-link" onClick={handleNavClick}>
@@ -112,6 +107,7 @@ export const Header = () => {
                         <div className="dashboard-nav-icon-container">
                             <span className="dashboard-nav-icon">📚</span>
                             <span className="dashboard-nav-text">Pages</span>
+                            <NewBadge />
                         </div>
                     </Link>
                     <a href="https://career.sarthiq.com" className="dashboard-nav-link" onClick={handleNavClick} target="_blank" rel="noopener noreferrer">
