@@ -54,6 +54,7 @@ export const Profile = () => {
       if (profileData && profileData.success) {
         setProfile({
           name: profileData.data.User?.name || "",
+          email:profileData.data.User?.email||"",
           title: profileData.data.title || "",
           description: profileData.data.bio || "",
           collegeName: profileData.data.collegeName || "",
@@ -133,6 +134,7 @@ export const Profile = () => {
           <div className="profile-details">
             <h1>{profile.name}</h1>
             <p className="title">{profile.title}</p>
+            <p className="email">{profile.email}</p>
             <div className="profile-college-info">
               <span className="college-name">{profile.collegeName}</span>
               <span className="college-year">{profile.collegeYear}</span>

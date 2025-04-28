@@ -115,9 +115,15 @@
 }
 
 .profile-details .title {
-  font-size: 1.1rem;
   color: #666;
-  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.profile-details .email {
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .profile-college-info {
