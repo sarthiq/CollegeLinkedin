@@ -2,11 +2,10 @@ import { Routes, Route } from "react-router-dom";
 import { Home } from "./Home/Home";
 import { Header } from "./Header/Header";
 import { Footer } from "./Footer/Footer";
-import { Profile } from "./Profile/Profile";
 import { PagesRoutes } from "./Pages/PageRoutes";
 import { PageNotFound } from "../../UI/PageNotFound/PageNotFound";
 import { FeedDetails } from "./Common/FeedDetails/FeedDetails";
-
+import { ProfileRoutes } from "./Profile/ProfileRoutes";
 export const UserRoutes = () => {
   return (
     <>
@@ -14,7 +13,7 @@ export const UserRoutes = () => {
       <main>
         <Routes>
           <Route path="" element={<Home />} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="profile/*" element={<ProfileRoutes />} />
           
           <Route path="pages/*" element={<PagesRoutes />} />
           <Route path="feed/:id" element={<FeedDetails />} />
