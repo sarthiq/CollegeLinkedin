@@ -92,8 +92,9 @@ exports.getProjects = async (req, res) => {
       search,
       isPublic,
       technologies,
+      isUserProjects,
     } = req.body;
-
+    const userId = req.user.id;
     const offset = (page - 1) * limit;
     const whereCondition = {};
 
@@ -110,6 +111,9 @@ exports.getProjects = async (req, res) => {
         [Op.overlap]: technologies,
       };
     }
+    if (isUserProjects) {
+      whereCondition.UserId = userId;
+    }
 
     const { count, rows: projects } = await Projects.findAndCountAll({
       where: whereCondition,
@@ -120,14 +124,33 @@ exports.getProjects = async (req, res) => {
         {
           model: User,
           attributes: ["id", "name", "email"],
+          include: [
+            {
+              model: UserProfile,
+              attributes: ["profileUrl"],
+            },
+          ],
         },
       ],
     });
 
+    const transformedProjects = await Promise.all(projects.map(async (project) => {
+      const jsonData = project.toJSON();
+      jsonData.isUserCreated = jsonData.UserId === userId;
+
+      const isProjectMember = await ProjectMember.findOne({
+        where: {
+          ProjectId: project.id,
+          UserId: userId,
+        },
+      });
+      jsonData.projectMember = isProjectMember;
+      return jsonData;
+    }));
     res.status(200).json({
       success: true,
       data: {
-        projects,
+        projects: transformedProjects,
         pagination: {
           total: count,
           totalPages: Math.ceil(count / limit),
@@ -149,6 +172,7 @@ exports.getProjects = async (req, res) => {
 exports.getProjectById = async (req, res) => {
   try {
     const { id } = req.body;
+    const userId = req.user.id;
     const project = await Projects.findByPk(id, {
       include: [
         {
@@ -194,16 +218,35 @@ exports.getProjectById = async (req, res) => {
       ],
     });
 
+    
     if (!project) {
       return res.status(404).json({
         success: false,
         message: "Project not found",
       });
     }
+    const jsonData = project.toJSON();
+    jsonData.isUserCreated = jsonData.UserId === userId;
+
+    const isProjectMember = await ProjectMember.findOne({
+      where: {
+        ProjectId: project.id,
+        UserId: userId,
+      },
+    });
+    jsonData.projectMember = isProjectMember;
+
+    const projectMembers = await ProjectMember.findAll({
+      where: {
+        ProjectId: project.id,
+      },
+    });
+    jsonData.projectMembers = projectMembers;
+    
 
     res.status(200).json({
       success: true,
-      data: project,
+      data: jsonData,
     });
   } catch (error) {
     console.error("Error fetching project:", error);

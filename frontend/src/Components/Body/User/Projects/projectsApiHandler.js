@@ -1,4 +1,4 @@
-import { apiRequest, handleErrors } from "../../../../Utils/apiHandler";
+import { apiRequest,apiUploadRequest, handleErrors } from "../../../../Utils/apiHandler";
 
 const baseRoutes = "/user/projects";
 
