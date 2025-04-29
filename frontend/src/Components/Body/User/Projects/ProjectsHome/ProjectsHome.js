@@ -188,6 +188,10 @@ export const ProjectsHome = () => {
     setPagination(prev => ({ ...prev, currentPage: newPage }));
   };
 
+  const capitalize = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   return (
     <div className="projects-container">
       <div className="projects-header">
@@ -425,59 +429,89 @@ export const ProjectsHome = () => {
       ) : (
         <>
           <div className="projects-list">
-            {projects.map(project => (
-              <div key={project.id} className="project-item">
-                <div className="project-item-content">
-                  <div className="project-item-image">
-                    <img 
-                      src={project.imagesUrl && project.imagesUrl[0] 
-                        ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${project.imagesUrl[0]}` 
-                        : 'https://placehold.co/300x200'} 
-                      alt={project.title} 
-                    />
-                    {project.status && <span className={`project-status-badge ${project.status}`}>{project.status}</span>}
-                    {project.isUserCreated && (
-                      <div className="project-created-badge">
-                        <i className="fas fa-user-edit"></i>
-                        <span>Created by you</span>
+            {projects.map((project) => (
+              <div key={project.id} className="project-card">
+                <div className="project-card-image-container">
+                  <img 
+                    src={project.imagesUrl && project.imagesUrl[0] 
+                      ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${project.imagesUrl[0]}` 
+                      : 'https://placehold.co/300x200'} 
+                    alt={project.title} 
+                    className="project-card-image"
+                  />
+                  <div className={`project-card-status-badge ${project.status.toLowerCase()}`}>
+                    <span className="project-card-status-label">Status:</span>
+                    <span className="project-card-status-value">{capitalize(project.status)}</span>
+                    <i className="fas fa-circle"></i>
+                  </div>
+                  {project.isUserCreated && (
+                    <div className="project-card-created-badge">
+                      <i className="fas fa-user-edit"></i>
+                      <span>Created by you</span>
+                    </div>
+                  )}
+                </div>
+                <div className="project-card-content">
+                  <h3 className="project-card-title">
+                    <i className="fas fa-project-diagram"></i>
+                    {capitalize(project.title)}
+                  </h3>
+                  <div className="project-card-meta">
+                    <div className="project-card-author">
+                      <img 
+                        src={project.User?.UserProfile?.profileUrl 
+                          ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${project.User.UserProfile.profileUrl}` 
+                          : 'https://placehold.co/50x50'} 
+                        alt={project.User?.name} 
+                        className="project-card-author-avatar"
+                      />
+                      <div className="project-card-author-info">
+                        <span className="project-card-author-label">Author:</span>
+                        <span className="project-card-author-name">{capitalize(project.User?.name)}</span>
+                      </div>
+                    </div>
+                    <div className="project-card-date">
+                      <i className="fas fa-calendar"></i>
+                      <span className="project-card-date-label">Created:</span>
+                      <span className="project-card-date-value">{new Date(project.startDate).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                  <div className="project-card-stats">
+                    <div className="project-card-stat-item">
+                      <i className="fas fa-code-branch"></i>
+                      <span className="project-card-stat-label">Status:</span>
+                      <span className="project-card-stat-value">{capitalize(project.status)}</span>
+                    </div>
+                    {project.technologies && project.technologies.length > 0 && (
+                      <div className="project-card-technologies">
+                        <div className="project-card-tech-header">
+                          <i className="fas fa-tools"></i>
+                          <span className="project-card-tech-label">Technologies:</span>
+                        </div>
+                        <div className="project-card-tech-tags">
+                          {project.technologies.slice(0, 3).map((tech, index) => (
+                            <span key={index} className="project-card-tech-tag">
+                              {capitalize(tech)}
+                            </span>
+                          ))}
+                          {project.technologies.length > 3 && (
+                            <span className="project-card-tech-more">
+                              +{project.technologies.length - 3} more
+                            </span>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
-                  <div className="project-item-info">
-                    <div className="project-header">
-                      <h3 className="project-item-title">{project.title}</h3>
-                      <span className="project-meta">
-                        {project.User?.name} • {new Date(project.startDate).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <div className="project-item-description">
-                      <div dangerouslySetInnerHTML={{ __html: project.description }} />
-                    </div>
-                    <div className="project-item-stats">
-                      <div className="project-stat-item">
-                        <span className="project-stat-value">{project.status}</span>
-                        <span className="project-stat-label">Status</span>
-                      </div>
-                      {project.technologies && (
-                        <div className="project-technologies">
-                          {project.technologies.map((tech, index) => (
-                            <span key={index} className="project-tech-tag">{tech}</span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+                  <div className="project-card-actions">
+                    <button 
+                      className="project-card-view-button"
+                      onClick={() => handleViewMore(project.id)}
+                    >
+                      <i className="fas fa-eye"></i>
+                      View Details
+                    </button>
                   </div>
-                </div>
-                <div className="project-item-actions">
-                  <button 
-                    className="project-view-more-button"
-                    onClick={() => handleViewMore(project.id)}
-                  >
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                      <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                    </svg>
-                    View Details
-                  </button>
                 </div>
               </div>
             ))}

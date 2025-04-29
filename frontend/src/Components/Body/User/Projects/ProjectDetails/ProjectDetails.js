@@ -493,6 +493,11 @@ export const ProjectDetails = () => {
     }
   };
 
+  const capitalize = (str) => {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
+
   if (isLoading) {
     return (
       <div className="project-details-container">
@@ -513,250 +518,268 @@ export const ProjectDetails = () => {
 
   return (
     <div className="project-details-container">
-
-       {/* Error Message Section - Moved here */}
-       {error && (
+      {error && !showEditModal && !showApplyModal && !showStatusModal && !showMembersModal && !showInviteModal && !showRequestModal && (
         <div className="project-details-error-message">
+          <i className="fas fa-exclamation-circle"></i>
           <p>{error}</p>
-          <button className="project-details-try-again-button" onClick={fetchProjectDetails}>Try Again</button>
         </div>
       )}
 
-
-      {/* Header Section */}
       <div className="project-details-header">
         <div className="project-details-header-content">
-          <h1>{project?.title || "Loading..."}</h1>
-          <p className="project-details-creator-name">{project?.User?.name || ""}</p>
+          <h1 className="project-details-title">
+            <i className="fas fa-project-diagram"></i>
+            {capitalize(project?.title)}
+          </h1>
+          <div className="project-details-creator">
+            <img
+              src={project?.User?.UserProfile?.profileUrl ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${project.User.UserProfile.profileUrl}` : '/assets/Utils/male.png'}
+              alt={project?.User?.name}
+              className="project-details-creator-avatar"
+            />
+            <div className="project-details-creator-info">
+              <span className="project-details-creator-label">Created by</span>
+              <span className="project-details-creator-name">{capitalize(project?.User?.name)}</span>
+            </div>
+          </div>
         </div>
         <div className="project-details-header-actions">
           {project?.isUserCreated ? (
             <>
-              <button className="project-details-edit-button" onClick={handleEditClick}>
+              <button className="project-details-button project-details-edit-button" onClick={handleEditClick}>
+                <i className="fas fa-edit"></i>
                 Edit Project
               </button>
-              <button className="project-details-delete-button" onClick={handleDeleteProject}>
+              <button className="project-details-button project-details-delete-button" onClick={handleDeleteProject}>
+                <i className="fas fa-trash"></i>
                 Delete Project
               </button>
-              <button className="project-details-members-button" onClick={() => setShowMembersModal(true)}>
+              <button className="project-details-button project-details-members-button" onClick={() => setShowMembersModal(true)}>
+                <i className="fas fa-users"></i>
                 View Members
               </button>
-              <button className="project-details-invite-button" onClick={() => setShowInviteModal(true)}>
+              <button className="project-details-button project-details-invite-button" onClick={() => setShowInviteModal(true)}>
+                <i className="fas fa-user-plus"></i>
                 Invite Collaborator
               </button>
             </>
           ) : project?.projectMember ? (
             <>
-              <button className="project-details-status-button" onClick={() => setShowStatusModal(true)}>
+              <button className="project-details-button project-details-status-button" onClick={() => setShowStatusModal(true)}>
+                <i className="fas fa-info-circle"></i>
                 View Application Status
               </button>
-              <button className="project-details-withdraw-button" onClick={handleWithdraw}>
+              <button className="project-details-button project-details-withdraw-button" onClick={handleWithdraw}>
+                <i className="fas fa-times"></i>
                 Withdraw Application
               </button>
               {project?.projectMember?.status === "requested" && (
-                <button className="project-details-request-button" onClick={() => setShowRequestModal(true)}>
+                <button className="project-details-button project-details-request-button" onClick={() => setShowRequestModal(true)}>
+                  <i className="fas fa-handshake"></i>
                   Handle Collaboration Request
                 </button>
               )}
             </>
           ) : (
-            <button className="project-details-apply-button" onClick={() => setShowApplyModal(true)}>
+            <button className="project-details-button project-details-apply-button" onClick={() => setShowApplyModal(true)}>
+              <i className="fas fa-paper-plane"></i>
               Apply Now
             </button>
           )}
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="project-details-content">
         <div className="project-details-images">
-          <div className="project-details-image-slider">
-            {(project?.imagesUrl || []).map((image, index) => (
-              <div
-                key={index}
-                className={`project-details-slider-image ${
-                  index === currentImageIndex ? "active" : ""
-                }`}
-                onClick={() => handleImageClick(project.imagesUrl, index)}
-              >
+          {project?.imagesUrl?.length > 0 ? (
+            <div className="project-details-image-slider">
+              {project.imagesUrl.map((image, index) => (
                 <img
+                  key={index}
                   src={`${process.env.REACT_APP_REMOTE_ADDRESS}/${image}`}
                   alt={`Project ${index + 1}`}
+                  className={`project-details-slider-image ${index === currentImageIndex ? 'active' : ''}`}
+                  onClick={() => handleImageClick(project.imagesUrl, index)}
+                  style={{ display: index === currentImageIndex ? 'block' : 'none' }}
                 />
-              </div>
-            ))}
-            {(project?.imagesUrl || []).length > 1 && (
-              <>
-                <button className="project-details-slider-nav prev" onClick={handlePrevImage}>
-                  &lt;
-                </button>
-                <button className="project-details-slider-nav next" onClick={handleNextImage}>
-                  &gt;
-                </button>
-                <div className="project-details-slider-controls">
-                  <button
-                    className={`project-details-auto-slide-toggle ${autoSlide ? "active" : ""}`}
-                    onClick={toggleAutoSlide}
-                  >
-                    {autoSlide ? "⏸️" : "▶️"}
+              ))}
+              {project.imagesUrl.length > 1 && (
+                <>
+                  <button className="project-details-slider-nav prev" onClick={handlePrevImage}>
+                    <i className="fas fa-chevron-left"></i>
                   </button>
-                  <div className="project-details-slider-dots">
-                    {(project?.imagesUrl || []).map((_, index) => (
-                      <button
-                        key={index}
-                        className={`project-details-dot ${
-                          index === currentImageIndex ? "active" : ""
-                        }`}
-                        onClick={() => setCurrentImageIndex(index)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-
-        <div className="project-details-info">
-          <div className="project-details-info-section">
-            <h2>About the Project</h2>
-            <div
-              className="project-details-description"
-              dangerouslySetInnerHTML={{ __html: project.description }}
-            />
-          </div>
-
-          <div className="project-details-info-grid">
-            <div className="project-details-info-item">
-              <span className="project-details-label">Start Date:</span>
-              <span className="project-details-value">
-                {new Date(project.startDate).toLocaleDateString()}
-              </span>
-            </div>
-            {project.endDate && (
-              <div className="project-details-info-item">
-                <span className="project-details-label">End Date:</span>
-                <span className="project-details-value">
-                  {new Date(project.endDate).toLocaleDateString()}
-                </span>
-              </div>
-            )}
-            <div className="project-details-info-item">
-              <span className="project-details-label">Status:</span>
-              <span className="project-details-value">{project.status}</span>
-            </div>
-            {project.githubUrl && (
-              <div className="project-details-info-item">
-                <span className="project-details-label">GitHub:</span>
-                <a
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="project-details-github-link"
-                >
-                  View Repository
-                </a>
-              </div>
-            )}
-            <div className="project-details-info-item">
-              <span className="project-details-label">Source Code:</span>
-              <span className="project-details-value">
-                {project.isSourceCodePublic ? "Public" : "Private"}
-              </span>
-            </div>
-            <div className="project-details-info-item">
-              <span className="project-details-label">Project Visibility:</span>
-              <span className="project-details-value">
-                {project.isPublic ? "Public" : "Private"}
-              </span>
-            </div>
-          </div>
-
-          <div className="project-details-info-section">
-            <h2>Technologies Used</h2>
-            <div className="project-details-technologies-list">
-              {(project?.technologies || []).map((tech, index) => (
-                <span key={index} className="project-details-tech-tag">
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="project-details-info-section">
-            <h2>Project Members</h2>
-            <div className="project-details-members-list">
-              {(project?.ProjectMembers || []).map((member) => (
-                <div key={member.id} className="project-details-member-card">
-                  <img
-                    src={
-                      member.User?.UserProfile?.profileUrl
-                        ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${member.User?.UserProfile?.profileUrl}`
-                        : "/assets/Utils/male.png"
-                    }
-                    alt={member.User?.name}
-                    className="project-details-member-profile"
-                  />
-                  <div className="project-details-member-info">
-                    <h3>{member.User?.name}</h3>
-                    <p>{member.role}</p>
-                    <p className={`project-details-status-badge ${member.status}`}>
-                      {member.status}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="project-details-info-section">
-            <h2>Project Feedback</h2>
-            <div className="project-details-feedback-list">
-              {(project?.ProjectFeedbacks || []).map((feedback) => (
-                <div key={feedback.id} className="project-details-feedback-card">
-                  <div className="project-details-feedback-header">
-                    <img
-                      src={
-                        feedback.User?.UserProfile?.profileUrl
-                          ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${feedback.User?.UserProfile?.profileUrl}`
-                          : "/assets/Utils/male.png"
-                      }
-                      alt={feedback.User?.name}
-                      className="project-details-feedback-profile"
-                    />
-                    <div className="project-details-feedback-info">
-                      <h3>{feedback.User?.name}</h3>
-                      <p className="project-details-feedback-date">
-                        {new Date(feedback.feedbackDate).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="project-details-feedback-rating">
-                      {Array.from({ length: feedback.rating }).map((_, i) => (
-                        <span key={i} className="project-details-star">★</span>
+                  <button className="project-details-slider-nav next" onClick={handleNextImage}>
+                    <i className="fas fa-chevron-right"></i>
+                  </button>
+                  <div className="project-details-slider-controls">
+                    <button className="project-details-auto-slide-toggle" onClick={toggleAutoSlide}>
+                      {autoSlide ? <i className="fas fa-pause"></i> : <i className="fas fa-play"></i>}
+                    </button>
+                    <div className="project-details-slider-dots">
+                      {project.imagesUrl.map((_, index) => (
+                        <button
+                          key={index}
+                          className={`project-details-dot ${index === currentImageIndex ? 'active' : ''}`}
+                          onClick={() => setCurrentImageIndex(index)}
+                        />
                       ))}
                     </div>
                   </div>
-                  <p className="project-details-feedback-comment">
-                    {feedback.comment}
-                  </p>
+                </>
+              )}
+            </div>
+          ) : (
+            <div className="project-details-no-image">
+              <i className="fas fa-image"></i>
+              <p>No images available</p>
+            </div>
+          )}
+        </div>
+
+        <div className="project-details-info">
+          {project?.description && (
+            <div className="project-details-info-section">
+              <h2>
+                <i className="fas fa-info-circle"></i>
+                About the Project
+              </h2>
+              <div className="project-details-description" dangerouslySetInnerHTML={{ __html: project.description }} />
+            </div>
+          )}
+
+          <div className="project-details-info-section">
+            <h2>
+              <i className="fas fa-list"></i>
+              Basic Information
+            </h2>
+            <div className="project-details-info-grid">
+              <div className="project-details-info-item">
+                <span className="project-details-label">
+                  <i className="fas fa-calendar-alt"></i>
+                  Start Date
+                </span>
+                <span className="project-details-value">{new Date(project?.startDate).toLocaleDateString()}</span>
+              </div>
+              {project?.endDate && (
+                <div className="project-details-info-item">
+                  <span className="project-details-label">
+                    <i className="fas fa-calendar-check"></i>
+                    End Date
+                  </span>
+                  <span className="project-details-value">{new Date(project.endDate).toLocaleDateString()}</span>
                 </div>
-              ))}
+              )}
+              <div className="project-details-info-item">
+                <span className="project-details-label">
+                  <i className="fas fa-tag"></i>
+                  Status
+                </span>
+                <span className={`project-details-status-badge ${project?.status?.toLowerCase()}`}>
+                  {capitalize(project?.status)}
+                </span>
+              </div>
+              {project?.githubUrl && (
+                <div className="project-details-info-item">
+                  <span className="project-details-label">
+                    <i className="fab fa-github"></i>
+                    GitHub
+                  </span>
+                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="project-details-github-link">
+                    View Repository
+                  </a>
+                </div>
+              )}
+              <div className="project-details-info-item">
+                <span className="project-details-label">
+                  <i className="fas fa-code"></i>
+                  Source Code
+                </span>
+                <span className="project-details-value">{project?.isSourceCodePublic ? 'Public' : 'Private'}</span>
+              </div>
+              <div className="project-details-info-item">
+                <span className="project-details-label">
+                  <i className="fas fa-globe"></i>
+                  Project Visibility
+                </span>
+                <span className="project-details-value">{project?.isPublic ? 'Public' : 'Private'}</span>
+              </div>
             </div>
           </div>
+
+          {project?.technologies?.length > 0 && (
+            <div className="project-details-info-section">
+              <h2>
+                <i className="fas fa-tools"></i>
+                Technologies Used
+              </h2>
+              <div className="project-details-technologies-list">
+                {project.technologies.map((tech, index) => (
+                  <span key={index} className="project-details-tech-tag">
+                    {capitalize(tech)}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {project?.ProjectMembers?.length > 0 && (
+            <div className="project-details-info-section">
+              <h2>
+                <i className="fas fa-users"></i>
+                Project Members
+              </h2>
+              <div className="project-details-members-list">
+                {project.ProjectMembers.map((member) => (
+                  <div key={member.id} className="project-details-member-card">
+                    <img
+                      src={member.User?.UserProfile?.profileUrl ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${member.User.UserProfile.profileUrl}` : '/assets/Utils/male.png'}
+                      alt={member.User?.name}
+                      className="project-details-member-profile"
+                    />
+                    <div className="project-details-member-info">
+                      <h3 className="project-details-member-name">{capitalize(member.User?.name)}</h3>
+                      <p className="project-details-member-role">{capitalize(member.role)}</p>
+                      <span className={`project-details-status-badge ${member.status?.toLowerCase()}`}>
+                        {capitalize(member.status)}
+                      </span>
+                    </div>
+                    <div className="project-details-member-actions">
+                      <button 
+                        className="project-details-update-status-button"
+                        onClick={() => {
+                          setSelectedMember(member);
+                          setStatusData({
+                            status: member.status,
+                            feedback: "",
+                          });
+                          setShowStatusModal(true);
+                        }}
+                      >
+                        <i className="fas fa-edit"></i>
+                        Update Status
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-     
-      {/* Edit Modal */}
       {showEditModal && (
         <div className="project-details-modal">
-          <div className="project-details-modal-content project-details-edit-modal">
+          <div className="project-details-modal-content">
             <div className="project-details-modal-header">
-              <h2>Edit Project</h2>
+              <h2>
+                <i className="fas fa-edit"></i>
+                Edit Project
+              </h2>
               <button className="project-details-close-button" onClick={() => setShowEditModal(false)}>×</button>
             </div>
             {error && (
               <div className="project-details-error-message">
+                <i className="fas fa-exclamation-circle"></i>
                 <p>{error}</p>
               </div>
             )}
@@ -902,7 +925,6 @@ export const ProjectDetails = () => {
               <div className="project-details-form-group">
                 <label>Images</label>
                 <div className="project-details-image-upload-container">
-                  {/* Existing Images */}
                   {(editData?.existingImages || []).map((image, index) => (
                     <div key={`existing-${index}`} className="project-details-image-preview">
                       <img
@@ -918,7 +940,6 @@ export const ProjectDetails = () => {
                       </button>
                     </div>
                   ))}
-                  {/* New Images */}
                   {(editData?.newImages || []).map((image, index) => (
                     <div key={`new-${index}`} className="project-details-image-preview">
                       <img
@@ -975,7 +996,6 @@ export const ProjectDetails = () => {
         </div>
       )}
 
-      {/* Apply Modal */}
       {showApplyModal && (
         <div className="project-details-modal">
           <div className="project-details-modal-content project-details-apply-modal">
@@ -1040,7 +1060,6 @@ export const ProjectDetails = () => {
         </div>
       )}
 
-      {/* Members Modal */}
       {showMembersModal && (
         <div className="project-details-modal">
           <div className="project-details-modal-content project-details-members-modal">
@@ -1109,6 +1128,7 @@ export const ProjectDetails = () => {
                         setShowStatusModal(true);
                       }}
                     >
+                      <i className="fas fa-edit"></i>
                       Update Status
                     </button>
                   </div>
@@ -1119,7 +1139,6 @@ export const ProjectDetails = () => {
         </div>
       )}
 
-      {/* Status Update Modal */}
       {showStatusModal && (
         <div className="project-details-modal">
           <div className="project-details-modal-content project-details-status-modal">
@@ -1208,7 +1227,7 @@ export const ProjectDetails = () => {
       {selectedImagePopup && (
         <div className="project-details-image-popup" ref={imagePopupRef} onClick={handleClosePopup}>
           <div className="project-details-image-popup-content">
-            <button className="project-details-image-popup-close">×</button>
+            <button className="project-details-image-popup-close" onClick={handleClosePopup}>×</button>
             <button
               className="project-details-image-popup-nav prev"
               onClick={(e) => {
@@ -1216,7 +1235,7 @@ export const ProjectDetails = () => {
                 handlePrevImage();
               }}
             >
-              ←
+              <i className="fas fa-chevron-left"></i>
             </button>
             <button
               className="project-details-image-popup-nav next"
@@ -1225,7 +1244,7 @@ export const ProjectDetails = () => {
                 handleNextImage();
               }}
             >
-              →
+              <i className="fas fa-chevron-right"></i>
             </button>
             <div className="project-details-image-popup-counter">
               {currentImageIndex + 1} / {selectedImagePopup.length}
@@ -1242,10 +1261,6 @@ export const ProjectDetails = () => {
               onMouseUp={handleMouseUp}
               onMouseLeave={handleMouseUp}
             />
-            <div className="project-details-image-popup-zoom-controls">
-              <button className="project-details-zoom-button" onClick={handleZoomIn}>+</button>
-              <button className="project-details-zoom-button" onClick={handleZoomOut}>-</button>
-            </div>
           </div>
         </div>
       )}
