@@ -5,6 +5,14 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './InternshipHome.css';
 
+const capitalize = (text) => {
+  if (!text) return '';
+  return text
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
+
 export const InternshipHome = () => {
   const navigate = useNavigate();
   const [showCreateInternship, setShowCreateInternship] = useState(false);
@@ -623,66 +631,52 @@ export const InternshipHome = () => {
         </div>
       ) : (
         <>
-          <div className="internships-list">
+          <div className="internship-cards-grid">
             {internships.map(internship => (
-              <div key={internship.id} className="internship-item">
-                <div className="internship-item-content">
-                  <div className="internship-item-image">
-                    <img 
-                      src={internship.imagesUrl && internship.imagesUrl[0] 
-                        ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${internship.imagesUrl[0]}` 
-                        : 'https://placehold.co/300x200'} 
-                      alt={internship.title} 
-                    />
-                    {internship.category && <span className="internship-category">{internship.category}</span>}
-                    {internship.isUserCreated && (
-                      <div className="internship-status-badge created-badge">
-                        <i className="fas fa-user-edit"></i>
-                        <span>Created by you</span>
-                      </div>
-                    )}
-                    {!internship.isUserCreated && internship.isApplied && (
-                      <div className="internship-status-badge applied-badge">
-                        <i className="fas fa-check-circle"></i>
-                        <span>Applied</span>
-                      </div>
-                    )}
+              <div key={internship.id} className="internship-card">
+                <div className="internship-card-image-container">
+                  <img 
+                    src={internship.imagesUrl && internship.imagesUrl[0] 
+                      ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${internship.imagesUrl[0]}` 
+                      : 'https://placehold.co/300x200'} 
+                    alt={internship.title}
+                    className="internship-card-image"
+                  />
+                  {internship.category && (
+                    <span className="internship-card-category">{internship.category}</span>
+                  )}
+                  {internship.isUserCreated && (
+                    <div className="internship-card-created-badge">
+                      <i className="fas fa-user-edit"></i>
+                      <span>Created by you</span>
+                    </div>
+                  )}
+                </div>
+                <div className="internship-card-content">
+                  <h3 className="internship-card-title">{capitalize(internship.title)}</h3>
+                  <div className="internship-card-info-row">
+                    <span className="internship-card-label">Company:</span>
+                    <span className="internship-card-value">{capitalize(internship.companyName)}</span>
                   </div>
-                  <div className="internship-item-info">
-                    <div className="internship-header">
-                      <h3 className="internship-item-title">{internship.title}</h3>
-                      <span className="internship-meta">
-                        {internship.companyName} • {internship.location} • {internship.jobType}
-                      </span>
-                    </div>
-                    <div 
-                      className="internship-item-description"
-                      dangerouslySetInnerHTML={{ __html: internship.description }}
-                    />
-                    <div className="internship-item-stats">
-                      <div className="stat-item">
-                        <span className="stat-value">{internship.experienceLevel}</span>
-                        <span className="stat-label">Experience</span>
-                      </div>
-                      <div className="stat-item">
-                        <span className="stat-value">{internship.duration}</span>
-                        <span className="stat-label">Duration</span>
-                      </div>
-                      <div className="stat-item">
-                        <span className="stat-value">{internship.salary}</span>
-                        <span className="stat-label">Salary</span>
-                      </div>
-                    </div>
-                    <div className="internship-skills">
-                      {internship.skills && internship.skills.map((skill, index) => (
-                        <span key={index} className="skill-tag">{skill}</span>
+                  <div className="internship-card-info-row">
+                    <span className="internship-card-label">Role:</span>
+                    <span className="internship-card-value">{capitalize(internship.role)}</span>
+                  </div>
+                  <div className="internship-card-info-row">
+                    <span className="internship-card-label">Skills:</span>
+                    <div className="internship-card-skills">
+                      {internship.skills && internship.skills.slice(0, 3).map((skill, index) => (
+                        <span key={index} className="internship-skill-tag">{capitalize(skill)}</span>
                       ))}
+                      {internship.skills && internship.skills.length > 3 && (
+                        <span className="internship-skill-more">+{internship.skills.length - 3} more</span>
+                      )}
                     </div>
                   </div>
                 </div>
-                <div className="internship-item-actions">
+                <div className="internship-card-actions">
                   <button 
-                    className="view-more-button"
+                    className="internship-card-view-button"
                     onClick={() => handleViewMore(internship.id)}
                   >
                     View Details
