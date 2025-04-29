@@ -165,6 +165,23 @@ export const applyForCollaborationHandler = async (data, setIsLoading, showAlert
     setIsLoading(false);
   }
 };
+export const handleCollaborationRequest = async (data, setIsLoading, showAlert) => {
+  const url = `${baseRoutes}/handleCollaborationRequest`;
+  const obj = data;
+
+  setIsLoading(true);
+  const token = localStorage.getItem("token");
+
+  try {
+    const response = await apiRequest(url, obj, token, "post");
+    const data = response.data;
+    return data;
+  } catch (e) {
+    handleErrors(e, showAlert);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
 export const updateCollaborationStatusHandler = async (data, setIsLoading, showAlert) => {
   const url = `${baseRoutes}/updateCollaborationStatus`;

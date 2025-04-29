@@ -7,6 +7,8 @@ import {
   applyForCollaborationHandler,
   withdrawCollaborationHandler,
   updateCollaborationStatusHandler,
+  sendCollaborationInvitationHandler,
+  handleCollaborationRequest,
 } from "../projectsApiHandler";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -91,6 +93,20 @@ export const ProjectDetails = () => {
   const imagePopupRef = useRef(null);
   const [autoSlide, setAutoSlide] = useState(true);
   const [sliderInterval, setSliderInterval] = useState(null);
+
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviteData, setInviteData] = useState({
+    email: "",
+    role: "",
+    type: "",
+    description: "",
+  });
+
+  const [showRequestModal, setShowRequestModal] = useState(false);
+  const [requestData, setRequestData] = useState({
+    action: "",
+    feedback: "",
+  });
 
   useEffect(() => {
     fetchProjectDetails();
@@ -417,21 +433,70 @@ export const ProjectDetails = () => {
     setAutoSlide((prev) => !prev);
   };
 
+  const handleInvite = async (e) => {
+    e.preventDefault();
+    try {
+      setIsLoading(true);
+      setError(null);
+      const formData = new FormData();
+      Object.keys(inviteData).forEach((key) => {
+        formData.append(key, inviteData[key]);
+      });
+      formData.append("projectId", id);
+
+      const response = await sendCollaborationInvitationHandler(
+        formData,
+        setIsLoading,
+        setError
+      );
+
+      if (response && response.success) {
+        setShowInviteModal(false);
+        setInviteData({
+          email: "",
+          role: "",
+          type: "",
+          description: "",
+        });
+        fetchProjectDetails();
+      }
+    } catch (err) {
+      setError(err.message || "Failed to send invitation");
+      setIsLoading(false); // Reset loading state on error
+    }
+  };
+
+  const handleCollaborationRequest = async (e) => {
+    e.preventDefault();
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await handleCollaborationRequest(
+        {
+          projectId: id,
+          userId: project?.projectMember?.UserId,
+          action: requestData.action,
+        },
+        setIsLoading,
+        setError
+      );
+      if (response && response.success) {
+        setShowRequestModal(false);
+        setRequestData({
+          action: "",
+          feedback: "",
+        });
+        fetchProjectDetails();
+      }
+    } catch (err) {
+      setError(err.message || "Failed to handle collaboration request");
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="project-details-container">
         <div className="project-details-loading">Loading...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="project-details-container">
-        <div className="project-details-error-message">
-          <p>{error}</p>
-          <button className="project-details-try-again-button" onClick={fetchProjectDetails}>Try Again</button>
-        </div>
       </div>
     );
   }
@@ -448,6 +513,16 @@ export const ProjectDetails = () => {
 
   return (
     <div className="project-details-container">
+
+       {/* Error Message Section - Moved here */}
+       {error && (
+        <div className="project-details-error-message">
+          <p>{error}</p>
+          <button className="project-details-try-again-button" onClick={fetchProjectDetails}>Try Again</button>
+        </div>
+      )}
+
+
       {/* Header Section */}
       <div className="project-details-header">
         <div className="project-details-header-content">
@@ -466,6 +541,9 @@ export const ProjectDetails = () => {
               <button className="project-details-members-button" onClick={() => setShowMembersModal(true)}>
                 View Members
               </button>
+              <button className="project-details-invite-button" onClick={() => setShowInviteModal(true)}>
+                Invite Collaborator
+              </button>
             </>
           ) : project?.projectMember ? (
             <>
@@ -475,6 +553,11 @@ export const ProjectDetails = () => {
               <button className="project-details-withdraw-button" onClick={handleWithdraw}>
                 Withdraw Application
               </button>
+              {project?.projectMember?.status === "requested" && (
+                <button className="project-details-request-button" onClick={() => setShowRequestModal(true)}>
+                  Handle Collaboration Request
+                </button>
+              )}
             </>
           ) : (
             <button className="project-details-apply-button" onClick={() => setShowApplyModal(true)}>
@@ -663,6 +746,7 @@ export const ProjectDetails = () => {
         </div>
       </div>
 
+     
       {/* Edit Modal */}
       {showEditModal && (
         <div className="project-details-modal">
@@ -1162,6 +1246,145 @@ export const ProjectDetails = () => {
               <button className="project-details-zoom-button" onClick={handleZoomIn}>+</button>
               <button className="project-details-zoom-button" onClick={handleZoomOut}>-</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showInviteModal && (
+        <div className="project-details-modal">
+          <div className="project-details-modal-content project-details-invite-modal">
+            <div className="project-details-modal-header">
+              <h2>Invite Collaborator</h2>
+              <button className="project-details-close-button" onClick={() => setShowInviteModal(false)}>×</button>
+            </div>
+            {error && (
+              <div className="project-details-error-message">
+                <p>{error}</p>
+              </div>
+            )}
+            <form onSubmit={handleInvite}>
+              <div className="project-details-form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={inviteData.email}
+                  onChange={(e) =>
+                    setInviteData({ ...inviteData, email: e.target.value })
+                  }
+                  placeholder="Enter collaborator's email"
+                  required
+                />
+              </div>
+              <div className="project-details-form-group">
+                <label>Role</label>
+                <input
+                  type="text"
+                  value={inviteData.role}
+                  onChange={(e) =>
+                    setInviteData({ ...inviteData, role: e.target.value })
+                  }
+                  placeholder="Enter role in the project"
+                  required
+                />
+              </div>
+              <div className="project-details-form-group">
+                <label>Type</label>
+                <input
+                  type="text"
+                  value={inviteData.type}
+                  onChange={(e) =>
+                    setInviteData({ ...inviteData, type: e.target.value })
+                  }
+                  placeholder="Enter type of contribution"
+                  required
+                />
+              </div>
+              <div className="project-details-form-group">
+                <label>Description</label>
+                <textarea
+                  value={inviteData.description}
+                  onChange={(e) =>
+                    setInviteData({ ...inviteData, description: e.target.value })
+                  }
+                  placeholder="Describe the collaboration details"
+                  required
+                />
+              </div>
+              <div className="project-details-form-actions">
+                <button
+                  type="button"
+                  className="project-details-cancel-button"
+                  onClick={() => setShowInviteModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="project-details-submit-button"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Sending..." : "Send Invitation"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showRequestModal && (
+        <div className="project-details-modal">
+          <div className="project-details-modal-content project-details-request-modal">
+            <div className="project-details-modal-header">
+              <h2>Handle Collaboration Request</h2>
+              <button className="project-details-close-button" onClick={() => setShowRequestModal(false)}>×</button>
+            </div>
+            {error && (
+              <div className="project-details-error-message">
+                <p>{error}</p>
+              </div>
+            )}
+            <form onSubmit={handleCollaborationRequest}>
+              <div className="project-details-form-group">
+                <label>Action</label>
+                <select
+                  value={requestData.action}
+                  onChange={(e) =>
+                    setRequestData({ ...requestData, action: e.target.value })
+                  }
+                  required
+                >
+                  <option value="">Select an action</option>
+                  <option value="accept">Accept</option>
+                  <option value="reject">Reject</option>
+                </select>
+              </div>
+              <div className="project-details-form-group">
+                <label>Feedback (Optional)</label>
+                <textarea
+                  value={requestData.feedback}
+                  onChange={(e) =>
+                    setRequestData({ ...requestData, feedback: e.target.value })
+                  }
+                  placeholder="Enter feedback for the collaboration request"
+                />
+              </div>
+              <div className="project-details-form-actions">
+                <button
+                  type="button"
+                  className="project-details-cancel-button"
+                  onClick={() => setShowRequestModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="project-details-submit-button"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Processing..." : "Submit"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

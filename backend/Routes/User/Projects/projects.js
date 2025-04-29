@@ -15,6 +15,6 @@ router.post("/sendCollaborationInvitation", projectsController.sendCollaboration
 router.post("/applyForCollaboration", projectsController.applyForCollaboration);
 router.post("/updateCollaborationStatus", projectsController.updateCollaborationStatus);
 router.post("/withdrawCollaboration", projectsController.withdrawCollaboration);
-
+router.post("/handleCollaborationRequest", projectsController.handleCollaborationRequest);
 
 module.exports = router;

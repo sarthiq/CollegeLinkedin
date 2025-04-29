@@ -749,4 +749,156 @@
   background: #f8f9fa;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
+}
+
+/* Collaboration Invitation Modal */
+.project-details-invite-modal {
+  max-width: 500px;
+  width: 90%;
+}
+
+.project-details-invite-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.project-details-invite-button:hover {
+  background-color: #45a049;
+}
+
+/* Collaboration Request Modal */
+.project-details-request-modal {
+  max-width: 500px;
+  width: 90%;
+}
+
+.project-details-request-button {
+  background-color: #2196F3;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.project-details-request-button:hover {
+  background-color: #0b7dda;
+}
+
+/* Form Groups for Both Modals */
+.project-details-form-group {
+  margin-bottom: 20px;
+}
+
+.project-details-form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.project-details-form-group input,
+.project-details-form-group select,
+.project-details-form-group textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.project-details-form-group textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Form Actions for Both Modals */
+.project-details-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.project-details-cancel-button {
+  background-color: #f44336;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.project-details-cancel-button:hover {
+  background-color: #da190b;
+}
+
+.project-details-submit-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.project-details-submit-button:hover {
+  background-color: #45a049;
+}
+
+.project-details-submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Modal Header */
+.project-details-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.project-details-modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.project-details-close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  line-height: 1;
+}
+
+.project-details-close-button:hover {
+  color: #333;
+}
+
+/* Error Message */
+.project-details-error-message {
+  color: #f44336;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #ffebee;
+  border-radius: 4px;
+  font-size: 14px;
 } 

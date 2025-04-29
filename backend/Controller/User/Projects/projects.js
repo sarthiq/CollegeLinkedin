@@ -455,7 +455,7 @@ exports.sendCollaborationInvitation = async (req, res) => {
         role,
         type,
         description,
-        status: "pending",
+        status: "requested",
         joinDate: new Date(),
       },
       { transaction }
@@ -477,6 +477,7 @@ exports.sendCollaborationInvitation = async (req, res) => {
     });
   }
 };
+
 
 // Apply for project collaboration
 exports.applyForCollaboration = async (req, res) => {
@@ -798,6 +799,85 @@ exports.withdrawCollaboration = async (req, res) => {
   } catch (error) {
     if (transaction) await transaction.rollback();
     console.error("Error withdrawing collaboration:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+// Accept or Reject collaboration request
+exports.handleCollaborationRequest = async (req, res) => {
+  let transaction;
+  try {
+    const { projectId, userId, action } = req.body; // action can be 'accept' or 'reject'
+    const currentUserId = req.user.id;
+
+    if (!projectId || !userId || !action) {
+      return res.status(400).json({
+        success: false,
+        message: "Project ID, User ID and Action are required",
+      });
+    }
+
+    // Check if the current user is the project owner
+    const project = await Projects.findOne({
+      where: { id: projectId, UserId: currentUserId },
+    });
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found or unauthorized",
+      });
+    }
+
+    transaction = await sequelize.transaction();
+
+    // Find the collaboration request
+    const collaboration = await ProjectMember.findOne({
+      where: {
+        ProjectId: projectId,
+        UserId: userId,
+        status: 'requested' // Only handle requests that are in 'requested' status
+      },
+    });
+
+    if (!collaboration) {
+      return res.status(404).json({
+        success: false,
+        message: "No pending collaboration request found",
+      });
+    }
+
+    // Update the status based on the action
+    if (action === 'accept') {
+      await collaboration.update({
+        status: 'accepted',
+        joinDate: new Date()
+      }, { transaction });
+    } else if (action === 'reject') {
+      await collaboration.update({
+        status: 'rejectedByUser',
+        joinDate: null
+      }, { transaction });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid action. Use 'accept' or 'reject'",
+      });
+    }
+
+    await transaction.commit();
+
+    res.status(200).json({
+      success: true,
+      message: `Collaboration request ${action}ed successfully`,
+      data: collaboration
+    });
+  } catch (error) {
+    if (transaction) await transaction.rollback();
+    console.error("Error handling collaboration request:", error);
     res.status(500).json({
       success: false,
       error: error.message,
