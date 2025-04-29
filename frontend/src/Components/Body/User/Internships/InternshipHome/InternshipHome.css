@@ -1104,4 +1104,95 @@
   .internship-card-image-container {
     height: 180px;
   }
+}
+
+/* Header Styles */
+.internships-header h1 i {
+  margin-right: 10px;
+  color: #0a66c2;
+}
+
+.header-description i {
+  margin-right: 8px;
+  color: #666;
+}
+
+/* Filter Buttons */
+.filter-button i {
+  margin-right: 8px;
+}
+
+/* Create Internship Button */
+.create-internship-button i {
+  margin-right: 8px;
+}
+
+/* Error Message */
+.internships-error-message i {
+  margin-right: 10px;
+  color: #dc3545;
+  font-size: 1.2rem;
+}
+
+.internships-error-message button i {
+  margin-right: 5px;
+}
+
+/* Loading Spinner */
+.internships-loading-container i {
+  font-size: 2rem;
+  color: #0a66c2;
+  margin-bottom: 1rem;
+}
+
+/* Card Styles */
+.internship-card-category i {
+  margin-right: 5px;
+}
+
+.internship-card-created-badge i {
+  margin-right: 5px;
+}
+
+.internship-card-label i {
+  margin-right: 8px;
+  color: #666;
+  width: 16px;
+  text-align: center;
+}
+
+.internship-skill-tag i {
+  margin-right: 5px;
+  color: #28a745;
+  font-size: 0.8rem;
+}
+
+.internship-card-view-button i {
+  margin-right: 8px;
+}
+
+/* Pagination */
+.internships-pagination button i {
+  margin: 0 5px;
+}
+
+/* Modal Styles */
+.modal-header h2 i {
+  margin-right: 10px;
+  color: #0a66c2;
+}
+
+.close-button i {
+  font-size: 1.2rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .internship-card-label i {
+    margin-right: 5px;
+  }
+  
+  .internship-card-view-button i {
+    margin-right: 5px;
+  }
 } 

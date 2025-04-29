@@ -235,8 +235,8 @@ export const InternshipHome = () => {
     <div className="internships-container">
       <div className="internships-header">
         <div className="header-content">
-          <h1>Internships</h1>
-          <p className="header-description">Find and apply for internships</p>
+          <h1><i className="fas fa-briefcase"></i> Internships</h1>
+          <p className="header-description"><i className="fas fa-search"></i> Find and apply for internships</p>
         </div>
         <div className="header-actions">
           <div className="internship-filter">
@@ -244,31 +244,31 @@ export const InternshipHome = () => {
               className={`filter-button ${!showUserInternships ? 'active' : ''}`}
               onClick={() => setShowUserInternships(false)}
             >
-              All Internships
+              <i className="fas fa-globe"></i> All Internships
             </button>
             <button 
               className={`filter-button ${showUserInternships ? 'active' : ''}`}
               onClick={() => setShowUserInternships(true)}
             >
-              My Internships
+              <i className="fas fa-user"></i> My Internships
             </button>
           </div>
           <button 
             className="create-internship-button"
             onClick={() => setShowCreateInternship(true)}
           >
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-            </svg>
-            Create Internship
+            <i className="fas fa-plus"></i> Create Internship
           </button>
         </div>
       </div>
 
       {error && !showCreateInternship && (
         <div className="internships-error-message">
+          <i className="fas fa-exclamation-circle"></i>
           <p>{error}</p>
-          <button onClick={fetchInternships}>Try Again</button>
+          <button onClick={fetchInternships}>
+            <i className="fas fa-sync-alt"></i> Try Again
+          </button>
         </div>
       )}
 
@@ -276,7 +276,7 @@ export const InternshipHome = () => {
         <div className="create-internship-modal">
           <div className="create-internship-content">
             <div className="modal-header">
-              <h2>Create New Internship</h2>
+              <h2><i className="fas fa-plus-circle"></i> Create New Internship</h2>
               <button 
                 className="close-button"
                 onClick={() => {
@@ -284,7 +284,7 @@ export const InternshipHome = () => {
                   setCreateInternshipError(null);
                 }}
               >
-                ×
+                <i className="fas fa-times"></i>
               </button>
             </div>
             {createInternshipError && (
@@ -626,7 +626,7 @@ export const InternshipHome = () => {
 
       {isLoading && internships.length === 0 ? (
         <div className="internships-loading-container">
-          <div className="internships-spinner"></div>
+          <i className="fas fa-spinner fa-spin"></i>
           <p>Loading internships...</p>
         </div>
       ) : (
@@ -643,7 +643,9 @@ export const InternshipHome = () => {
                     className="internship-card-image"
                   />
                   {internship.category && (
-                    <span className="internship-card-category">{internship.category}</span>
+                    <span className="internship-card-category">
+                      <i className="fas fa-tag"></i> {internship.category}
+                    </span>
                   )}
                   {internship.isUserCreated && (
                     <div className="internship-card-created-badge">
@@ -655,21 +657,25 @@ export const InternshipHome = () => {
                 <div className="internship-card-content">
                   <h3 className="internship-card-title">{capitalize(internship.title)}</h3>
                   <div className="internship-card-info-row">
-                    <span className="internship-card-label">Company:</span>
+                    <span className="internship-card-label"><i className="fas fa-building"></i> Company:</span>
                     <span className="internship-card-value">{capitalize(internship.companyName)}</span>
                   </div>
                   <div className="internship-card-info-row">
-                    <span className="internship-card-label">Role:</span>
+                    <span className="internship-card-label"><i className="fas fa-user-tie"></i> Role:</span>
                     <span className="internship-card-value">{capitalize(internship.role)}</span>
                   </div>
                   <div className="internship-card-info-row">
-                    <span className="internship-card-label">Skills:</span>
+                    <span className="internship-card-label"><i className="fas fa-tools"></i> Skills:</span>
                     <div className="internship-card-skills">
                       {internship.skills && internship.skills.slice(0, 3).map((skill, index) => (
-                        <span key={index} className="internship-skill-tag">{capitalize(skill)}</span>
+                        <span key={index} className="internship-skill-tag">
+                          <i className="fas fa-check"></i> {capitalize(skill)}
+                        </span>
                       ))}
                       {internship.skills && internship.skills.length > 3 && (
-                        <span className="internship-skill-more">+{internship.skills.length - 3} more</span>
+                        <span className="internship-skill-more">
+                          +{internship.skills.length - 3} more
+                        </span>
                       )}
                     </div>
                   </div>
@@ -679,7 +685,7 @@ export const InternshipHome = () => {
                     className="internship-card-view-button"
                     onClick={() => handleViewMore(internship.id)}
                   >
-                    View Details
+                    <i className="fas fa-eye"></i> View Details
                   </button>
                 </div>
               </div>
@@ -692,14 +698,14 @@ export const InternshipHome = () => {
                 onClick={() => handlePageChange(pagination.currentPage - 1)}
                 disabled={!pagination.hasPrevPage || isLoading}
               >
-                Previous
+                <i className="fas fa-chevron-left"></i> Previous
               </button>
               <span>Page {pagination.currentPage} of {pagination.totalPages}</span>
               <button 
                 onClick={() => handlePageChange(pagination.currentPage + 1)}
                 disabled={!pagination.hasNextPage || isLoading}
               >
-                Next
+                Next <i className="fas fa-chevron-right"></i>
               </button>
             </div>
           )}
