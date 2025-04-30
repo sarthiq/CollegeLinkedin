@@ -184,16 +184,20 @@ exports.getFeedById = async (req, res) => {
         .json({ success: false, message: "Feed not found" });
     }
 
-    // Get like status for the feed
-    const isLiked = await Likes.findOne({
-      where: {
-        UserId: req.user.id,
-        FeedId: feed.id,
-      },
-    });
-
     const feedData = feed.toJSON();
-    feedData.isLiked = !!isLiked;
+    
+    // Only check like status if user is authenticated
+    if (req.user && req.user.id) {
+      const isLiked = await Likes.findOne({
+        where: {
+          UserId: req.user.id,
+          FeedId: feed.id,
+        },
+      });
+      feedData.isLiked = !!isLiked;
+    } else {
+      feedData.isLiked = false;
+    }
 
     res.status(200).json({ success: true, data: feedData });
   } catch (error) {

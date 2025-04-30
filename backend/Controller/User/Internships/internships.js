@@ -249,13 +249,26 @@ exports.getInternshipById = async (req, res) => {
         .json({ success: false, message: "Internship not found" });
     }
 
-    // Check if user has applied to this internship
-    const appliedInternship = await AppliedInternship.findOne({
-      where: {
-        UserId: req.user.id,
-        InternshipId: id,
-      },
-    });
+    const jsonData = internship.toJSON();
+
+    // Only check application status and user-specific data if user is authenticated
+    if (req.user && req.user.id) {
+      // Check if user has applied to this internship
+      const appliedInternship = await AppliedInternship.findOne({
+        where: {
+          UserId: req.user.id,
+          InternshipId: id,
+        },
+      });
+
+      jsonData.isUserCreated = jsonData.UserId === req.user.id;
+      jsonData.isApplied = appliedInternship !== null;
+      jsonData.applicationInfo = appliedInternship || null;
+    } else {
+      jsonData.isUserCreated = false;
+      jsonData.isApplied = false;
+      jsonData.applicationInfo = null;
+    }
 
     // First find all applied internships for this internship
     const allAppliedInternships = await AppliedInternship.findAll({
@@ -282,12 +295,6 @@ exports.getInternshipById = async (req, res) => {
     applicants.forEach((user) => {
       userMap[user.id] = user.toJSON();
     });
-
-    const jsonData = internship.toJSON();
-
-    jsonData.isUserCreated = jsonData.UserId === req.user.id;
-    jsonData.isApplied = appliedInternship !== null;
-    jsonData.applicationInfo = appliedInternship || null;
 
     // Add applicants information
     jsonData.applicants = allAppliedInternships.map((app) => ({

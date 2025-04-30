@@ -12,13 +12,13 @@ const {
   updateUserInternshipStatus,
 } = require("../../../Controller/User/Internships/internships");
 const { fileHandlerRouter } = require("../../FileHandler/fileHandler");
-const { userAuthentication } = require("../../../Middleware/auth");
+const { userAuthentication, unauthorizedUserAuthentication } = require("../../../Middleware/auth");
 
 const router = express.Router();
 
 router.post("/create",userAuthentication, fileHandlerRouter(["image"], 20), createInternship);
 router.post("/getAll",userAuthentication, getInternships);
-router.post("/getById", getInternshipById);
+router.post("/getById",unauthorizedUserAuthentication, getInternshipById);
 router.post("/update",userAuthentication, fileHandlerRouter(["image"], 20), updateInternship);
 router.post("/delete",userAuthentication, deleteInternship);
 

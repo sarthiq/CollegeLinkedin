@@ -172,7 +172,6 @@ exports.getProjects = async (req, res) => {
 exports.getProjectById = async (req, res) => {
   try {
     const { id } = req.body;
-    const userId = req.user.id;
     const project = await Projects.findByPk(id, {
       include: [
         {
@@ -218,31 +217,38 @@ exports.getProjectById = async (req, res) => {
       ],
     });
 
-    
     if (!project) {
       return res.status(404).json({
         success: false,
         message: "Project not found",
       });
     }
+
     const jsonData = project.toJSON();
-    jsonData.isUserCreated = jsonData.UserId === userId;
 
-    const isProjectMember = await ProjectMember.findOne({
-      where: {
-        ProjectId: project.id,
-        UserId: userId,
-      },
-    });
-    jsonData.projectMember = isProjectMember;
+    // Only check user-specific data if user is authenticated
+    if (req.user && req.user.id) {
+      jsonData.isUserCreated = jsonData.UserId === req.user.id;
 
+      const isProjectMember = await ProjectMember.findOne({
+        where: {
+          ProjectId: project.id,
+          UserId: req.user.id,
+        },
+      });
+      jsonData.projectMember = isProjectMember;
+    } else {
+      jsonData.isUserCreated = false;
+      jsonData.projectMember = null;
+    }
+
+    // Get all project members (visible to all users)
     const projectMembers = await ProjectMember.findAll({
       where: {
         ProjectId: project.id,
       },
     });
     jsonData.projectMembers = projectMembers;
-    
 
     res.status(200).json({
       success: true,

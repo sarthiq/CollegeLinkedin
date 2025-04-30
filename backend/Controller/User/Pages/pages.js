@@ -94,6 +94,7 @@ exports.getPageById = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Page not found" });
     }
+
     const user = await User.findByPk(page.adminId, {
       attributes: ["name"],
       include: [
@@ -105,25 +106,35 @@ exports.getPageById = async (req, res) => {
     });
 
     page.admin = user;
-    const isFollowing=await Followers.findOne({
-      where: {
-        UserId: req.user.id,
-        PageId: page.id,
-      },
-    });
-   
+
+    // Initialize response data
+    const responseData = {
+      page,
+      admin: {
+        name: user.name,
+        profileUrl: user.UserProfile.profileUrl,
+      }
+    };
+
+    // Only check user-specific data if user is authenticated
+    if (req.user && req.user.id) {
+      const isFollowing = await Followers.findOne({
+        where: {
+          UserId: req.user.id,
+          PageId: page.id,
+        },
+      });
+
+      responseData.admin.isAdmin = req.user.id === page.adminId;
+      responseData.isFollowing = isFollowing ? true : false;
+    } else {
+      responseData.admin.isAdmin = false;
+      responseData.isFollowing = false;
+    }
     
     res.status(200).json({
       success: true,
-      data: {
-        page,
-        admin: {
-          isAdmin: req.user.id === page.adminId,
-          name: user.name,
-          profileUrl: user.UserProfile.profileUrl,
-        },
-        isFollowing: isFollowing ? true : false,
-      },
+      data: responseData,
     });
   } catch (error) {
     console.log(error);

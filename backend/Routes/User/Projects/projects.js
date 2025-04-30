@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const projectsController = require("../../../Controller/User/Projects/projects");
 const { fileHandlerRouter } = require("../../FileHandler/fileHandler");
-const { userAuthentication } = require("../../../Middleware/auth");
+const { userAuthentication, unauthorizedUserAuthentication } = require("../../../Middleware/auth");
 
 router.post("/create",userAuthentication, fileHandlerRouter(["image"], 20), projectsController.createProject);
 router.post("/getAll",userAuthentication, projectsController.getProjects);
-router.post("/getById", projectsController.getProjectById);
+router.post("/getById",unauthorizedUserAuthentication, projectsController.getProjectById);
 router.post("/update",userAuthentication, fileHandlerRouter(["image"], 20), projectsController.updateProject);
 router.post("/delete",userAuthentication, projectsController.deleteProject);
 
