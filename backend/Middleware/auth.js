@@ -129,7 +129,7 @@ exports.userAuthentication = async (req, res, next) => {
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Authentication required. Please login.",
+        message: "Please Login to view full details!",
       });
     }
    
