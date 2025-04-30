@@ -682,7 +682,7 @@ export const ProjectDetails = () => {
                 <div className="project-details-info-item">
                   <span className="project-details-label">
                     <i className="fab fa-github"></i>
-                    GitHub
+                    Project URL
                   </span>
                   <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="project-details-github-link">
                     View Repository
@@ -710,7 +710,7 @@ export const ProjectDetails = () => {
             <div className="project-details-info-section">
               <h2>
                 <i className="fas fa-tools"></i>
-                Technologies Used
+                Skills Used
               </h2>
               <div className="project-details-technologies-list">
                 {project.technologies.map((tech, index) => (
@@ -846,7 +846,7 @@ export const ProjectDetails = () => {
                 </select>
               </div>
               <div className="project-details-form-group">
-                <label>Technologies</label>
+                <label>Skills</label>
                 <div className="project-details-array-input-container">
                   <div className="project-details-array-input-field">
                     <input
@@ -856,7 +856,7 @@ export const ProjectDetails = () => {
                         setTempInput({ ...tempInput, technology: e.target.value })
                       }
                       onKeyPress={handleKeyPress}
-                      placeholder="Add technology and press Enter"
+                      placeholder="Add skills and press Enter"
                     />
                     <button
                       type="button"
@@ -883,14 +883,14 @@ export const ProjectDetails = () => {
                 </div>
               </div>
               <div className="project-details-form-group">
-                <label>GitHub URL (Optional)</label>
+                <label>Project URL (Optional)</label>
                 <input
                   type="url"
                   value={editData.githubUrl}
                   onChange={(e) =>
                     setEditData({ ...editData, githubUrl: e.target.value })
                   }
-                  placeholder="Enter GitHub repository URL"
+                  placeholder="Enter Project URL"
                 />
               </div>
               <div className="project-details-form-row">

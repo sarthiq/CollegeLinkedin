@@ -1127,14 +1127,14 @@ export const InternshipDetails = () => {
               <div className="form-actions">
                 <button
                   type="button"
-                  className="cancel-button"
+                  className="internship-details-cancel-button"
                   onClick={() => setShowEditModal(false)}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="update-button"
+                  className="internship-details-update-status-button"
                   disabled={isLoading}
                 >
                   {isLoading ? "Updating..." : "Update Internship"}

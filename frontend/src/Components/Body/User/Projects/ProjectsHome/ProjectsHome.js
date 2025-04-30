@@ -305,7 +305,7 @@ export const ProjectsHome = () => {
                 </select>
               </div>
               <div className="form-group">
-                <label>Technologies</label>
+                <label>Skills</label>
                 <div className="array-input-container">
                   <div className="array-input-field">
                     <input
@@ -313,7 +313,7 @@ export const ProjectsHome = () => {
                       value={tempInput.technology}
                       onChange={(e) => setTempInput({ ...tempInput, technology: e.target.value })}
                       onKeyPress={handleKeyPress}
-                      placeholder="Add technology and press Enter"
+                      placeholder="Add skill and press Enter"
                     />
                     <button 
                       type="button" 
@@ -340,12 +340,12 @@ export const ProjectsHome = () => {
                 </div>
               </div>
               <div className="form-group">
-                <label>GitHub URL</label>
+                <label>Project URL</label>
                 <input
                   type="url"
                   value={newProject.githubUrl}
                   onChange={(e) => setNewProject({ ...newProject, githubUrl: e.target.value })}
-                  placeholder="Enter GitHub repository URL"
+                  placeholder="Enter Project URL"
                 />
               </div>
               <div className="form-row">
@@ -486,7 +486,7 @@ export const ProjectsHome = () => {
                       <div className="project-card-technologies">
                         <div className="project-card-tech-header">
                           <i className="fas fa-tools"></i>
-                          <span className="project-card-tech-label">Technologies:</span>
+                          <span className="project-card-tech-label">Skills:</span>
                         </div>
                         <div className="project-card-tech-tags">
                           {project.technologies.slice(0, 3).map((tech, index) => (
