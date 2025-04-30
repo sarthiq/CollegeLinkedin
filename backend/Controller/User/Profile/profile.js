@@ -15,8 +15,14 @@ const Achievements = require("../../../Models/User/achievments");
 exports.getProfile = async (req, res) => {
   try {
     // Get userId from either req.body or req.user.id
-    const userId = req.body.userId || req.user.id;
+    const userId = req.body.userId || (req.user && req.user.id ? req.user.id : null);
 
+    if(!userId){
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required. Please login.",
+      });
+    }
     const userProfile = await UserProfile.findOne({
       where: { userId },
       include: [

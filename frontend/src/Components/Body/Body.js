@@ -4,28 +4,8 @@ import { useSelector } from "react-redux";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { LandingRoutes } from "./Landing/LandingRoutes";
 import { InfoRoutes } from "./Info/InfoRoutes";
+import { ProtectedRoute } from "../UI/Routes/RoutesUtils";
 
-const ProtectedRoute = ({ children, isLoggedIn }) => {
-  const location = useLocation();
-
-  if (!isLoggedIn) {
-    // If not logged in, redirect to landing with the attempted path
-    return <Navigate to="/landing" state={{ from: location }} replace />;
-  }
-
-  return children;
-};
-
-const PublicRoute = ({ children, isLoggedIn }) => {
-  const location = useLocation();
-
-  if (isLoggedIn) {
-    // If logged in, redirect to dashboard
-    return <Navigate to="/dashboard" state={{ from: location }} replace />;
-  }
-
-  return children;
-};
 
 export const Body = () => {
   const isLoggedIn = useSelector((state) => state.userAuth.isLoggedIn);
@@ -39,9 +19,9 @@ export const Body = () => {
       <Route
         path="dashboard/*"
         element={
-          <ProtectedRoute isLoggedIn={isLoggedIn}>
+         // <ProtectedRoute isLoggedIn={isLoggedIn}>
             <UserRoutes />
-          </ProtectedRoute>
+         // </ProtectedRoute>
         }
       />
 

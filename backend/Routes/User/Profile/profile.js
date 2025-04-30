@@ -7,10 +7,10 @@ const educationRouter = require("./education");
 const experienceRouter = require("./experience");
 const interestsRouter = require("./interests");
 const skillsRouter = require("./skills");
-const { userAuthentication } = require("../../../Middleware/auth");
+const { userAuthentication, unauthorizedUserAuthentication } = require("../../../Middleware/auth");
 
 
-router.post("/get", userAuthentication, profileController.getProfile);
+router.post("/get", unauthorizedUserAuthentication, profileController.getProfile);
 router.post("/update",userAuthentication, fileHandlerRouter(["image", "coverImage"], 15), profileController.updateProfile);
 
 
