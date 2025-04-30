@@ -13,12 +13,12 @@ const projectsRoutes = require("./Projects/projects");
 const router = express.Router();
 
 router.use("/auth", authRoutes);
-router.use("/profile", userAuthentication, profileRoutes);
-router.use("/feeds", userAuthentication, feedsRoutes);
+router.use("/profile",  profileRoutes);
+router.use("/feeds",  feedsRoutes);
 router.use("/likes", userAuthentication, likesRoutes);
-router.use("/comments", userAuthentication, commentsRoutes);
-router.use("/pages", userAuthentication, pagesRoutes);
-router.use("/internships", userAuthentication, internshipsRoutes);
-router.use("/projects", userAuthentication, projectsRoutes);
+router.use("/comments", commentsRoutes);
+router.use("/pages", pagesRoutes);
+router.use("/internships", internshipsRoutes);
+router.use("/projects", projectsRoutes);
 
 module.exports = router;

@@ -2,19 +2,20 @@ const express = require("express");
 const router = express.Router();
 const projectsController = require("../../../Controller/User/Projects/projects");
 const { fileHandlerRouter } = require("../../FileHandler/fileHandler");
+const { userAuthentication } = require("../../../Middleware/auth");
 
-router.post("/create", fileHandlerRouter(["image"], 20), projectsController.createProject);
-router.post("/getAll", projectsController.getProjects);
+router.post("/create",userAuthentication, fileHandlerRouter(["image"], 20), projectsController.createProject);
+router.post("/getAll",userAuthentication, projectsController.getProjects);
 router.post("/getById", projectsController.getProjectById);
-router.post("/update", fileHandlerRouter(["image"], 20), projectsController.updateProject);
-router.post("/delete", projectsController.deleteProject);
+router.post("/update",userAuthentication, fileHandlerRouter(["image"], 20), projectsController.updateProject);
+router.post("/delete",userAuthentication, projectsController.deleteProject);
 
-router.post("/addFeedback", projectsController.addProjectFeedback);
-router.post("/getAllFeedback", projectsController.getProjectFeedback);
-router.post("/sendCollaborationInvitation", projectsController.sendCollaborationInvitation);
-router.post("/applyForCollaboration", projectsController.applyForCollaboration);
-router.post("/updateCollaborationStatus", projectsController.updateCollaborationStatus);
-router.post("/withdrawCollaboration", projectsController.withdrawCollaboration);
-router.post("/handleCollaborationRequest", projectsController.handleCollaborationRequest);
+router.post("/addFeedback",userAuthentication, projectsController.addProjectFeedback);
+router.post("/getAllFeedback",userAuthentication, projectsController.getProjectFeedback);
+router.post("/sendCollaborationInvitation",userAuthentication, projectsController.sendCollaborationInvitation);
+router.post("/applyForCollaboration",userAuthentication, projectsController.applyForCollaboration);
+router.post("/updateCollaborationStatus",userAuthentication, projectsController.updateCollaborationStatus);
+router.post("/withdrawCollaboration",userAuthentication, projectsController.withdrawCollaboration);
+router.post("/handleCollaborationRequest",userAuthentication, projectsController.handleCollaborationRequest);
 
 module.exports = router;

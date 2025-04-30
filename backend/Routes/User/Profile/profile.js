@@ -7,15 +7,17 @@ const educationRouter = require("./education");
 const experienceRouter = require("./experience");
 const interestsRouter = require("./interests");
 const skillsRouter = require("./skills");
-
-router.post("/get", profileController.getProfile);
-router.post("/update",fileHandlerRouter(["image", "coverImage"], 15), profileController.updateProfile);
+const { userAuthentication } = require("../../../Middleware/auth");
 
 
-router.use("/achievments", achievmentsRouter);
-router.use("/education", educationRouter);
-router.use("/experience", experienceRouter);
-router.use("/interests", interestsRouter);
-router.use("/skills", skillsRouter);
+router.post("/get", userAuthentication, profileController.getProfile);
+router.post("/update",userAuthentication, fileHandlerRouter(["image", "coverImage"], 15), profileController.updateProfile);
+
+
+router.use("/achievments",userAuthentication, achievmentsRouter);
+router.use("/education",userAuthentication, educationRouter);
+router.use("/experience",userAuthentication, experienceRouter);
+router.use("/interests",userAuthentication, interestsRouter);
+router.use("/skills",userAuthentication, skillsRouter);
 
 module.exports = router;
