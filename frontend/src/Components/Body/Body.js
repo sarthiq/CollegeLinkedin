@@ -7,23 +7,23 @@ import { InfoRoutes } from "./Info/InfoRoutes";
 
 const ProtectedRoute = ({ children, isLoggedIn }) => {
   const location = useLocation();
-  
+
   if (!isLoggedIn) {
     // If not logged in, redirect to landing with the attempted path
     return <Navigate to="/landing" state={{ from: location }} replace />;
   }
-  
+
   return children;
 };
 
 const PublicRoute = ({ children, isLoggedIn }) => {
   const location = useLocation();
-  
+
   if (isLoggedIn) {
     // If logged in, redirect to dashboard
     return <Navigate to="/dashboard" state={{ from: location }} replace />;
   }
-  
+
   return children;
 };
 
@@ -34,29 +34,22 @@ export const Body = () => {
     <Routes>
       <Route path="admin/*" element={<Admin />} />
       <Route path="info/*" element={<InfoRoutes />} />
-      
+
       {/* Protected Routes - Only accessible when logged in */}
-      <Route path="dashboard/*" element={
-        <ProtectedRoute isLoggedIn={isLoggedIn}>
-          <UserRoutes />
-        </ProtectedRoute>
-      } />
-      
+      <Route
+        path="dashboard/*"
+        element={
+          <ProtectedRoute isLoggedIn={isLoggedIn}>
+            <UserRoutes />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Public Routes - Only accessible when not logged in */}
-      <Route path="landing/*" element={
-        <PublicRoute isLoggedIn={isLoggedIn}>
-          <LandingRoutes />
-        </PublicRoute>
-      } />
-      
+      <Route path="landing/*" element={<LandingRoutes />} />
+
       {/* Default route based on auth status */}
-      <Route path="*" element={
-        isLoggedIn ? (
-          <Navigate to="/dashboard" replace />
-        ) : (
-          <Navigate to="/landing" replace />
-        )
-      } />
+      <Route path="*" element={<Navigate to="/landing" replace />} />
     </Routes>
   );
 };

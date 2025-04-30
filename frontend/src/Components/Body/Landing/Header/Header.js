@@ -115,11 +115,17 @@ export const Header = () => {
                 <nav className="landing-nav-buttons">
                     {isLoggedIn ? (
                         <Link to="/dashboard" className="landing-nav-btn" onClick={handleNavClick}>
-                            Dashboard
+                            <div className="landing-nav-icon-container">
+                                <span className="landing-nav-icon">🏠</span>
+                                <span className="landing-nav-text">Dashboard</span>
+                            </div>
                         </Link>
                     ) : (
                         <Link to="/landing#login" className="landing-nav-btn" onClick={handleNavClick}>
-                            Login
+                            <div className="landing-nav-icon-container">
+                                <span className="landing-nav-icon">🔑</span>
+                                <span className="landing-nav-text">Login</span>
+                            </div>
                         </Link>
                     )}
                 </nav>

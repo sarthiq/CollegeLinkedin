@@ -21,21 +21,21 @@ export const Footer = () => {
                 <div className="footer-links">
                     <div className="footer-section">
                         <h3>General</h3>
-                        <Link to="/about">About</Link>
-                        <Link to="/blogs">Blogs</Link>
-                        <Link to="/community">Community</Link>
+                        <Link to="/landing/about">About</Link>
+                        <Link to="/landing/blogs">Blogs</Link>
+                        <Link to="/landing/community">Community</Link>
                     </div>
                     <div className="footer-section">
                         <h3>Browse</h3>
-                        <Link to="/learning">Learning</Link>
-                        <Link to="/projects">Projects</Link>
-                        <Link to="/internships">Internships</Link>
+                        <Link to="/dashboard/learning">Learning</Link>
+                        <Link to="/dashboard/projects">Projects</Link>
+                        <Link to="/dashboard/internships">Internships</Link>
                     </div>
                     <div className="footer-section">
                         <h3>Legal</h3>
-                        <Link to="/privacy">Privacy Policy</Link>
-                        <Link to="/terms">Terms of Service</Link>
-                        <Link to="/refund">Refund Policy</Link>
+                        <Link to="/landing/privacy">Privacy Policy</Link>
+                        <Link to="/landing/terms">Terms of Service</Link>
+                        <Link to="/landing/refund">Refund Policy</Link>
                     </div>
                 </div>
             </div>

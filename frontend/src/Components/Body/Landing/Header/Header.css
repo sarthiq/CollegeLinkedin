@@ -70,18 +70,16 @@
 
 .landing-nav-icon-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
+    gap: 8px;
 }
 
 .landing-nav-icon {
-    font-size: 1.25rem;
+    font-size: 18px;
 }
 
 .landing-nav-text {
-    font-size: 0.75rem;
-    text-align: center;
+    font-size: 14px;
 }
 
 .landing-nav-buttons {
@@ -90,12 +88,19 @@
 }
 
 .landing-nav-btn {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    text-decoration: none;
+    color: #333;
     font-weight: 500;
-    transition: background-color 0.2s;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+.landing-nav-btn:hover {
+    background-color: #e9ecef;
+    transform: translateY(-1px);
 }
 
 .landing-nav-btn-secondary {
