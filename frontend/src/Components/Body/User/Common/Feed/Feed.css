@@ -1550,4 +1550,51 @@
   padding: 4px 12px;
   border-radius: 16px;
   font-size: 0.9rem;
+}
+
+/* Type Badge Styles */
+.feed-item-type {
+  margin: 8px 0;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.type-badge.feed {
+  background-color: #e8f0fe;
+  color: #1a73e8;
+}
+
+.type-badge.project {
+  background-color: #e6f4ea;
+  color: #137333;
+}
+
+.type-badge.internship {
+  background-color: #fce8e6;
+  color: #c5221f;
+}
+
+/* Share Button Styles */
+.feed-action-button.share {
+  background-color: #f8f9fa;
+  border: 1px solid #dadce0;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.feed-action-button.share:hover {
+  background-color: #f1f3f4;
+  border-color: #bdc1c6;
+}
+
+.feed-action-button.share .feed-icon {
+  margin-right: 8px;
 } 

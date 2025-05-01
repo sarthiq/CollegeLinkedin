@@ -657,9 +657,24 @@ export const Feed = ({
     return tempDiv.textContent.length;
   };
 
-  const handleShare = (feedId) => {
-    shareFeed(feedId);
-    navigate(`/dashboard/feed/${feedId}`);
+  const handleShare = (id, type = 'feed') => {
+    let shareUrl = '';
+    
+    switch (type) {
+      case 'feed':
+        shareUrl = `/dashboard/feed/${id}`;
+        break;
+      case 'project':
+        shareUrl = `/dashboard/projects/id/${id}`;
+        break;
+      case 'internship':
+        shareUrl = `/dashboard/internships/id/${id}`;
+        break;
+      default:
+        return;
+    }
+    
+    navigate(shareUrl);
   };
 
   const handlePrevImage = () => {
@@ -809,6 +824,11 @@ export const Feed = ({
                       <span className="feed-user-title">{item.user.title}</span>
                       <span className="feed-post-time">{item.timestamp}</span>
                     </div>
+                  </div>
+                  <div className="feed-item-type">
+                    <span className={`type-badge ${item.type}`}>
+                      {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                    </span>
                   </div>
                   {userId === item.user.id && item.type === 'feed' && (
                     <div className="feed-actions-menu">
@@ -1192,31 +1212,41 @@ export const Feed = ({
                     </div>
 
                     <div className="feed-item-actions">
-                      <button
-                        className={`feed-action-button ${
-                          item.isLiked ? "liked" : ""
-                        }`}
-                        onClick={() => handleLike(item.id)}
-                      >
-                        <span className="feed-icon">👍</span>
-                        <span className="feed-action-text">
-                          {item.isLiked ? "Liked" : "Like"}
-                        </span>
-                      </button>
-                      <button
-                        className="feed-action-button"
-                        onClick={() => toggleComments(item.id)}
-                      >
-                        <span className="feed-icon">💬</span>
-                        <span className="feed-action-text">Comment</span>
-                      </button>
-                      <button
-                        className="feed-action-button"
-                        onClick={() => handleShare(item.id)}
-                      >
-                        <span className="feed-icon">↗️</span>
-                        <span className="feed-action-text">Share</span>
-                      </button>
+                      {item.type === 'feed' ? (
+                        <>
+                          <button
+                            className={`feed-action-button ${item.isLiked ? "liked" : ""}`}
+                            onClick={() => handleLike(item.id)}
+                          >
+                            <span className="feed-icon">👍</span>
+                            <span className="feed-action-text">
+                              {item.isLiked ? "Liked" : "Like"}
+                            </span>
+                          </button>
+                          <button
+                            className="feed-action-button"
+                            onClick={() => toggleComments(item.id)}
+                          >
+                            <span className="feed-icon">💬</span>
+                            <span className="feed-action-text">Comment</span>
+                          </button>
+                          <button
+                            className="feed-action-button share"
+                            onClick={() => handleShare(item.id)}
+                          >
+                            <span className="feed-icon">↗️</span>
+                            <span className="feed-action-text">Share</span>
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          className="feed-action-button share"
+                          onClick={() => handleShare(item.id, item.type)}
+                        >
+                          <span className="feed-icon">↗️</span>
+                          <span className="feed-action-text">Share</span>
+                        </button>
+                      )}
                     </div>
 
                     {showComments === item.id && (
