@@ -136,72 +136,124 @@ export const Feed = ({
     setIsLoading(true);
     setError(null);
 
-    try {
-      const response = await getAllFeedsHandler(
-        {
-          page: pagination.currentPage,
-          limit: pagination.limit,
-          pageId: pageId,
-          usersFeed: usersFeed,
-          userId: othersUserId,
-        },
-        setIsLoading,
-        (error) => setError(error)
-      );
+    const response = await getAllFeedsHandler(
+      {
+        page: pagination.currentPage,
+        limit: pagination.limit,
+        pageId: pageId,
+        usersFeed: usersFeed,
+        userId: othersUserId,
+      },
+      setIsLoading,
+      (error) => setError(error)
+    );
 
-      if (response && response.success) {
-        const { feeds, pagination: paginationData } = response.data;
+    if (response && response.success) {
+      console.log(response.data);
+      const { items, pagination: paginationData } = response.data;
 
-        // Set the userId from the response
-        setUserId(response.data.userId);
+      // Set the userId from the response
+      setUserId(response.data.userId);
 
-        // Transform the feeds data to match our component's structure
-        const transformedFeeds = feeds.map((feed) => {
+      // Transform the items data to match our component's structure
+      const transformedItems = items.map((item) => {
+        if (item.type === 'feed') {
           const tempDiv = document.createElement("div");
-          tempDiv.innerHTML = feed.feedData.content || "";
+          tempDiv.innerHTML = item.data.feedData.content || "";
           const textContentLength = tempDiv.textContent.length;
 
           return {
-            id: feed.id,
+            id: item.data.id,
+            type: 'feed',
             user: {
-              id: feed.User?.id,
-              name: feed.User?.name || "Anonymous",
-              avatar: feed.User?.UserProfile?.profileUrl
-                ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${feed.User.UserProfile.profileUrl}`
+              id: item.data.User?.id,
+              name: item.data.User?.name || "Anonymous",
+              avatar: item.data.User?.UserProfile?.profileUrl
+                ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${item.data.User.UserProfile.profileUrl}`
                 : "/assets/Utils/male.png",
-              title: feed.User?.UserProfile?.title || "",
+              title: item.data.User?.UserProfile?.title || "",
             },
-            content: feed.feedData.content || "",
-            images: feed.feedData.imagesUrl
-              ? feed.feedData.imagesUrl.map(
+            content: item.data.feedData.content || "",
+            images: item.data.feedData.imagesUrl
+              ? item.data.feedData.imagesUrl.map(
                   (url) => `${process.env.REACT_APP_REMOTE_ADDRESS}/${url}`
                 )
-              : feed.feedData.imageUrl?[`${process.env.REACT_APP_REMOTE_ADDRESS}/${feed.feedData.imageUrl}`]:[],
-            like: feed.like || 0,
-            comments: feed.comments || 0,
-            timestamp: new Date(feed.createdAt).toLocaleDateString(),
+              : item.data.feedData.imageUrl
+              ? [
+                  `${process.env.REACT_APP_REMOTE_ADDRESS}/${item.data.feedData.imageUrl}`,
+                ]
+              : [],
+            like: item.data.like || 0,
+            comments: item.data.comments || 0,
+            timestamp: new Date(item.data.createdAt).toLocaleDateString(),
             showComments: false,
-            pageInfo: feed.Page,
-            isLiked: feed.isLiked,
+            pageInfo: item.data.Page,
+            isLiked: item.data.isLiked,
             contentLength: textContentLength,
           };
+        } else if (item.type === 'internship') {
+          return {
+            id: item.data.id,
+            type: 'internship',
+            user: {
+              id: item.data.UserId,
+              name: item.data.Users?.[0]?.name || "Anonymous",
+              avatar: item.data.Users?.[0]?.UserProfile?.profileUrl
+                ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${item.data.Users[0].UserProfile.profileUrl}`
+                : "/assets/Utils/male.png",
+            },
+            title: item.data.title,
+            companyName: item.data.companyName,
+            description: item.data.description,
+            role: item.data.role,
+            skills: item.data.skills,
+            experienceLevel: item.data.experienceLevel,
+            jobType: item.data.jobType,
+            location: item.data.location,
+            remote: item.data.remote,
+            salary: item.data.salary,
+            deadline: item.data.deadline,
+            timestamp: new Date(item.createdAt).toLocaleDateString(),
+          };
+        } else if (item.type === 'project') {
+          return {
+            id: item.data.id,
+            type: 'project',
+            user: {
+              id: item.data.UserId,
+              name: item.data.User?.name || "Anonymous",
+              avatar: item.data.User?.UserProfile?.profileUrl
+                ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${item.data.User.UserProfile.profileUrl}`
+                : "/assets/Utils/male.png",
+            },
+            title: item.data.title,
+            description: item.data.description,
+            technologies: item.data.technologies,
+            startDate: item.data.startDate,
+            endDate: item.data.endDate,
+            githubUrl: item.data.githubUrl,
+            isPublic: item.data.isPublic,
+            isSourceCodePublic: item.data.isSourceCodePublic,
+            images: item.data.imagesUrl
+              ? item.data.imagesUrl.map(
+                  (url) => `${process.env.REACT_APP_REMOTE_ADDRESS}/${url}`
+                )
+              : [],
+            timestamp: new Date(item.createdAt).toLocaleDateString(),
+          };
+        }
+      });
+
+      setFeeds(transformedItems);
+      setPagination(paginationData);
+
+      // Scroll to top after content is loaded
+      setTimeout(() => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth",
         });
-
-        setFeeds(transformedFeeds);
-        setPagination(paginationData);
-
-        // Scroll to top after content is loaded
-        setTimeout(() => {
-          window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          });
-        }, 100);
-      }
-    } catch (error) {
-      setError("Failed to fetch feeds");
-    } finally {
-      setIsLoading(false);
+      }, 100);
     }
   };
 
@@ -440,7 +492,7 @@ export const Feed = ({
   };
 
   const handleEditClick = (feed) => {
-    console.log('Edit clicked, feed images:', feed.images);
+    console.log("Edit clicked, feed images:", feed.images);
     setEditingFeedId(feed.id);
     setEditContent(feed.content);
     setEditImages(feed.images || []);
@@ -449,21 +501,21 @@ export const Feed = ({
 
   const handleEditImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    console.log('Files selected:', files);
+    console.log("Files selected:", files);
     if (files.length > 0) {
       const newImages = files.map((file) => ({
         file,
         preview: URL.createObjectURL(file),
       }));
-      console.log('New images to add:', newImages);
+      console.log("New images to add:", newImages);
       setEditImageFiles((prev) => [...prev, ...newImages]);
     }
   };
 
   const removeEditImage = (index, isExistingImage) => {
-    console.log('Removing image:', { index, isExistingImage });
-    console.log('Current editImages:', editImages);
-    console.log('Current editImageFiles:', editImageFiles);
+    console.log("Removing image:", { index, isExistingImage });
+    console.log("Current editImages:", editImages);
+    console.log("Current editImageFiles:", editImageFiles);
 
     if (isExistingImage) {
       const newImages = [...editImages];
@@ -726,52 +778,52 @@ export const Feed = ({
       ) : (
         <>
           <div className="feeds-list">
-            {feeds.map((feed) => (
-              <div key={feed.id} className="feed-item">
+            {feeds.map((item) => (
+              <div key={item.id} className="feed-item">
                 <div className="feed-item-header">
                   <div className="feed-user-info">
                     <img
-                      src={feed.user.avatar}
-                      alt={feed.user.name}
+                      src={item.user.avatar}
+                      alt={item.user.name}
                       className="feed-user-avatar"
-                      onClick={() => handleUserClick(feed.user.id)}
+                      onClick={() => handleUserClick(item.user.id)}
                       style={{ cursor: "pointer" }}
                     />
                     <div className="feed-user-details">
                       <div className="feed-name-container">
                         <span
                           className="feed-user-name"
-                          onClick={() => handleUserClick(feed.user.id)}
+                          onClick={() => handleUserClick(item.user.id)}
                         >
-                          {feed.user.name}
+                          {item.user.name}
                         </span>
-                        {feed.pageInfo && (
+                        {item.pageInfo && (
                           <span
                             className="feed-page-name"
-                            onClick={() => handlePageClick(feed.pageInfo.id)}
+                            onClick={() => handlePageClick(item.pageInfo.id)}
                           >
-                            - {feed.pageInfo.title}
+                            - {item.pageInfo.title}
                           </span>
                         )}
                       </div>
-                      <span className="feed-user-title">{feed.user.title}</span>
-                      <span className="feed-post-time">{feed.timestamp}</span>
+                      <span className="feed-user-title">{item.user.title}</span>
+                      <span className="feed-post-time">{item.timestamp}</span>
                     </div>
                   </div>
-                  {userId === feed.user.id && (
+                  {userId === item.user.id && item.type === 'feed' && (
                     <div className="feed-actions-menu">
                       <button
                         className="feed-menu-button"
-                        onClick={() => handleMenuClick(feed.id)}
+                        onClick={() => handleMenuClick(item.id)}
                       >
                         <span>⋮</span>
                       </button>
-                      {menuOpenFeedId === feed.id && (
+                      {menuOpenFeedId === item.id && (
                         <div className="feed-menu-dropdown">
-                          <button onClick={() => handleEditClick(feed)}>
+                          <button onClick={() => handleEditClick(item)}>
                             Edit
                           </button>
-                          <button onClick={() => handleDeleteFeed(feed.id)}>
+                          <button onClick={() => handleDeleteFeed(item.id)}>
                             Delete
                           </button>
                         </div>
@@ -781,7 +833,7 @@ export const Feed = ({
                 </div>
 
                 <div className="feed-item-content">
-                  {editingFeedId === feed.id ? (
+                  {item.type === 'feed' && editingFeedId === item.id ? (
                     <div className="feed-edit-form">
                       <div className="feed-input-wrapper">
                         <form onSubmit={handleEditSubmit}>
@@ -794,13 +846,14 @@ export const Feed = ({
                             placeholder="Edit your post..."
                             className="feed-post-input"
                           />
-                          {(editImages.length > 0 || editImageFiles.length > 0) && (
+                          {(editImages.length > 0 ||
+                            editImageFiles.length > 0) && (
                             <div className="feed-image-preview">
                               {editImages.map((image, index) => (
                                 <div
                                   key={`existing-${index}`}
                                   className="feed-image-preview-item"
-                                  style={{ position: 'relative' }}
+                                  style={{ position: "relative" }}
                                 >
                                   <img
                                     src={image}
@@ -811,20 +864,20 @@ export const Feed = ({
                                     type="button"
                                     className="feed-remove-image-btn"
                                     style={{
-                                      position: 'absolute',
-                                      top: '5px',
-                                      right: '5px',
-                                      background: 'rgba(0, 0, 0, 0.5)',
-                                      color: 'white',
-                                      border: 'none',
-                                      borderRadius: '50%',
-                                      width: '24px',
-                                      height: '24px',
-                                      cursor: 'pointer',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      zIndex: 10
+                                      position: "absolute",
+                                      top: "5px",
+                                      right: "5px",
+                                      background: "rgba(0, 0, 0, 0.5)",
+                                      color: "white",
+                                      border: "none",
+                                      borderRadius: "50%",
+                                      width: "24px",
+                                      height: "24px",
+                                      cursor: "pointer",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      zIndex: 10,
                                     }}
                                     onClick={(e) => {
                                       e.preventDefault();
@@ -840,7 +893,7 @@ export const Feed = ({
                                 <div
                                   key={`new-${index}`}
                                   className="feed-image-preview-item"
-                                  style={{ position: 'relative' }}
+                                  style={{ position: "relative" }}
                                 >
                                   <img
                                     src={image.preview}
@@ -851,20 +904,20 @@ export const Feed = ({
                                     type="button"
                                     className="feed-remove-image-btn"
                                     style={{
-                                      position: 'absolute',
-                                      top: '5px',
-                                      right: '5px',
-                                      background: 'rgba(0, 0, 0, 0.5)',
-                                      color: 'white',
-                                      border: 'none',
-                                      borderRadius: '50%',
-                                      width: '24px',
-                                      height: '24px',
-                                      cursor: 'pointer',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                      zIndex: 10
+                                      position: "absolute",
+                                      top: "5px",
+                                      right: "5px",
+                                      background: "rgba(0, 0, 0, 0.5)",
+                                      color: "white",
+                                      border: "none",
+                                      borderRadius: "50%",
+                                      width: "24px",
+                                      height: "24px",
+                                      cursor: "pointer",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      zIndex: 10,
                                     }}
                                     onClick={(e) => {
                                       e.preventDefault();
@@ -889,7 +942,10 @@ export const Feed = ({
                                 style={{ display: "none" }}
                               />
                               <svg viewBox="0 0 24 24" width="22" height="22">
-                                <path fill="currentColor" d="M18 15v3H6v-3H4v3c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-3h-2zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5-5 5z"/>
+                                <path
+                                  fill="currentColor"
+                                  d="M18 15v3H6v-3H4v3c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-3h-2zM7 9l1.41 1.41L11 7.83V16h2V7.83l2.59 2.58L17 9l-5-5-5 5z"
+                                />
                               </svg>
                               <span>Photos</span>
                             </label>
@@ -928,61 +984,147 @@ export const Feed = ({
                     </div>
                   ) : (
                     <>
-                      <div 
-                        id={`feed-content-${feed.id}`}
-                        className={`feed-item-text ${!expandedFeeds.has(feed.id) ? 'feed-text-collapsed' : ''} ${!expandedFeeds.has(feed.id) && contentHeights[feed.id] > 192 ? 'has-gradient' : ''}`}
-                      >
-                        <div dangerouslySetInnerHTML={{ __html: feed.content }} />
-                      </div>
-                      {contentHeights[feed.id] > 222 && (
-                        <button 
-                          className="feed-show-more-btn"
-                          onClick={() => toggleFeedContent(feed.id)}
-                        >
-                          {expandedFeeds.has(feed.id) ? 'Show less' : 'Show more'}
-                        </button>
+                      {item.type === 'feed' && (
+                        <>
+                          <div
+                            id={`feed-content-${item.id}`}
+                            className={`feed-item-text ${
+                              !expandedFeeds.has(item.id)
+                                ? "feed-text-collapsed"
+                                : ""
+                            } ${
+                              !expandedFeeds.has(item.id) &&
+                              item.contentLength > 192
+                                ? "has-gradient"
+                                : ""
+                            }`}
+                          >
+                            <div
+                              dangerouslySetInnerHTML={{ __html: item.content }}
+                            />
+                          </div>
+                          {item.contentLength > 222 && (
+                            <button
+                              className="feed-show-more-btn"
+                              onClick={() => toggleFeedContent(item.id)}
+                            >
+                              {expandedFeeds.has(item.id)
+                                ? "Show less"
+                                : "Show more"}
+                            </button>
+                          )}
+                        </>
                       )}
-                      {feed.images.length > 0 && (
+
+                      {item.type === 'internship' && (
+                        <div className="internship-content">
+                          <h3 className="internship-title">{item.title}</h3>
+                          <div className="internship-company">
+                            <strong>Company:</strong> {item.companyName}
+                          </div>
+                          <div className="internship-role">
+                            <strong>Role:</strong> {item.role}
+                          </div>
+                          <div className="internship-description">
+                            <div dangerouslySetInnerHTML={{ __html: item.description }} />
+                          </div>
+                          <div className="internship-details">
+                            <div><strong>Experience Level:</strong> {item.experienceLevel}</div>
+                            <div><strong>Job Type:</strong> {item.jobType}</div>
+                            <div><strong>Location:</strong> {item.location || 'Not specified'}</div>
+                            <div><strong>Remote:</strong> {item.remote ? 'Yes' : 'No'}</div>
+                            <div><strong>Salary:</strong> {item.salary || 'Not specified'}</div>
+                            <div><strong>Deadline:</strong> {new Date(item.deadline).toLocaleDateString()}</div>
+                          </div>
+                          <div className="internship-skills">
+                            <strong>Required Skills:</strong>
+                            <div className="skills-tags">
+                              {item.skills?.map((skill, index) => (
+                                <span key={index} className="skill-tag">{skill}</span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {item.type === 'project' && (
+                        <div className="project-content">
+                          <h3 className="project-title">{item.title}</h3>
+                          <div className="project-description">
+                            <div dangerouslySetInnerHTML={{ __html: item.description }} />
+                          </div>
+                          <div className="project-details">
+                            <div><strong>Start Date:</strong> {new Date(item.startDate).toLocaleDateString()}</div>
+                            <div><strong>End Date:</strong> {new Date(item.endDate).toLocaleDateString()}</div>
+                            <div><strong>Status:</strong> {item.status}</div>
+                            <div><strong>Source Code:</strong> {item.isSourceCodePublic ? 'Public' : 'Private'}</div>
+                            {item.githubUrl && (
+                              <div>
+                                <strong>GitHub:</strong>{' '}
+                                <a href={item.githubUrl} target="_blank" rel="noopener noreferrer">
+                                  View Repository
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                          <div className="project-technologies">
+                            <strong>Technologies Used:</strong>
+                            <div className="tech-tags">
+                              {item.technologies?.map((tech, index) => (
+                                <span key={index} className="tech-tag">{tech}</span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {item.images && item.images.length > 0 && (
                         <div className="feed-item-images">
-                          {feed.images.length === 1 ? (
+                          {item.images.length === 1 ? (
                             <div className="feed-single-image">
                               <img
-                                src={feed.images[0]}
+                                src={item.images[0]}
                                 alt="Post content"
-                                onClick={() => handleImageClick(feed.images, 0)}
+                                onClick={() => handleImageClick(item.images, 0)}
                                 className="feed-item-thumbnail"
                               />
                             </div>
-                          ) : feed.images.length === 2 ? (
+                          ) : item.images.length === 2 ? (
                             <div className="feed-two-images">
-                              {feed.images.map((image, index) => (
+                              {item.images.map((image, index) => (
                                 <div key={index} className="feed-image-half">
                                   <img
                                     src={image}
                                     alt={`Post content ${index + 1}`}
-                                    onClick={() => handleImageClick(feed.images, index)}
+                                    onClick={() =>
+                                      handleImageClick(item.images, index)
+                                    }
                                     className="feed-item-thumbnail"
                                   />
                                 </div>
                               ))}
                             </div>
-                          ) : feed.images.length === 3 ? (
+                          ) : item.images.length === 3 ? (
                             <div className="feed-three-images">
                               <div className="feed-three-main">
                                 <img
-                                  src={feed.images[0]}
+                                  src={item.images[0]}
                                   alt="Post content 1"
-                                  onClick={() => handleImageClick(feed.images, 0)}
+                                  onClick={() =>
+                                    handleImageClick(item.images, 0)
+                                  }
                                   className="feed-item-thumbnail"
                                 />
                               </div>
                               <div className="feed-three-bottom">
-                                {feed.images.slice(1, 3).map((image, index) => (
+                                {item.images.slice(1, 3).map((image, index) => (
                                   <div key={index} className="feed-image-half">
                                     <img
                                       src={image}
                                       alt={`Post content ${index + 2}`}
-                                      onClick={() => handleImageClick(feed.images, index + 1)}
+                                      onClick={() =>
+                                        handleImageClick(item.images, index + 1)
+                                      }
                                       className="feed-item-thumbnail"
                                     />
                                   </div>
@@ -993,27 +1135,33 @@ export const Feed = ({
                             <div className="feed-multiple-images">
                               <div className="feed-multiple-main">
                                 <img
-                                  src={feed.images[0]}
+                                  src={item.images[0]}
                                   alt="Post content 1"
-                                  onClick={() => handleImageClick(feed.images, 0)}
+                                  onClick={() =>
+                                    handleImageClick(item.images, 0)
+                                  }
                                   className="feed-item-thumbnail"
                                 />
                               </div>
                               <div className="feed-multiple-bottom">
-                                {feed.images.slice(1, 3).map((image, index) => (
+                                {item.images.slice(1, 3).map((image, index) => (
                                   <div key={index} className="feed-image-half">
                                     <img
                                       src={image}
                                       alt={`Post content ${index + 2}`}
-                                      onClick={() => handleImageClick(feed.images, index + 1)}
+                                      onClick={() =>
+                                        handleImageClick(item.images, index + 1)
+                                      }
                                       className="feed-item-thumbnail"
                                     />
-                                    {index === 1 && feed.images.length > 3 && (
+                                    {index === 1 && item.images.length > 3 && (
                                       <div
                                         className="feed-more-images-overlay"
-                                        onClick={() => handleImageClick(feed.images, 3)}
+                                        onClick={() =>
+                                          handleImageClick(item.images, 3)
+                                        }
                                       >
-                                        +{feed.images.length - 3}
+                                        +{item.images.length - 3}
                                       </div>
                                     )}
                                   </div>
@@ -1027,238 +1175,242 @@ export const Feed = ({
                   )}
                 </div>
 
-                <div className="feed-item-stats">
-                  <div
-                    className="feed-likes-count"
-                    onClick={() => toggleLikes(feed.id)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <span className="feed-icon">👍</span>
-                    <span>{feed.like} Likes</span>
-                  </div>
-                  <div className="feed-comments-count">
-                    <span>{feed.comments} Comments</span>
-                  </div>
-                </div>
-
-                <div className="feed-item-actions">
-                  <button
-                    className={`feed-action-button ${
-                      feed.isLiked ? "liked" : ""
-                    }`}
-                    onClick={() => handleLike(feed.id)}
-                  >
-                    <span className="feed-icon">👍</span>
-                    <span className="feed-action-text">
-                      {feed.isLiked ? "Liked" : "Like"}
-                    </span>
-                  </button>
-                  <button
-                    className="feed-action-button"
-                    onClick={() => toggleComments(feed.id)}
-                  >
-                    <span className="feed-icon">💬</span>
-                    <span className="feed-action-text">Comment</span>
-                  </button>
-                  <button
-                    className="feed-action-button"
-                    onClick={() => handleShare(feed.id)}
-                  >
-                    <span className="feed-icon">↗️</span>
-                    <span className="feed-action-text">Share</span>
-                  </button>
-                </div>
-
-                {showComments === feed.id && (
-                  <div className="feed-comments-section">
-                    <div className="feed-comments-header">
-                      <h4>Comments ({feed.comments})</h4>
+                {item.type === 'feed' && (
+                  <>
+                    <div className="feed-item-stats">
+                      <div
+                        className="feed-likes-count"
+                        onClick={() => toggleLikes(item.id)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <span className="feed-icon">👍</span>
+                        <span>{item.like} Likes</span>
+                      </div>
+                      <div className="feed-comments-count">
+                        <span>{item.comments} Comments</span>
+                      </div>
                     </div>
 
-                    <div className="feed-comments-list">
-                      {commentsList[feed.id]?.map((comment) => (
-                        <div key={comment.id} className="feed-comment-item">
-                          <div className="feed-comment-user">
-                            <img
-                              src={
-                                comment.User?.UserProfile?.profileUrl
-                                  ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${comment.User.UserProfile.profileUrl}`
-                                  : "/assets/Utils/male.png"
-                              }
-                              alt={comment.User?.name}
-                              className="feed-comment-avatar"
-                            />
-                            <div className="feed-comment-user-info">
-                              <span className="feed-comment-username">
-                                {comment.User?.name}
-                              </span>
-                              <span className="feed-comment-time">
-                                {new Date(
-                                  comment.createdAt
-                                ).toLocaleDateString()}
-                              </span>
-                            </div>
-                          </div>
+                    <div className="feed-item-actions">
+                      <button
+                        className={`feed-action-button ${
+                          item.isLiked ? "liked" : ""
+                        }`}
+                        onClick={() => handleLike(item.id)}
+                      >
+                        <span className="feed-icon">👍</span>
+                        <span className="feed-action-text">
+                          {item.isLiked ? "Liked" : "Like"}
+                        </span>
+                      </button>
+                      <button
+                        className="feed-action-button"
+                        onClick={() => toggleComments(item.id)}
+                      >
+                        <span className="feed-icon">💬</span>
+                        <span className="feed-action-text">Comment</span>
+                      </button>
+                      <button
+                        className="feed-action-button"
+                        onClick={() => handleShare(item.id)}
+                      >
+                        <span className="feed-icon">↗️</span>
+                        <span className="feed-action-text">Share</span>
+                      </button>
+                    </div>
 
-                          <div className="feed-comment-content">
-                            {editingCommentId === comment.id ? (
-                              <div className="feed-comment-edit">
-                                <textarea
-                                  value={editingCommentText}
-                                  onChange={(e) =>
-                                    setEditingCommentText(e.target.value)
+                    {showComments === item.id && (
+                      <div className="feed-comments-section">
+                        <div className="feed-comments-header">
+                          <h4>Comments ({item.comments})</h4>
+                        </div>
+
+                        <div className="feed-comments-list">
+                          {commentsList[item.id]?.map((comment) => (
+                            <div key={comment.id} className="feed-comment-item">
+                              <div className="feed-comment-user">
+                                <img
+                                  src={
+                                    comment.User?.UserProfile?.profileUrl
+                                      ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${comment.User.UserProfile.profileUrl}`
+                                      : "/assets/Utils/male.png"
                                   }
-                                  className="feed-comment-edit-input"
-                                  rows="2"
+                                  alt={comment.User?.name}
+                                  className="feed-comment-avatar"
                                 />
-                                <div className="feed-comment-edit-actions">
-                                  <button
-                                    className="feed-comment-save-btn"
-                                    onClick={() =>
-                                      handleUpdateComment(
-                                        feed.id,
-                                        comment.id,
-                                        editingCommentText
-                                      )
-                                    }
-                                  >
-                                    Save
-                                  </button>
-                                  <button
-                                    className="feed-comment-cancel-btn"
-                                    onClick={() => {
-                                      setEditingCommentId(null);
-                                      setEditingCommentText("");
-                                    }}
-                                  >
-                                    Cancel
-                                  </button>
+                                <div className="feed-comment-user-info">
+                                  <span className="feed-comment-username">
+                                    {comment.User?.name}
+                                  </span>
+                                  <span className="feed-comment-time">
+                                    {new Date(
+                                      comment.createdAt
+                                    ).toLocaleDateString()}
+                                  </span>
                                 </div>
                               </div>
-                            ) : (
-                              <p className="feed-comment-text">
-                                {comment.comment}
-                              </p>
+
+                              <div className="feed-comment-content">
+                                {editingCommentId === comment.id ? (
+                                  <div className="feed-comment-edit">
+                                    <textarea
+                                      value={editingCommentText}
+                                      onChange={(e) =>
+                                        setEditingCommentText(e.target.value)
+                                      }
+                                      className="feed-comment-edit-input"
+                                      rows="2"
+                                    />
+                                    <div className="feed-comment-edit-actions">
+                                      <button
+                                        className="feed-comment-save-btn"
+                                        onClick={() =>
+                                          handleUpdateComment(
+                                            item.id,
+                                            comment.id,
+                                            editingCommentText
+                                          )
+                                        }
+                                      >
+                                        Save
+                                      </button>
+                                      <button
+                                        className="feed-comment-cancel-btn"
+                                        onClick={() => {
+                                          setEditingCommentId(null);
+                                          setEditingCommentText("");
+                                        }}
+                                      >
+                                        Cancel
+                                      </button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <p className="feed-comment-text">
+                                    {comment.comment}
+                                  </p>
+                                )}
+                              </div>
+
+                              {comment.User?.id === userId && !editingCommentId && (
+                                <div className="feed-comment-actions">
+                                  <button
+                                    className="feed-comment-edit-btn"
+                                    onClick={() => {
+                                      setEditingCommentId(comment.id);
+                                      setEditingCommentText(comment.comment);
+                                    }}
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    className="feed-comment-delete-btn"
+                                    onClick={() =>
+                                      handleDeleteComment(item.id, comment.id)
+                                    }
+                                  >
+                                    Delete
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+
+                        {commentsPagination[item.id]?.hasNextPage && (
+                          <button
+                            className="feed-comments-load-more"
+                            onClick={() =>
+                              loadFeedComments(
+                                item.id,
+                                commentsPagination[item.id].currentPage + 1
+                              )
+                            }
+                          >
+                            Load More Comments
+                          </button>
+                        )}
+
+                        <div className="feed-add-comment">
+                          <img
+                            src={item.user.avatar}
+                            alt="User"
+                            className="feed-add-comment-avatar"
+                          />
+                          <div className="feed-add-comment-input-wrapper">
+                            <input
+                              type="text"
+                              placeholder="Write a comment..."
+                              value={commentText}
+                              onChange={(e) => setCommentText(e.target.value)}
+                              onKeyPress={(e) => {
+                                if (e.key === "Enter") {
+                                  handleComment(item.id, commentText);
+                                }
+                              }}
+                              className="feed-add-comment-input"
+                            />
+                            {commentText && (
+                              <button
+                                className="feed-add-comment-submit"
+                                onClick={() => handleComment(item.id, commentText)}
+                              >
+                                Post
+                              </button>
                             )}
                           </div>
-
-                          {comment.User?.id === userId && !editingCommentId && (
-                            <div className="feed-comment-actions">
-                              <button
-                                className="feed-comment-edit-btn"
-                                onClick={() => {
-                                  setEditingCommentId(comment.id);
-                                  setEditingCommentText(comment.comment);
-                                }}
-                              >
-                                Edit
-                              </button>
-                              <button
-                                className="feed-comment-delete-btn"
-                                onClick={() =>
-                                  handleDeleteComment(feed.id, comment.id)
-                                }
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          )}
                         </div>
-                      ))}
-                    </div>
-
-                    {commentsPagination[feed.id]?.hasNextPage && (
-                      <button
-                        className="feed-comments-load-more"
-                        onClick={() =>
-                          loadFeedComments(
-                            feed.id,
-                            commentsPagination[feed.id].currentPage + 1
-                          )
-                        }
-                      >
-                        Load More Comments
-                      </button>
+                      </div>
                     )}
 
-                    <div className="feed-add-comment">
-                      <img
-                        src={feed.user.avatar}
-                        alt="User"
-                        className="feed-add-comment-avatar"
-                      />
-                      <div className="feed-add-comment-input-wrapper">
-                        <input
-                          type="text"
-                          placeholder="Write a comment..."
-                          value={commentText}
-                          onChange={(e) => setCommentText(e.target.value)}
-                          onKeyPress={(e) => {
-                            if (e.key === "Enter") {
-                              handleComment(feed.id, commentText);
-                            }
-                          }}
-                          className="feed-add-comment-input"
-                        />
-                        {commentText && (
+                    {showLikes === item.id && (
+                      <div className="feed-likes-section">
+                        <div className="feed-likes-header">
+                          <h4>Likes ({item.like})</h4>
+                        </div>
+
+                        <div className="feed-likes-list">
+                          {likesList[item.id]?.map((like) => (
+                            <div key={like.id} className="feed-like-item">
+                              <div className="feed-like-user">
+                                <img
+                                  src={
+                                    like.User?.UserProfile?.profileUrl
+                                      ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${like.User.UserProfile.profileUrl}`
+                                      : "/assets/Utils/male.png"
+                                  }
+                                  alt={like.User?.name}
+                                  className="feed-like-avatar"
+                                />
+                                <div className="feed-like-user-info">
+                                  <span className="feed-like-username">
+                                    {like.User?.name}
+                                  </span>
+                                  <span className="feed-like-title">
+                                    {like.User?.UserProfile?.title || ""}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {likesPagination[item.id]?.hasNextPage && (
                           <button
-                            className="feed-add-comment-submit"
-                            onClick={() => handleComment(feed.id, commentText)}
+                            className="feed-likes-load-more"
+                            onClick={() =>
+                              loadFeedLikes(
+                                item.id,
+                                likesPagination[item.id].currentPage + 1
+                              )
+                            }
                           >
-                            Post
+                            Load More Likes
                           </button>
                         )}
                       </div>
-                    </div>
-                  </div>
-                )}
-
-                {showLikes === feed.id && (
-                  <div className="feed-likes-section">
-                    <div className="feed-likes-header">
-                      <h4>Likes ({feed.like})</h4>
-                    </div>
-
-                    <div className="feed-likes-list">
-                      {likesList[feed.id]?.map((like) => (
-                        <div key={like.id} className="feed-like-item">
-                          <div className="feed-like-user">
-                            <img
-                              src={
-                                like.User?.UserProfile?.profileUrl
-                                  ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${like.User.UserProfile.profileUrl}`
-                                  : "/assets/Utils/male.png"
-                              }
-                              alt={like.User?.name}
-                              className="feed-like-avatar"
-                            />
-                            <div className="feed-like-user-info">
-                              <span className="feed-like-username">
-                                {like.User?.name}
-                              </span>
-                              <span className="feed-like-title">
-                                {like.User?.UserProfile?.title || ""}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {likesPagination[feed.id]?.hasNextPage && (
-                      <button
-                        className="feed-likes-load-more"
-                        onClick={() =>
-                          loadFeedLikes(
-                            feed.id,
-                            likesPagination[feed.id].currentPage + 1
-                          )
-                        }
-                      >
-                        Load More Likes
-                      </button>
                     )}
-                  </div>
+                  </>
                 )}
               </div>
             ))}

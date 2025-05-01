@@ -8,6 +8,8 @@ const UserProfile = require("../../../Models/User/userProfile");
 const { sequelize } = require("../../../importantInfo");
 const Likes = require("../../../Models/Basic/likes");
 const { baseDir } = require("../../../importantInfo");
+const Internship = require("../../../Models/Basic/internship");
+const Projects = require("../../../Models/User/projects");
 
 // Create a new feed
 exports.createFeed = async (req, res) => {
@@ -80,7 +82,7 @@ exports.getAllFeeds = async (req, res) => {
     } = req.body;
     const offset = (page - 1) * limit;
 
-    // Build where condition
+    // Build where condition for feeds
     const whereCondition = {};
     if (usersFeed) {
       whereCondition.UserId = req.user.id;
@@ -92,10 +94,9 @@ exports.getAllFeeds = async (req, res) => {
       whereCondition.PageId = pageId;
     }
 
-    const { count, rows: feeds } = await Feeds.findAndCountAll({
+    // Fetch feeds
+    const { count: feedsCount, rows: feeds } = await Feeds.findAndCountAll({
       where: whereCondition,
-      limit: parseInt(limit),
-      offset: parseInt(offset),
       order: [["createdAt", "DESC"]],
       include: [
         {
@@ -115,32 +116,94 @@ exports.getAllFeeds = async (req, res) => {
       ],
     });
 
-    // Get like status for each feed
+    // Fetch internships
+    const { count: internshipsCount, rows: internships } = await Internship.findAndCountAll({
+      where: { status: 'active' },
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: User,
+          attributes: ["id", "name"],
+          include: [
+            {
+              model: UserProfile,
+              attributes: ["profileUrl"],
+            },
+          ],
+        },
+      ],
+    });
 
+    // Fetch projects
+    const { count: projectsCount, rows: projects } = await Projects.findAndCountAll({
+      where: { isPublic: true },
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: User,
+          attributes: ["id", "name"],
+          include: [
+            {
+              model: UserProfile,
+              attributes: ["profileUrl"],
+            },
+          ],
+        },
+      ],
+    });
+
+    // Transform and combine all data with type identifiers
+    const combinedData = [
+      ...feeds.map(feed => ({
+        type: 'feed',
+        data: feed.toJSON(),
+        createdAt: feed.createdAt
+      })),
+      ...internships.map(internship => ({
+        type: 'internship',
+        data: internship.toJSON(),
+        createdAt: internship.createdAt
+      })),
+      ...projects.map(project => ({
+        type: 'project',
+        data: project.toJSON(),
+        createdAt: project.createdAt
+      }))
+    ];
+
+    // Sort by creation date
+    combinedData.sort((a, b) => b.createdAt - a.createdAt);
+
+    // Apply pagination
+    const paginatedData = combinedData.slice(offset, offset + parseInt(limit));
+    const totalCount = combinedData.length;
+
+    // Get like status for feed items
     const feedsWithLikeStatus = await Promise.all(
-      feeds.map(async (feed) => {
-        const isLiked = await Likes.findOne({
-          where: {
-            UserId: req.user.id,
-            FeedId: feed.id,
-          },
-        });
-        const feedData = feed.toJSON();
-        feedData.isLiked = !!isLiked;
-        return feedData;
+      paginatedData.map(async (item) => {
+        if (item.type === 'feed') {
+          const isLiked = await Likes.findOne({
+            where: {
+              UserId: req.user.id,
+              FeedId: item.data.id,
+            },
+          });
+          item.data.isLiked = !!isLiked;
+        }
+        return item;
       })
     );
 
-    const totalPages = Math.ceil(count / limit);
+    const totalPages = Math.ceil(totalCount / limit);
     const hasNextPage = page < totalPages;
     const hasPrevPage = page > 1;
 
     res.status(200).json({
       success: true,
       data: {
-        feeds: feedsWithLikeStatus,
+        items: feedsWithLikeStatus,
         pagination: {
-          total: count,
+          total: totalCount,
           totalPages,
           currentPage: parseInt(page),
           limit: parseInt(limit),
@@ -151,6 +214,7 @@ exports.getAllFeeds = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Error in getAllFeeds:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 };

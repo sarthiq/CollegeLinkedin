@@ -1431,4 +1431,123 @@
 
 .feed-item-text li {
   margin-bottom: 0.5em;
+}
+
+/* Internship Styles */
+.internship-content {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.internship-title {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #1a73e8;
+}
+
+.internship-company,
+.internship-role {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.internship-description {
+  margin: 15px 0;
+  line-height: 1.6;
+}
+
+.internship-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.internship-details div {
+  padding: 8px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.internship-skills {
+  margin-top: 15px;
+}
+
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.skill-tag {
+  background-color: #e8f0fe;
+  color: #1a73e8;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+}
+
+/* Project Styles */
+.project-content {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.project-title {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #1a73e8;
+}
+
+.project-description {
+  margin: 15px 0;
+  line-height: 1.6;
+}
+
+.project-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.project-details div {
+  padding: 8px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.project-details a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.project-details a:hover {
+  text-decoration: underline;
+}
+
+.project-technologies {
+  margin-top: 15px;
+}
+
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tech-tag {
+  background-color: #e8f0fe;
+  color: #1a73e8;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.9rem;
 } 
