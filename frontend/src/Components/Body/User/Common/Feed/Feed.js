@@ -22,6 +22,14 @@ import "react-quill/dist/quill.snow.css";
 import "./Feed.css";
 import { handleShare as shareFeed } from "./feedUtils";
 
+const capitalize = (text) => {
+  if (!text) return '';
+  return text
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
+
 export const Feed = ({
   pageId = null,
   usersFeed = false,
@@ -810,24 +818,24 @@ export const Feed = ({
                           className="feed-user-name"
                           onClick={() => handleUserClick(item.user.id)}
                         >
-                          {item.user.name}
+                          {capitalize(item.user.name)}
                         </span>
                         {item.pageInfo && (
                           <span
                             className="feed-page-name"
                             onClick={() => handlePageClick(item.pageInfo.id)}
                           >
-                            - {item.pageInfo.title}
+                            - {capitalize(item.pageInfo.title)}
                           </span>
                         )}
                       </div>
-                      <span className="feed-user-title">{item.user.title}</span>
+                      <span className="feed-user-title">{capitalize(item.user.title)}</span>
                       <span className="feed-post-time">{item.timestamp}</span>
                     </div>
                   </div>
                   <div className="feed-item-type">
                     <span className={`type-badge ${item.type}`}>
-                      {item.type.charAt(0).toUpperCase() + item.type.slice(1)}
+                      {capitalize(item.type)}
                     </span>
                   </div>
                   {userId === item.user.id && item.type === 'feed' && (
@@ -1038,20 +1046,20 @@ export const Feed = ({
 
                       {item.type === 'internship' && (
                         <div className="internship-content">
-                          <h3 className="internship-title">{item.title}</h3>
+                          <h3 className="internship-title">{capitalize(item.title)}</h3>
                           <div className="internship-company">
-                            <strong>Company:</strong> {item.companyName}
+                            <strong>Company:</strong> {capitalize(item.companyName)}
                           </div>
                           <div className="internship-role">
-                            <strong>Role:</strong> {item.role}
+                            <strong>Role:</strong> {capitalize(item.role)}
                           </div>
                           <div className="internship-description">
                             <div dangerouslySetInnerHTML={{ __html: item.description }} />
                           </div>
                           <div className="internship-details">
-                            <div><strong>Experience Level:</strong> {item.experienceLevel}</div>
-                            <div><strong>Job Type:</strong> {item.jobType}</div>
-                            <div><strong>Location:</strong> {item.location || 'Not specified'}</div>
+                            <div><strong>Experience Level:</strong> {capitalize(item.experienceLevel)}</div>
+                            <div><strong>Job Type:</strong> {capitalize(item.jobType)}</div>
+                            <div><strong>Location:</strong> {item.location ? capitalize(item.location) : 'Not specified'}</div>
                             <div><strong>Remote:</strong> {item.remote ? 'Yes' : 'No'}</div>
                             <div><strong>Salary:</strong> {item.salary || 'Not specified'}</div>
                             <div><strong>Deadline:</strong> {new Date(item.deadline).toLocaleDateString()}</div>
@@ -1060,7 +1068,7 @@ export const Feed = ({
                             <strong>Required Skills:</strong>
                             <div className="skills-tags">
                               {item.skills?.map((skill, index) => (
-                                <span key={index} className="skill-tag">{skill}</span>
+                                <span key={index} className="skill-tag">{capitalize(skill)}</span>
                               ))}
                             </div>
                           </div>
@@ -1069,14 +1077,14 @@ export const Feed = ({
 
                       {item.type === 'project' && (
                         <div className="project-content">
-                          <h3 className="project-title">{item.title}</h3>
+                          <h3 className="project-title">{capitalize(item.title)}</h3>
                           <div className="project-description">
                             <div dangerouslySetInnerHTML={{ __html: item.description }} />
                           </div>
                           <div className="project-details">
                             <div><strong>Start Date:</strong> {new Date(item.startDate).toLocaleDateString()}</div>
                             <div><strong>End Date:</strong> {new Date(item.endDate).toLocaleDateString()}</div>
-                            <div><strong>Status:</strong> {item.status}</div>
+                            <div><strong>Status:</strong> {capitalize(item.status)}</div>
                             <div><strong>Source Code:</strong> {item.isSourceCodePublic ? 'Public' : 'Private'}</div>
                             {item.githubUrl && (
                               <div>
@@ -1091,7 +1099,7 @@ export const Feed = ({
                             <strong>Technologies Used:</strong>
                             <div className="tech-tags">
                               {item.technologies?.map((tech, index) => (
-                                <span key={index} className="tech-tag">{tech}</span>
+                                <span key={index} className="tech-tag">{capitalize(tech)}</span>
                               ))}
                             </div>
                           </div>
