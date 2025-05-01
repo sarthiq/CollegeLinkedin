@@ -120,7 +120,7 @@ export const LandingHome = () => {
       dispatch(userLogin());
       dispatch(setUserAuthToken(response.token));
       localStorage.setItem("token", response.token);
-      navigate("/");
+      navigate("/dashboard");
     }
   };
 
