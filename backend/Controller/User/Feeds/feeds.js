@@ -95,7 +95,7 @@ exports.getAllFeeds = async (req, res) => {
     }
 
     // Fetch feeds
-    const { count: feedsCount, rows: feeds } = await Feeds.findAndCountAll({
+    const feeds = await Feeds.findAll({
       where: whereCondition,
       order: [["createdAt", "DESC"]],
       include: [
@@ -117,60 +117,67 @@ exports.getAllFeeds = async (req, res) => {
     });
 
     // Fetch internships
-    const { count: internshipsCount, rows: internships } = await Internship.findAndCountAll({
-      where: { status: 'active' },
+    const internships = await Internship.findAll({
+      where: { status: "active" },
       order: [["createdAt", "DESC"]],
       include: [
-        {
-          model: User,
-          attributes: ["id", "name"],
-          include: [
-            {
-              model: UserProfile,
-              attributes: ["profileUrl"],
-            },
-          ],
-        },
-      ],
-    });
+          {
+            model: User,
+            as: 'User',
+            attributes: ["id", "name"],
+            include: [
+              {
+                model: UserProfile,
+                attributes: ["profileUrl"],
+              },
+            ],
+          },
+        ],
+      });
 
+    
+      
     // Fetch projects
-    const { count: projectsCount, rows: projects } = await Projects.findAndCountAll({
+    const projects = await Projects.findAll({
       where: { isPublic: true },
       order: [["createdAt", "DESC"]],
       include: [
-        {
-          model: User,
-          attributes: ["id", "name"],
-          include: [
-            {
-              model: UserProfile,
-              attributes: ["profileUrl"],
-            },
-          ],
-        },
-      ],
-    });
+          {
+            model: User,
+            attributes: ["id", "name"],
+            include: [
+              {
+                model: UserProfile,
+                attributes: ["profileUrl"],
+              },
+            ],
+          },
+        ],
+      });
+
+   
 
     // Transform and combine all data with type identifiers
     const combinedData = [
-      ...feeds.map(feed => ({
-        type: 'feed',
+      ...feeds.map((feed) => ({
+        type: "feed",
         data: feed.toJSON(),
-        createdAt: feed.createdAt
+        createdAt: feed.createdAt,
       })),
-      ...internships.map(internship => ({
-        type: 'internship',
+      ...internships.map((internship) => ({
+        type: "internship",
         data: internship.toJSON(),
-        createdAt: internship.createdAt
+        createdAt: internship.createdAt,
       })),
-      ...projects.map(project => ({
-        type: 'project',
+      ...projects.map((project) => ({
+        type: "project",
         data: project.toJSON(),
-        createdAt: project.createdAt
-      }))
+        createdAt: project.createdAt,
+      })),
     ];
 
+    
+    
     // Sort by creation date
     combinedData.sort((a, b) => b.createdAt - a.createdAt);
 
@@ -181,7 +188,7 @@ exports.getAllFeeds = async (req, res) => {
     // Get like status for feed items
     const feedsWithLikeStatus = await Promise.all(
       paginatedData.map(async (item) => {
-        if (item.type === 'feed') {
+        if (item.type === "feed") {
           const isLiked = await Likes.findOne({
             where: {
               UserId: req.user.id,
@@ -249,7 +256,7 @@ exports.getFeedById = async (req, res) => {
     }
 
     const feedData = feed.toJSON();
-    
+
     // Only check like status if user is authenticated
     if (req.user && req.user.id) {
       const isLiked = await Likes.findOne({
@@ -277,8 +284,7 @@ exports.updateFeed = async (req, res) => {
     const userId = req.user.id;
     const imageFiles = req.files || [];
     const existingImages = req.body.existingImages || [];
-    
-    
+
     const feed = await Feeds.findByPk(id);
     if (!feed) {
       return res

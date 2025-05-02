@@ -9,9 +9,12 @@ import { ProfileRoutes } from "./Profile/ProfileRoutes";
 import { InternshipsRoutes } from "./Internships/InternshipsRoutes";
 import { ProjectsRoutes } from "./Projects/ProjectsRoutes";
 export const UserRoutes = () => {
+  
+  
   return (
     <>
       <Header />
+      
       <main>
         <Routes>
           <Route path="" element={<Home />} />

@@ -21,6 +21,8 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./Feed.css";
 import { handleShare as shareFeed } from "./feedUtils";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const capitalize = (text) => {
   if (!text) return '';
@@ -204,11 +206,12 @@ export const Feed = ({
             id: item.data.id,
             type: 'internship',
             user: {
-              id: item.data.UserId,
-              name: item.data.Users?.[0]?.name || "Anonymous",
-              avatar: item.data.Users?.[0]?.UserProfile?.profileUrl
-                ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${item.data.Users[0].UserProfile.profileUrl}`
+              id: item.data.User?.id,
+              name: item.data.User?.name || "Anonymous",
+              avatar: item.data.User?.UserProfile?.profileUrl
+                ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${item.data.User.UserProfile.profileUrl}`
                 : "/assets/Utils/male.png",
+              title: item.data.User?.UserProfile?.title || "",
             },
             title: item.data.title,
             companyName: item.data.companyName,
@@ -682,7 +685,33 @@ export const Feed = ({
         return;
     }
     
-    navigate(shareUrl);
+    // Create the full URL
+    const fullUrl = `${window.location.origin}${shareUrl}`;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(fullUrl)
+      .then(() => {
+        // Show success toast
+        toast.success('Link copied to clipboard!', {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      })
+      .catch((err) => {
+        console.error('Failed to copy: ', err);
+        toast.error('Failed to copy link', {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      });
   };
 
   const handlePrevImage = () => {
@@ -720,6 +749,7 @@ export const Feed = ({
 
   return (
     <div className="feed-container">
+      <ToastContainer />
       {showCreatePost && (
         <div className="feed-create-post">
           <div className="feed-post-creator">
@@ -1047,30 +1077,38 @@ export const Feed = ({
                       {item.type === 'internship' && (
                         <div className="internship-content">
                           <h3 className="internship-title">{capitalize(item.title)}</h3>
-                          <div className="internship-company">
-                            <strong>Company:</strong> {capitalize(item.companyName)}
-                          </div>
-                          <div className="internship-role">
-                            <strong>Role:</strong> {capitalize(item.role)}
-                          </div>
-                          <div className="internship-description">
-                            <div dangerouslySetInnerHTML={{ __html: item.description }} />
-                          </div>
-                          <div className="internship-details">
-                            <div><strong>Experience Level:</strong> {capitalize(item.experienceLevel)}</div>
-                            <div><strong>Job Type:</strong> {capitalize(item.jobType)}</div>
+                          <div className="internship-key-details">
+                            <div><strong>Company:</strong> {capitalize(item.companyName)}</div>
+                            <div><strong>Role:</strong> {capitalize(item.role)}</div>
+                            <div><strong>Experience:</strong> {capitalize(item.experienceLevel)}</div>
                             <div><strong>Location:</strong> {item.location ? capitalize(item.location) : 'Not specified'}</div>
-                            <div><strong>Remote:</strong> {item.remote ? 'Yes' : 'No'}</div>
-                            <div><strong>Salary:</strong> {item.salary || 'Not specified'}</div>
-                            <div><strong>Deadline:</strong> {new Date(item.deadline).toLocaleDateString()}</div>
                           </div>
                           <div className="internship-skills">
                             <strong>Required Skills:</strong>
                             <div className="skills-tags">
-                              {item.skills?.map((skill, index) => (
+                              {item.skills?.slice(0, 3).map((skill, index) => (
                                 <span key={index} className="skill-tag">{capitalize(skill)}</span>
                               ))}
+                              {item.skills?.length > 3 && (
+                                <span className="skill-tag">+{item.skills.length - 3} more</span>
+                              )}
                             </div>
+                          </div>
+                          <div className="feed-item-actions">
+                            <button 
+                              className="feed-action-button"
+                              onClick={() => navigate(`/dashboard/internships/id/${item.id}`)}
+                            >
+                              <span className="feed-icon">👁️</span>
+                              <span className="feed-action-text">View Details</span>
+                            </button>
+                            <button 
+                              className="feed-action-button share"
+                              onClick={() => handleShare(item.id, 'internship')}
+                            >
+                              <span className="feed-icon">↗️</span>
+                              <span className="feed-action-text">Share</span>
+                            </button>
                           </div>
                         </div>
                       )}
@@ -1079,29 +1117,38 @@ export const Feed = ({
                         <div className="project-content">
                           <h3 className="project-title">{capitalize(item.title)}</h3>
                           <div className="project-description">
-                            <div dangerouslySetInnerHTML={{ __html: item.description }} />
-                          </div>
-                          <div className="project-details">
-                            <div><strong>Start Date:</strong> {new Date(item.startDate).toLocaleDateString()}</div>
-                            <div><strong>End Date:</strong> {new Date(item.endDate).toLocaleDateString()}</div>
-                            <div><strong>Status:</strong> {capitalize(item.status)}</div>
-                            <div><strong>Source Code:</strong> {item.isSourceCodePublic ? 'Public' : 'Private'}</div>
-                            {item.githubUrl && (
-                              <div>
-                                <strong>GitHub:</strong>{' '}
-                                <a href={item.githubUrl} target="_blank" rel="noopener noreferrer">
-                                  View Repository
-                                </a>
-                              </div>
+                            <div 
+                              className={`project-description-text ${item.description.length > 200 ? 'truncated' : ''}`}
+                              dangerouslySetInnerHTML={{ 
+                                __html: item.description.length > 200 
+                                  ? item.description.substring(0, 200) + '...' 
+                                  : item.description 
+                              }} 
+                            />
+                            {item.description.length > 200 && (
+                              <button 
+                                className="project-show-more-btn"
+                                onClick={() => navigate(`/dashboard/projects/id/${item.id}`)}
+                              >
+                                Show More
+                              </button>
                             )}
                           </div>
-                          <div className="project-technologies">
-                            <strong>Technologies Used:</strong>
-                            <div className="tech-tags">
-                              {item.technologies?.map((tech, index) => (
-                                <span key={index} className="tech-tag">{capitalize(tech)}</span>
-                              ))}
-                            </div>
+                          <div className="feed-item-actions">
+                            <button 
+                              className="feed-action-button"
+                              onClick={() => navigate(`/dashboard/projects/id/${item.id}`)}
+                            >
+                              <span className="feed-icon">👁️</span>
+                              <span className="feed-action-text">View Details</span>
+                            </button>
+                            <button 
+                              className="feed-action-button share"
+                              onClick={() => handleShare(item.id, 'project')}
+                            >
+                              <span className="feed-icon">↗️</span>
+                              <span className="feed-action-text">Share</span>
+                            </button>
                           </div>
                         </div>
                       )}
