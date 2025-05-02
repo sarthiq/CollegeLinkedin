@@ -1075,22 +1075,22 @@ export const Feed = ({
                       )}
 
                       {item.type === 'internship' && (
-                        <div className="internship-content">
-                          <h3 className="internship-title">{capitalize(item.title)}</h3>
-                          <div className="internship-key-details">
+                        <div className="feed-internship-content">
+                          <h3 className="feed-internship-title">{capitalize(item.title)}</h3>
+                          <div className="feed-internship-key-details">
                             <div><strong>Company:</strong> {capitalize(item.companyName)}</div>
                             <div><strong>Role:</strong> {capitalize(item.role)}</div>
                             <div><strong>Experience:</strong> {capitalize(item.experienceLevel)}</div>
                             <div><strong>Location:</strong> {item.location ? capitalize(item.location) : 'Not specified'}</div>
                           </div>
-                          <div className="internship-skills">
+                          <div className="feed-internship-skills">
                             <strong>Required Skills:</strong>
-                            <div className="skills-tags">
+                            <div className="feed-skills-tags">
                               {item.skills?.slice(0, 3).map((skill, index) => (
-                                <span key={index} className="skill-tag">{capitalize(skill)}</span>
+                                <span key={index} className="feed-skill-tag">{capitalize(skill)}</span>
                               ))}
                               {item.skills?.length > 3 && (
-                                <span className="skill-tag">+{item.skills.length - 3} more</span>
+                                <span className="feed-skill-tag">+{item.skills.length - 3} more</span>
                               )}
                             </div>
                           </div>
@@ -1114,11 +1114,11 @@ export const Feed = ({
                       )}
 
                       {item.type === 'project' && (
-                        <div className="project-content">
-                          <h3 className="project-title">{capitalize(item.title)}</h3>
-                          <div className="project-description">
+                        <div className="feed-project-content">
+                          <h3 className="feed-project-title">{capitalize(item.title)}</h3>
+                          <div className="feed-project-description">
                             <div 
-                              className={`project-description-text ${item.description.length > 200 ? 'truncated' : ''}`}
+                              className={`feed-project-description-text ${item.description.length > 200 ? 'feed-truncated' : ''}`}
                               dangerouslySetInnerHTML={{ 
                                 __html: item.description.length > 200 
                                   ? item.description.substring(0, 200) + '...' 
@@ -1127,7 +1127,7 @@ export const Feed = ({
                             />
                             {item.description.length > 200 && (
                               <button 
-                                className="project-show-more-btn"
+                                className="feed-project-show-more-btn"
                                 onClick={() => navigate(`/dashboard/projects/id/${item.id}`)}
                               >
                                 Show More

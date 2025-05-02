@@ -299,7 +299,7 @@ export const FeedDetails = () => {
               </h2>
               {feed.Page && (
                 <span
-                  className="feed-page-name"
+                  className="feed-details-page-name"
                   onClick={() => handlePageClick(feed.Page.id)}
                   style={{ cursor: "pointer" }}
                 >
@@ -463,7 +463,7 @@ export const FeedDetails = () => {
             onClick={toggleLikes}
             style={{ cursor: "pointer" }}
           >
-            <span className="feed-icon">👍</span>
+            <span className="feed-details-icon">👍</span>
             <span>{feed.like} Likes</span>
           </div>
           <div

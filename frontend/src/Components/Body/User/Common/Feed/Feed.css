@@ -322,6 +322,8 @@
 .feed-item-actions {
   display: flex;
   justify-content: space-between;
+  align-items: stretch;
+  gap: 12px;
   padding: 0.5rem 0;
   border-top: 1px solid #e0e0e0;
   margin-top: 1rem;
@@ -338,25 +340,31 @@
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.2s ease;
-  flex: 1;
   justify-content: center;
 }
 
-.feed-action-button:hover {
-  background-color: #f3f2ef;
-  color: #0a66c2;
+.feed-action-button:first-child {
+  justify-content: flex-start;
+}
+
+.feed-action-button:nth-child(2) {
+  justify-content: center;
 }
 
 .feed-action-button.share {
   background-color: #f8f9fa;
   border: 1px solid #dadce0;
-  margin-left: 8px;
-  flex: 0 1 auto;
+  justify-content: flex-end;
 }
 
 .feed-action-button.share:hover {
   background-color: #f1f3f4;
   border-color: #bdc1c6;
+}
+
+.feed-action-button:hover {
+  background-color: #f3f2ef;
+  color: #0a66c2;
 }
 
 .feed-action-button .feed-icon {
@@ -1450,46 +1458,46 @@
 }
 
 /* Project and Internship Styles */
-.internship-content,
-.project-content {
+.feed-internship-content,
+.feed-project-content {
   padding: 15px;
   background: #fff;
   border-radius: 8px;
   margin: 10px 0;
 }
 
-.internship-title,
-.project-title {
+.feed-internship-title,
+.feed-project-title {
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 12px;
   color: #1a1a1a;
 }
 
-.internship-key-details {
+.feed-internship-key-details {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   margin-bottom: 15px;
 }
 
-.internship-key-details div {
+.feed-internship-key-details div {
   font-size: 0.9rem;
   color: #4a4a4a;
 }
 
-.internship-skills {
+.feed-internship-skills {
   margin-bottom: 15px;
 }
 
-.skills-tags {
+.feed-skills-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-top: 8px;
 }
 
-.skill-tag {
+.feed-skill-tag {
   background: #f0f2f5;
   padding: 4px 12px;
   border-radius: 15px;
@@ -1497,22 +1505,22 @@
   color: #1a1a1a;
 }
 
-.project-description {
+.feed-project-description {
   margin-bottom: 15px;
 }
 
-.project-description-text {
+.feed-project-description-text {
   font-size: 0.95rem;
   color: #4a4a4a;
   line-height: 1.5;
 }
 
-.project-description-text.truncated {
+.feed-project-description-text.feed-truncated {
   max-height: 100px;
   overflow: hidden;
 }
 
-.project-show-more-btn {
+.feed-project-show-more-btn {
   background: none;
   border: none;
   color: #0a66c2;
@@ -1522,7 +1530,7 @@
   margin-top: 5px;
 }
 
-.project-show-more-btn:hover {
+.feed-project-show-more-btn:hover {
   text-decoration: underline;
 }
 
