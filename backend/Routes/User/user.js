@@ -9,7 +9,7 @@ const commentsRoutes = require("./Comments/comments");
 const pagesRoutes = require("./Pages/pages");
 const internshipsRoutes = require("./Internships/internships");
 const projectsRoutes = require("./Projects/projects");
-
+const searchRoutes = require("./Search/search");
 const router = express.Router();
 
 router.use("/auth", authRoutes);
@@ -20,5 +20,6 @@ router.use("/comments", commentsRoutes);
 router.use("/pages", pagesRoutes);
 router.use("/internships", internshipsRoutes);
 router.use("/projects", projectsRoutes);
+router.use("/search", searchRoutes);
 
 module.exports = router;
