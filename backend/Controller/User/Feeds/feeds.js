@@ -81,6 +81,7 @@ exports.getAllFeeds = async (req, res) => {
       pageId,
     } = req.body;
     const offset = (page - 1) * limit;
+    console.log(req.body);
 
     // Build where condition for feeds
     const whereCondition = {};
@@ -118,7 +119,7 @@ exports.getAllFeeds = async (req, res) => {
 
     // Fetch internships
     const internships = await Internship.findAll({
-      where: { status: "active" },
+      where: { status: "active", ...whereCondition },
       order: [["createdAt", "DESC"]],
       include: [
           {
@@ -139,7 +140,7 @@ exports.getAllFeeds = async (req, res) => {
       
     // Fetch projects
     const projects = await Projects.findAll({
-      where: { isPublic: true },
+      where: { isPublic: true, ...whereCondition },
       order: [["createdAt", "DESC"]],
       include: [
           {
