@@ -1,0 +1,345 @@
+.search-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 76px;
+}
+
+.search-header {
+  margin-bottom: 30px;
+}
+
+.search-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 12px 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #1877f2;
+}
+
+.search-button {
+  padding: 12px 24px;
+  background-color: #1877f2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+  background-color: #166fe5;
+}
+
+.search-type-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-type-btn {
+  padding: 8px 16px;
+  background-color: #f0f2f5;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.search-type-btn:hover {
+  background-color: #e4e6eb;
+}
+
+.search-type-btn.active {
+  background-color: #1877f2;
+  color: white;
+}
+
+.search-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.search-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.search-user-card {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.search-user-card:hover {
+  transform: translateY(-2px);
+}
+
+.search-user-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 15px;
+  object-fit: cover;
+}
+
+.search-user-info {
+  flex: 1;
+}
+
+.search-user-name {
+  margin: 0 0 5px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.search-user-title {
+  margin: 0;
+  color: #65676b;
+  font-size: 14px;
+}
+
+.search-feed-card {
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.search-feed-card:hover {
+  transform: translateY(-2px);
+}
+
+.search-feed-header,
+.search-project-header,
+.search-internship-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.search-feed-user,
+.search-project-user,
+.search-internship-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-feed-user-avatar,
+.search-project-user-avatar,
+.search-internship-user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.search-feed-user-avatar:hover,
+.search-project-user-avatar:hover,
+.search-internship-user-avatar:hover {
+  transform: scale(1.05);
+}
+
+.search-feed-user-info,
+.search-project-user-info,
+.search-internship-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-feed-username,
+.search-project-username,
+.search-internship-username {
+  font-weight: 600;
+  font-size: 14px;
+  color: #1c1e21;
+}
+
+.search-feed-user-title,
+.search-project-user-title,
+.search-internship-user-title {
+  font-size: 12px;
+  color: #65676b;
+}
+
+.search-feed-date,
+.search-project-date,
+.search-internship-date {
+  font-size: 12px;
+  color: #65676b;
+}
+
+.search-feed-content {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1c1e21;
+}
+
+.search-project-meta,
+.search-internship-meta {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #e4e6eb;
+}
+
+.search-project-card,
+.search-internship-card {
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.search-project-card:hover,
+.search-internship-card:hover {
+  transform: translateY(-2px);
+}
+
+.search-project-title,
+.search-internship-title {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.search-project-description {
+  margin: 0 0 15px;
+  color: #65676b;
+  font-size: 14px;
+}
+
+.search-project-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.search-project-tech-tag {
+  padding: 4px 12px;
+  background-color: #f0f2f5;
+  border-radius: 16px;
+  font-size: 12px;
+  color: #1877f2;
+}
+
+.search-internship-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.search-internship-company,
+.search-internship-role,
+.search-internship-location {
+  margin: 0;
+  color: #65676b;
+  font-size: 14px;
+}
+
+.search-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.search-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #1877f2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.search-error,
+.search-no-results {
+  text-align: center;
+  padding: 40px;
+  color: #65676b;
+}
+
+.search-error button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #1877f2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-error button:hover {
+  background-color: #166fe5;
+}
+
+.search-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.search-pagination button {
+  padding: 8px 16px;
+  background-color: #f0f2f5;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-pagination button:hover:not(:disabled) {
+  background-color: #e4e6eb;
+}
+
+.search-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.search-pagination span {
+  color: #65676b;
+  font-size: 14px;
+} 

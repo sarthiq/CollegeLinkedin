@@ -8,6 +8,8 @@ import { FeedDetails } from "./Common/FeedDetails/FeedDetails";
 import { ProfileRoutes } from "./Profile/ProfileRoutes";
 import { InternshipsRoutes } from "./Internships/InternshipsRoutes";
 import { ProjectsRoutes } from "./Projects/ProjectsRoutes";
+import { Search } from "./Search/Search";
+
 export const UserRoutes = () => {
   
   
@@ -23,6 +25,7 @@ export const UserRoutes = () => {
           <Route path="projects/*" element={<ProjectsRoutes />} />
           <Route path="pages/*" element={<PagesRoutes />} />
           <Route path="feed/:id" element={<FeedDetails />} />
+          <Route path="search" element={<Search />} />
           <Route path="*" element={<PageNotFound isAdmin={false} />} />
         </Routes>
       </main>

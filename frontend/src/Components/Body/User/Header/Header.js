@@ -18,6 +18,7 @@ export const Header = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
+    const [searchText, setSearchText] = useState('');
 
     useEffect(() => {
         if (!location.hash.includes('#login')) {
@@ -47,6 +48,19 @@ export const Header = () => {
         handleNavClick();
     };
 
+    const handleSearchClick = () => {
+        if (location.pathname !== '/dashboard/search') {
+            navigate('/dashboard/search');
+        }
+    };
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        if (searchText.trim()) {
+            navigate(`/dashboard/search?q=${encodeURIComponent(searchText.trim())}`);
+        }
+    };
+
     return (
         <header className="dashboard-header">
             <div className="dashboard-header-left">
@@ -55,6 +69,29 @@ export const Header = () => {
                         <span className="dashboard-logo-text">Sarthi</span>
                     </h1>
                 </Link>
+                <div className="dashboard-search-container">
+                    {location.pathname === '/dashboard/search' ? (
+                        <form onSubmit={handleSearchSubmit} className="dashboard-search-form">
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                value={searchText}
+                                onChange={(e) => setSearchText(e.target.value)}
+                                className="dashboard-search-input"
+                            />
+                            <button type="submit" className="dashboard-search-button">
+                                🔍
+                            </button>
+                        </form>
+                    ) : (
+                        <div 
+                            className="dashboard-search-placeholder"
+                            onClick={handleSearchClick}
+                        >
+                            🔍 Search...
+                        </div>
+                    )}
+                </div>
                 <div className="dashboard-hamburger-menu" onClick={toggleMenu}>
                     <div className={`dashboard-hamburger-icon ${isMenuOpen ? 'open' : ''}`}>
                         <span></span>

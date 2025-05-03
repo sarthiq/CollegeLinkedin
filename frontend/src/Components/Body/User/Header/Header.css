@@ -461,4 +461,59 @@
         transform: scale(1);
         opacity: 0.3;
     }
+}
+
+.dashboard-search-container {
+    margin: 0 20px;
+    flex: 1;
+    max-width: 600px;
+}
+
+.dashboard-search-form {
+    display: flex;
+    align-items: center;
+    background: #f0f2f5;
+    border-radius: 20px;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+}
+
+.dashboard-search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 8px;
+    font-size: 14px;
+    color: #1c1e21;
+    outline: none;
+}
+
+.dashboard-search-button {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #65676b;
+    transition: color 0.3s ease;
+}
+
+.dashboard-search-button:hover {
+    color: #1877f2;
+}
+
+.dashboard-search-placeholder {
+    display: flex;
+    align-items: center;
+    background: #f0f2f5;
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    color: #65676b;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.dashboard-search-placeholder:hover {
+    background: #e4e6eb;
 } 

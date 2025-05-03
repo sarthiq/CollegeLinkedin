@@ -49,6 +49,18 @@ exports.search = async (req, res) => {
                             [Op.like]: `%${searchText}%`
                         }
                     },
+                    include: [
+                        {
+                            model: User,
+                            attributes: ['id', 'name', 'email', 'phone'],
+                            include: [
+                                {
+                                    model: UserProfile,
+                                    attributes: ['profileUrl', 'title']
+                                }
+                            ]
+                        }
+                    ],
                     limit,
                     offset,
                     order: [['createdAt', 'DESC']]
@@ -62,6 +74,18 @@ exports.search = async (req, res) => {
                             [Op.like]: `%${searchText}%`
                         }
                     },
+                    include: [
+                        {
+                            model: User,
+                            attributes: ['id', 'name', 'email', 'phone'],
+                            include: [
+                                {
+                                    model: UserProfile,
+                                    attributes: ['profileUrl', 'title']
+                                }
+                            ]
+                        }
+                    ],
                     limit,
                     offset,
                     order: [['createdAt', 'DESC']]
@@ -77,6 +101,18 @@ exports.search = async (req, res) => {
                             }
                         }
                     },
+                    include: [
+                        {
+                            model: User,
+                            attributes: ['id', 'name', 'email', 'phone'],
+                            include: [
+                                {
+                                    model: UserProfile,
+                                    attributes: ['profileUrl', 'title']
+                                }
+                            ]
+                        }
+                    ],
                     limit,
                     offset,
                     order: [['createdAt', 'DESC']]
