@@ -33,13 +33,16 @@ const socketService = {
   }
 };
 
+//ssl_certificate /etc/nginx/ssl/sarthiq.com.crt;
+//ssl_certificate_key /etc/nginx/ssl/sarthiq.com.key;
+
 exports.setupSocketIO = (app) => {
     let server;
 
     if (isProduction) {
       const options = {
-        key: fs.readFileSync("/home/epeserver/SSLCertificates/ssl_certificate_key.key"),
-        cert: fs.readFileSync("/home/epeserver/SSLCertificates/ssl_certificate.crt"),
+        key: fs.readFileSync("/etc/nginx/ssl/sarthiq.com.key"),
+        cert: fs.readFileSync("/etc/nginx/ssl/sarthiq.com.crt"),
       };
       server = https.createServer(options, app);
     } else {
