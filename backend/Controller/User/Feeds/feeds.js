@@ -81,7 +81,7 @@ exports.getAllFeeds = async (req, res) => {
       pageId,
     } = req.body;
     const offset = (page - 1) * limit;
-    console.log(req.body);
+    //console.log(req.body);
 
     // Build where condition for feeds
     const whereCondition = {};

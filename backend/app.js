@@ -12,8 +12,10 @@ const { setupRoutes } = require("./Routes/setupRoutes");
 const db = require("./database");
 const infoRoutes = require("./infoRoutes");
 const {setupModels} = require("./Models/setModels");
-const { setupSocketIO } = require("./socketIOSetup");
+const { setupSocketIO, socketService } = require("./socketIOSetup");
 
+// Make socketService available globally
+global.socketService = socketService;
 
 // Just check-checkinf git working
 app = express();
@@ -86,14 +88,14 @@ setupRoutes(app);
 
 setupModels();
 
-const server = setupSocketIO(app);
+const { server } = setupSocketIO(app);
 
 
 
 db.sync({})
   .then(async () => {
     server.listen(process.env.APP_PORT);
-    console.log(`Lisining to the port : ${process.env.APP_PORT}`);
+    console.log(`Listening to the port : ${process.env.APP_PORT}`);
     
     
     //console.log("Alter is on for the databases");

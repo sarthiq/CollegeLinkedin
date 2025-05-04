@@ -49,6 +49,26 @@ exports.sendMessage = async (req, res) => {
 
     await transaction.commit();
 
+    // Get sender details for socket message
+    const sender = await User.findByPk(senderId, {
+      attributes: ['id', 'name'],
+      include: [
+        {
+          model: UserProfile,
+          attributes: ['profileUrl'],
+        },
+      ],
+    });
+
+    // Prepare message data for socket
+    const messageData = {
+      ...newMessage.toJSON(),
+      sender: sender,
+    };
+
+    // Send real-time message using socket
+    //global.socketService.sendMessageToUser(receiverId, messageData);
+
     res.status(201).json({
       success: true,
       data: newMessage,

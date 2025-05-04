@@ -5,6 +5,34 @@ const socketIO = require("socket.io");
 
 const isProduction = process.env.NODE_ENV === "production";
 
+// Create a socket service object to store io instance and functions
+const socketService = {
+  io: null,
+  socketUsers: new Map(),
+  
+  // Message functions
+  sendMessageToUser: (userId, message) => {
+    if (socketService.io) {
+      socketService.io.to(`user_${userId}`).emit("new_message", message);
+    }
+  },
+
+ 
+  
+
+  sendFileToUser: (userId, fileData) => {
+    if (socketService.io) {
+      socketService.io.to(`user_${userId}`).emit("new_file", fileData);
+    }
+  },
+
+
+  
+
+ 
+  
+};
+
 exports.setupSocketIO = (app) => {
     let server;
 
@@ -24,51 +52,26 @@ exports.setupSocketIO = (app) => {
         methods: ["GET", "POST"],
       },
     });
-    
-    const socketUsers = new Map();
+
+    // Store io instance in socketService
+    socketService.io = io;
     
     io.on("connection", (socket) => {
-      socket.on("join-case", (caseId) => {
-        socket.join(caseId);
-        socketUsers.set(socket.id, caseId);
+      // Handle user connection
+      socket.on("join-user", (userId) => {
+        socket.join(`user_${userId}`);
+        socketService.socketUsers.set(socket.id, { type: 'user', id: userId });
       });
-    
-      socket.on("leave-case", () => {
-        const caseId = socketUsers.get(socket.id);
-        if (caseId) {
-          socket.leave(caseId);
-          socketUsers.delete(socket.id);
-        }
-      });
-    
-      socket.on("case-info", (info) => {
-        io.emit("case-info", info);
-      });
-    
+
+      
+      
       socket.on("disconnect", () => {
-        const caseId = socketUsers.get(socket.id);
-        if (caseId) {
-          socketUsers.delete(socket.id);
-        }
+        socketService.socketUsers.delete(socket.id);
       });
     });
-    
-    // Utility functions (export or use directly)
-    const sendMessage2Admin = (caseId, message) => {
-      io.to(caseId).emit("case-admin-message", message);
-    };
-    
-    const sendMessage2User = (caseId, message) => {
-      io.to(caseId).emit("case-user-message", message);
-    };
-    
-    const sendFile2Admin = (caseId, url) => {
-      io.to(caseId).emit("case-admin-file", url);
-    };
-    
-    const sendCaseInfo = (info) => {
-      io.emit("case-info", info);
-    };
 
-    return server;
-}
+    return { server, socketService };
+};
+
+// Export socketService for use in controllers
+exports.socketService = socketService;
