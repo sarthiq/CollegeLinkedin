@@ -110,7 +110,11 @@ export const FollowersOrFollowing = () => {
           users.map(user => (
             <div key={user.id} className="user-card">
               <img 
-                src={process.env.REACT_APP_REMOTE_ADDRESS + '/' + user.UserProfile?.profileUrl || "/assets/Utils/male.png"} 
+                src={
+                  user.UserProfile?.profileUrl
+                    ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${user.UserProfile.profileUrl}`
+                    : "/assets/Utils/male.png"
+                }
                 alt={user.name}
                 className="user-avatar"
               />
