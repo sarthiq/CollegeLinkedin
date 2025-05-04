@@ -10,6 +10,8 @@ const pagesRoutes = require("./Pages/pages");
 const internshipsRoutes = require("./Internships/internships");
 const projectsRoutes = require("./Projects/projects");
 const searchRoutes = require("./Search/search");
+const followsRoutes = require("./Follows/follows");
+const messagesRoutes = require("./Messages/messages");
 const router = express.Router();
 
 router.use("/auth", authRoutes);
@@ -21,5 +23,7 @@ router.use("/pages", pagesRoutes);
 router.use("/internships", internshipsRoutes);
 router.use("/projects", projectsRoutes);
 router.use("/search", searchRoutes);
+router.use("/follows", userAuthentication, followsRoutes);
+router.use("/messages", userAuthentication, messagesRoutes);
 
 module.exports = router;

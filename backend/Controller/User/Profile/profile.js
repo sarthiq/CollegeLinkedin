@@ -11,13 +11,15 @@ const Interests = require("../../../Models/User/interests");
 const Projects = require("../../../Models/User/projects");
 const ProjectMember = require("../../../Models/User/projectMember");
 const Achievements = require("../../../Models/User/achievments");
+const Follow = require("../../../Models/Relationships/follows");
 
 exports.getProfile = async (req, res) => {
   try {
     // Get userId from either req.body or req.user.id
-    const userId = req.body.userId || (req.user && req.user.id ? req.user.id : null);
+    const userId =
+      req.body.userId || (req.user && req.user.id ? req.user.id : null);
 
-    if(!userId){
+    if (!userId) {
       return res.status(401).json({
         success: false,
         message: "Authentication required. Please login.",
@@ -77,9 +79,24 @@ exports.getProfile = async (req, res) => {
         message: "Profile not found",
       });
     }
-    
+
     const jsonUserProfile = userProfile.toJSON();
     jsonUserProfile.otherInfo = profileInfo;
+
+    jsonUserProfile.isUserProfile = userId === req.user.id;
+
+    const following = await Follow.findOne({
+      where: {
+        followersId: userId,
+        followingId: req.user.id,
+      },
+    });
+
+    if (following) {
+      jsonUserProfile.isFollowing = true;
+    } else {
+      jsonUserProfile.isFollowing = false;
+    }
 
     return res.status(200).json({
       success: true,

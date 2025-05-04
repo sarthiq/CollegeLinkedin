@@ -18,8 +18,13 @@ const Message = sequelize.define(
       allowNull: false,
     },
     message: {
-      type: Sequelize.JSON,
+      type: Sequelize.STRING,
       allowNull: false,
+    },
+    type: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      defaultValue: "text",
     },
     isRead: {
       type: Sequelize.BOOLEAN,

@@ -8,7 +8,7 @@ const { sequelize } = require("../../../importantInfo");
 exports.sendMessage = async (req, res) => {
   let transaction;
   try {
-    const { receiverId, message } = req.body;
+    const { receiverId, message,type="text" } = req.body;
     const senderId = req.user.id;
 
     if (!receiverId || !message) {
@@ -28,7 +28,7 @@ exports.sendMessage = async (req, res) => {
     }
 
     // Prevent self-messaging
-    if (receiverId === senderId) {
+    if (receiverId == senderId) {
       return res.status(400).json({
         success: false,
         message: "You cannot send message to yourself",
@@ -43,6 +43,7 @@ exports.sendMessage = async (req, res) => {
         receiverId,
         message,
         isRead: false,
+        type,
       },
       { transaction }
     );
@@ -102,7 +103,7 @@ exports.getConversation = async (req, res) => {
     const { page = 1, limit = 20 } = req.body;
     const offset = (page - 1) * limit;
 
-    const messages = await Message.findAndCountAll({
+    const { count, rows: messageRecords } = await Message.findAndCountAll({
       where: {
         [Op.or]: [
           {
@@ -115,30 +116,6 @@ exports.getConversation = async (req, res) => {
           },
         ],
       },
-      include: [
-        {
-          model: User,
-          as: 'sender',
-          attributes: ['id', 'name'],
-          include: [
-            {
-              model: UserProfile,
-              attributes: ['profileUrl'],
-            },
-          ],
-        },
-        {
-          model: User,
-          as: 'receiver',
-          attributes: ['id', 'name'],
-          include: [
-            {
-              model: UserProfile,
-              attributes: ['profileUrl'],
-            },
-          ],
-        },
-      ],
       order: [['createdAt', 'DESC']],
       limit: parseInt(limit),
       offset: parseInt(offset),
@@ -156,16 +133,42 @@ exports.getConversation = async (req, res) => {
       }
     );
 
-    const totalPages = Math.ceil(messages.count / limit);
+    // Fetch associated users and their profiles for each message
+    const messages = await Promise.all(messageRecords.map(async (message) => {
+      const [sender, receiver] = await Promise.all([
+        User.findByPk(message.senderId, {
+          attributes: ['id', 'name'],
+          include: [{
+            model: UserProfile,
+            attributes: ['profileUrl'],
+          }],
+        }),
+        User.findByPk(message.receiverId, {
+          attributes: ['id', 'name'],
+          include: [{
+            model: UserProfile,
+            attributes: ['profileUrl'],
+          }],
+        }),
+      ]);
+
+      return {
+        ...message.toJSON(),
+        sender: sender.toJSON(),
+        receiver: receiver.toJSON(),
+      };
+    }));
+
+    const totalPages = Math.ceil(count / limit);
     const hasNextPage = page < totalPages;
     const hasPrevPage = page > 1;
 
     res.status(200).json({
       success: true,
       data: {
-        messages: messages.rows,
+        messages,
         pagination: {
-          total: messages.count,
+          total: count,
           totalPages,
           currentPage: parseInt(page),
           limit: parseInt(limit),
@@ -184,85 +187,109 @@ exports.getConversation = async (req, res) => {
 exports.getAllConversations = async (req, res) => {
   try {
     const currentUserId = req.user.id;
-    const { page = 1, limit = 10 } = req.body;
+    const { page = 1, limit = 10, unreadMessage = false } = req.body;
     const offset = (page - 1) * limit;
 
-    // Get unique users who have conversations with current user
-    const conversations = await Message.findAll({
+    // First get the last message for each conversation using a subquery
+    const lastMessages = await Message.findAll({
       attributes: [
+        'id',
         'senderId',
         'receiverId',
-        [sequelize.fn('MAX', sequelize.col('createdAt')), 'lastMessageTime'],
+        'message',
+        'isRead',
+        'createdAt'
       ],
       where: {
-        [Op.or]: [
-          { senderId: currentUserId },
-          { receiverId: currentUserId },
-        ],
+        id: {
+          [Op.in]: sequelize.literal(`(
+            SELECT MAX(id) 
+            FROM messages 
+            WHERE (senderId = ${currentUserId} OR receiverId = ${currentUserId})
+            ${unreadMessage ? `AND receiverId = ${currentUserId} AND isRead = false` : ''}
+            GROUP BY CASE 
+              WHEN senderId = ${currentUserId} THEN receiverId 
+              ELSE senderId 
+            END
+          )`)
+        }
       },
-      group: [
-        sequelize.literal('CASE WHEN senderId = ' + currentUserId + ' THEN receiverId ELSE senderId END'),
-      ],
-      order: [[sequelize.literal('lastMessageTime'), 'DESC']],
+      order: [['createdAt', 'DESC']],
       limit: parseInt(limit),
-      offset: parseInt(offset),
+      offset: parseInt(offset)
     });
 
-    // Get user details and last message for each conversation
-    const conversationDetails = await Promise.all(
-      conversations.map(async (conv) => {
-        const otherUserId = conv.senderId === currentUserId ? conv.receiverId : conv.senderId;
-        const otherUser = await User.findByPk(otherUserId, {
-          attributes: ['id', 'name'],
-          include: [
-            {
-              model: UserProfile,
-              attributes: ['profileUrl'],
-            },
-          ],
-        });
+    // Get total count for pagination
+    const totalCount = await Message.count({
+      where: {
+        id: {
+          [Op.in]: sequelize.literal(`(
+            SELECT MAX(id) 
+            FROM messages 
+            WHERE (senderId = ${currentUserId} OR receiverId = ${currentUserId})
+            ${unreadMessage ? `AND receiverId = ${currentUserId} AND isRead = false` : ''}
+            GROUP BY CASE 
+              WHEN senderId = ${currentUserId} THEN receiverId 
+              ELSE senderId 
+            END
+          )`)
+        }
+      }
+    });
 
-        const lastMessage = await Message.findOne({
-          where: {
-            [Op.or]: [
-              {
-                senderId: currentUserId,
-                receiverId: otherUserId,
-              },
-              {
-                senderId: otherUserId,
-                receiverId: currentUserId,
-              },
-            ],
-          },
-          order: [['createdAt', 'DESC']],
-        });
+    // Fetch associated users and their profiles for each conversation
+    const conversations = await Promise.all(lastMessages.map(async (message) => {
+      const otherUserId = message.senderId === currentUserId ? message.receiverId : message.senderId;
+      
+      // Get user details
+      const user = await User.findByPk(otherUserId, {
+        attributes: ['id', 'name'],
+        include: [{
+          model: UserProfile,
+          attributes: ['profileUrl']
+        }]
+      });
 
-        const unreadCount = await Message.count({
-          where: {
-            senderId: otherUserId,
-            receiverId: currentUserId,
-            isRead: false,
-          },
-        });
+      // Get unread count for this conversation
+      const unreadCount = await Message.count({
+        where: {
+          senderId: otherUserId,
+          receiverId: currentUserId,
+          isRead: false
+        }
+      });
 
-        return {
-          user: otherUser,
-          lastMessage,
-          unreadCount,
-        };
-      })
-    );
+      return {
+        lastMessage: {
+          id: message.id,
+          message: message.message,
+          isRead: message.isRead,
+          createdAt: message.createdAt,
+          senderId: message.senderId,
+          receiverId: message.receiverId
+        },
+        user: user.toJSON(),
+        unreadCount
+      };
+    }));
+
+    const totalPages = Math.ceil(totalCount / limit);
+    const hasNextPage = page < totalPages;
+    const hasPrevPage = page > 1;
 
     res.status(200).json({
       success: true,
       data: {
-        conversations: conversationDetails,
+        conversations,
         pagination: {
+          total: totalCount,
+          totalPages,
           currentPage: parseInt(page),
           limit: parseInt(limit),
-        },
-      },
+          hasNextPage,
+          hasPrevPage
+        }
+      }
     });
   } catch (error) {
     console.log(error);
@@ -331,10 +358,7 @@ exports.deleteMessage = async (req, res) => {
     const message = await Message.findOne({
       where: {
         id: messageId,
-        [Op.or]: [
-          { senderId: currentUserId },
-          { receiverId: currentUserId },
-        ],
+        senderId: currentUserId,
       },
     });
 

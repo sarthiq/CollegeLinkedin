@@ -17,6 +17,8 @@ exports.toggleFollow = async (req, res) => {
         message: "User ID is required",
       });
     }
+    
+  
 
     // Check if user exists
     const userToFollow = await User.findByPk(userId, {
@@ -28,19 +30,21 @@ exports.toggleFollow = async (req, res) => {
         message: "User not found",
       });
     }
-
+   
+    
     // Get current user's profile
     const currentUser = await User.findByPk(currentUserId, {
       include: [{ model: UserProfile }]
     });
 
     // Prevent self-following
-    if (userId === currentUserId) {
+    if (userId == currentUserId) {
       return res.status(400).json({
         success: false,
         message: "You cannot follow yourself",
       });
     }
+    
 
     const isFollowing = await Follow.findOne({
       where: {
@@ -48,6 +52,7 @@ exports.toggleFollow = async (req, res) => {
         followingId: userId,
       },
     });
+    
 
     transaction = await sequelize.transaction();
 
@@ -120,39 +125,35 @@ exports.getFollowers = async (req, res) => {
 
     const targetUserId = userId || req.user.id;
 
-    const { count, rows: followers } = await Follow.findAndCountAll({
+    // First get the follow records
+    const { count, rows: followRecords } = await Follow.findAndCountAll({
       where: {
         followingId: targetUserId,
       },
-      include: [
-        {
-          model: User,
-          as: 'follower',
-          attributes: ['id', 'name'],
-          include: [
-            {
-              model: UserProfile,
-              attributes: ['profileUrl'],
-            },
-          ],
-        },
-      ],
       limit: parseInt(limit),
       offset: parseInt(offset),
       order: [['createdAt', 'DESC']],
     });
 
-    // Transform the data to include isFollowing flag
-    const transformedFollowers = await Promise.all(followers.map(async (follow) => {
-      const followerData = follow.follower.toJSON();
+    // Then fetch the associated users and their profiles
+    const followers = await Promise.all(followRecords.map(async (follow) => {
+      const user = await User.findByPk(follow.followersId, {
+        attributes: ['id', 'name'],
+        include: [{
+          model: UserProfile,
+          attributes: ['profileUrl'],
+        }],
+      });
+
       const isFollowing = await Follow.findOne({
         where: {
           followersId: req.user.id,
-          followingId: followerData.id,
+          followingId: user.id,
         },
       });
+
       return {
-        ...followerData,
+        ...user.toJSON(),
         isFollowing: !!isFollowing,
       };
     }));
@@ -164,7 +165,7 @@ exports.getFollowers = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        followers: transformedFollowers,
+        followers,
         pagination: {
           total: count,
           totalPages,
@@ -189,39 +190,35 @@ exports.getFollowing = async (req, res) => {
 
     const targetUserId = userId || req.user.id;
 
-    const { count, rows: following } = await Follow.findAndCountAll({
+    // First get the follow records
+    const { count, rows: followRecords } = await Follow.findAndCountAll({
       where: {
         followersId: targetUserId,
       },
-      include: [
-        {
-          model: User,
-          as: 'following',
-          attributes: ['id', 'name'],
-          include: [
-            {
-              model: UserProfile,
-              attributes: ['profileUrl'],
-            },
-          ],
-        },
-      ],
       limit: parseInt(limit),
       offset: parseInt(offset),
       order: [['createdAt', 'DESC']],
     });
 
-    // Transform the data to include isFollowing flag
-    const transformedFollowing = await Promise.all(following.map(async (follow) => {
-      const followingData = follow.following.toJSON();
+    // Then fetch the associated users and their profiles
+    const following = await Promise.all(followRecords.map(async (follow) => {
+      const user = await User.findByPk(follow.followingId, {
+        attributes: ['id', 'name'],
+        include: [{
+          model: UserProfile,
+          attributes: ['profileUrl'],
+        }],
+      });
+
       const isFollowing = await Follow.findOne({
         where: {
           followersId: req.user.id,
-          followingId: followingData.id,
+          followingId: user.id,
         },
       });
+
       return {
-        ...followingData,
+        ...user.toJSON(),
         isFollowing: !!isFollowing,
       };
     }));
@@ -233,7 +230,7 @@ exports.getFollowing = async (req, res) => {
     res.status(200).json({
       success: true,
       data: {
-        following: transformedFollowing,
+        following,
         pagination: {
           total: count,
           totalPages,
