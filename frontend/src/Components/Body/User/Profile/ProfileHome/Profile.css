@@ -173,21 +173,21 @@
 }
 
 .profile-edit-button {
-  background-color: white;
-  color: #0a66c2;
-  border: 1px solid #0a66c2;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  font-weight: 500;
+  padding: 8px 24px;
+  border: 1px solid #0073b1;
+  background: white;
+  color: #0073b1;
+  border-radius: 4px;
   cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
   transition: all 0.2s;
+  margin-left: 15px;
 }
 
 .profile-edit-button:hover {
-  background-color: #f3f2ef;
-  border-color: #004182;
-  color: #004182;
-  transform: translateY(-1px);
+  background-color: #0073b1;
+  color: white;
 }
 
 .profile-content {
@@ -666,4 +666,30 @@
 .profile-cancel-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+.profile-follow-button {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s;
+  margin-left: 15px;
+}
+
+.profile-follow-button.follow {
+  background-color: #0073b1;
+  color: white;
+}
+
+.profile-follow-button.unfollow {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.profile-follow-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
 } 

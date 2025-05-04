@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getProfileHandler } from "../profileApiHandler";
+import { toggleFollowHandler } from "../followsApiHandler";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Feed } from "../../Common/Feed/Feed";
 import "./Profile.css";
@@ -23,6 +24,8 @@ export const Profile = () => {
     collegeName: "",
     collegeYear: "",
     courseName: "",
+    isUserProfile: false, 
+    isFollowing: false,
   });
   const [interests, setInterests] = useState({
     preferredJobTypes: [],
@@ -68,6 +71,8 @@ export const Profile = () => {
           coverImage: profileData.data.coverUrl
             ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${profileData.data.coverUrl}`
             : "https://placehold.co/1200x300",
+          isUserProfile: profileData.data.isUserProfile || false,
+          isFollowing: profileData.data.isFollowing || false,
         });
 
         setInterests(profileData.data.otherInfo.interests[0]);
@@ -103,6 +108,33 @@ export const Profile = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleFollowToggle = async () => {
+    try {
+      const response = await toggleFollowHandler(
+        { userId },
+        setIsLoading,
+        setError
+      );
+      if (response && response.success) {
+        setProfile(prev => ({
+          ...prev,
+          isFollowing: !prev.isFollowing,
+          followers: response.data.targetUser.followers
+        }));
+      }
+    } catch (error) {
+      setError("Error toggling follow status");
+    }
+  };
+
+  const handleFollowersClick = () => {
+    navigate(`./followersOrFollowing?userId=${userId}&type=followers`);
+  };
+
+  const handleFollowingClick = () => {
+    navigate(`./followersOrFollowing?userId=${userId}&type=following`);
   };
 
   if (isLoading) {
@@ -143,16 +175,24 @@ export const Profile = () => {
               )}
             </div>
             <div className="profile-stats">
-              <div className="profile-stat-item">
+              <div className="profile-stat-item" onClick={handleFollowersClick} style={{ cursor: 'pointer' }}>
                 <span className="profile-stat-value">{profile.followers}</span>
                 <span className="profile-stat-label">Followers</span>
               </div>
-              <div className="profile-stat-item">
+              <div className="profile-stat-item" onClick={handleFollowingClick} style={{ cursor: 'pointer' }}>
                 <span className="profile-stat-value">{profile.following}</span>
                 <span className="profile-stat-label">Following</span>
               </div>
             </div>
-            {!userId && (
+            {!profile.isUserProfile && (
+              <button
+                className={`profile-follow-button ${profile.isFollowing ? 'unfollow' : 'follow'}`}
+                onClick={handleFollowToggle}
+              >
+                {profile.isFollowing ? 'Unfollow' : 'Follow'}
+              </button>
+            )}
+            {profile.isUserProfile && (
               <button
                 className="profile-edit-button"
                 onClick={() => navigate("./edit")}
