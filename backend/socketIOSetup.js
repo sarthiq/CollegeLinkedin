@@ -21,19 +21,6 @@ const socketService = {
     }
   },
 
-  // File sharing functions
-  sendFileToRoom: (roomId, fileData) => {
-    if (socketService.io) {
-      socketService.io.to(roomId).emit("new_file", fileData);
-    }
-  },
-
-  // Progress update function
-  updateFileProgress: (roomId, fileId, progress) => {
-    if (socketService.io) {
-      socketService.io.to(roomId).emit("file_progress", { fileId, progress });
-    }
-  },
 
   // Get room ID for two users
   getRoomId: (userId1, userId2) => {
@@ -131,22 +118,6 @@ exports.setupSocketIO = (app) => {
         }
       });
 
-      // Handle file sharing
-      socket.on("start-file-upload", (data) => {
-        const { roomId, fileId, fileName, fileSize } = data;
-        socket.to(roomId).emit("file-upload-started", { fileId, fileName, fileSize });
-      });
-
-      socket.on("file-chunk", (data) => {
-        const { roomId, fileId, chunk, progress } = data;
-        socket.to(roomId).emit("file-chunk-received", { fileId, chunk });
-        socketService.updateFileProgress(roomId, fileId, progress);
-      });
-
-      socket.on("file-upload-complete", (data) => {
-        const { roomId, fileId, fileUrl } = data;
-        socket.to(roomId).emit("file-upload-complete", { fileId, fileUrl });
-      });
 
       // Handle reconnection
       socket.on("reconnect", async () => {
