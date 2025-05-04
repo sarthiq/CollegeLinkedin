@@ -18,6 +18,8 @@ const Skills = require("./User/skills");
 const Internship = require("./Basic/internship");
 const AppliedInternship = require("./Basic/appliedInternship");
 const ProjectFeedback = require("./User/projectFeedback");
+const Follow = require("./Relationships/follows");
+const Message = require("./Relationships/messages");
 
 exports.setupModels = async () => {
   // Define associations

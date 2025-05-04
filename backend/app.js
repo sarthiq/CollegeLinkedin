@@ -12,8 +12,7 @@ const { setupRoutes } = require("./Routes/setupRoutes");
 const db = require("./database");
 const infoRoutes = require("./infoRoutes");
 const {setupModels} = require("./Models/setModels");
-const Feeds = require("./Models/Basic/feeds");
-
+const { setupSocketIO } = require("./socketIOSetup");
 
 
 // Just check-checkinf git working
@@ -87,12 +86,13 @@ setupRoutes(app);
 
 setupModels();
 
+const server = setupSocketIO(app);
 
 
 
 db.sync({})
   .then(async () => {
-    app.listen(process.env.APP_PORT);
+    server.listen(process.env.APP_PORT);
     console.log(`Lisining to the port : ${process.env.APP_PORT}`);
     
     
