@@ -117,11 +117,16 @@ exports.getAllFeeds = async (req, res) => {
       ],
     });
 
-    // Fetch internships
-    const internships = await Internship.findAll({
-      where: { status: "active", ...whereCondition },
-      order: [["createdAt", "DESC"]],
-      include: [
+    let internships = [];
+    let projects = [];
+
+    // Only fetch internships and projects if pageId doesn't exist
+    if (!pageId) {
+      // Fetch internships
+      internships = await Internship.findAll({
+        where: { status: "active", ...whereCondition },
+        order: [["createdAt", "DESC"]],
+        include: [
           {
             model: User,
             as: 'User',
@@ -136,13 +141,11 @@ exports.getAllFeeds = async (req, res) => {
         ],
       });
 
-    
-      
-    // Fetch projects
-    const projects = await Projects.findAll({
-      where: { isPublic: true, ...whereCondition },
-      order: [["createdAt", "DESC"]],
-      include: [
+      // Fetch projects
+      projects = await Projects.findAll({
+        where: { isPublic: true, ...whereCondition },
+        order: [["createdAt", "DESC"]],
+        include: [
           {
             model: User,
             attributes: ["id", "name"],
@@ -155,8 +158,7 @@ exports.getAllFeeds = async (req, res) => {
           },
         ],
       });
-
-   
+    }
 
     // Transform and combine all data with type identifiers
     const combinedData = [
