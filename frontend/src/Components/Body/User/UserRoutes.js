@@ -9,6 +9,7 @@ import { ProfileRoutes } from "./Profile/ProfileRoutes";
 import { InternshipsRoutes } from "./Internships/InternshipsRoutes";
 import { ProjectsRoutes } from "./Projects/ProjectsRoutes";
 import { Search } from "./Search/Search";
+import { Messages } from "./Messages/Messages"; 
 
 export const UserRoutes = () => {
   
@@ -26,6 +27,7 @@ export const UserRoutes = () => {
           <Route path="pages/*" element={<PagesRoutes />} />
           <Route path="feed/:id" element={<FeedDetails />} />
           <Route path="search" element={<Search />} />
+          <Route path="messages" element={<Messages />} />
           <Route path="*" element={<PageNotFound isAdmin={false} />} />
         </Routes>
       </main>

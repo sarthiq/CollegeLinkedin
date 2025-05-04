@@ -147,6 +147,12 @@ export const Header = () => {
                             <NewBadge />
                         </div>
                     </Link>
+                    <Link to="/dashboard/messages" className="dashboard-nav-link" onClick={handleNavClick}>
+                        <div className="dashboard-nav-icon-container">
+                            <span className="dashboard-nav-icon">💬</span>
+                            <span className="dashboard-nav-text">Messages</span>
+                        </div>
+                    </Link>
                     <a href="https://career.sarthiq.com" className="dashboard-nav-link" onClick={handleNavClick} target="_blank" rel="noopener noreferrer">
                         <div className="dashboard-nav-icon-container">
                             <span className="dashboard-nav-icon">🚀</span>

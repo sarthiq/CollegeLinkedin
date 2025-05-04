@@ -191,12 +191,20 @@ export const Profile = () => {
               </div>
             </div>
             {!profile.isUserProfile && (
-              <button
-                className={`profile-follow-button ${profile.isFollowing ? 'unfollow' : 'follow'}`}
-                onClick={handleFollowToggle}
-              >
-                {profile.isFollowing ? 'Unfollow' : 'Follow'}
-              </button>
+              <div className="profile-actions">
+                <button
+                  className={`profile-follow-button ${profile.isFollowing ? 'unfollow' : 'follow'}`}
+                  onClick={handleFollowToggle}
+                >
+                  {profile.isFollowing ? 'Unfollow' : 'Follow'}
+                </button>
+                <button
+                  className="profile-message-button"
+                  onClick={() => navigate("/dashboard/messages")}
+                >
+                  Message
+                </button>
+              </div>
             )}
             {profile.isUserProfile && (
               <button
