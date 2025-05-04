@@ -1,0 +1,209 @@
+.landing-messages-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.landing-messages-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.landing-messages-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.landing-messages-subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.landing-messages-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.landing-messages-feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.landing-messages-feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.landing-messages-feature-icon {
+    font-size: 2.5rem;
+    color: #0a66c2;
+    margin-bottom: 1.5rem;
+}
+
+.landing-messages-feature-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.landing-messages-feature-description {
+    color: #666;
+    line-height: 1.6;
+}
+
+.landing-messages-categories {
+    margin-bottom: 4rem;
+}
+
+.landing-messages-categories-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.landing-messages-categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.landing-messages-category-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.landing-messages-category-icon {
+    font-size: 2rem;
+    color: #0a66c2;
+    margin-bottom: 1rem;
+}
+
+.landing-messages-category-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.landing-messages-category-description {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.landing-messages-benefits {
+    margin-bottom: 4rem;
+}
+
+.landing-messages-benefits-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.landing-messages-benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.landing-messages-benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.landing-messages-benefit-icon {
+    font-size: 1.5rem;
+    color: #0a66c2;
+}
+
+.landing-messages-benefit-text {
+    color: #333;
+    font-weight: 500;
+}
+
+.landing-messages-cta {
+    text-align: center;
+    padding: 3rem;
+    background: linear-gradient(135deg, #0a66c2, #004182);
+    border-radius: 12px;
+    color: white;
+}
+
+.landing-messages-cta-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.landing-messages-cta-description {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.landing-messages-cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: white;
+    color: #0a66c2;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: transform 0.3s ease;
+}
+
+.landing-messages-cta-button:hover {
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .landing-messages-container {
+        padding: 1rem;
+    }
+
+    .landing-messages-title {
+        font-size: 2rem;
+    }
+
+    .landing-messages-subtitle {
+        font-size: 1rem;
+    }
+
+    .landing-messages-features {
+        grid-template-columns: 1fr;
+    }
+
+    .landing-messages-categories-grid,
+    .landing-messages-benefits-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .landing-messages-cta {
+        padding: 2rem 1rem;
+    }
+
+    .landing-messages-cta-title {
+        font-size: 1.5rem;
+    }
+} 

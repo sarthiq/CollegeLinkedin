@@ -151,6 +151,7 @@ export const Header = () => {
                         <div className="dashboard-nav-icon-container">
                             <span className="dashboard-nav-icon">💬</span>
                             <span className="dashboard-nav-text">Messages</span>
+                            <NewBadge />
                         </div>
                     </Link>
                     <a href="https://career.sarthiq.com" className="dashboard-nav-link" onClick={handleNavClick} target="_blank" rel="noopener noreferrer">

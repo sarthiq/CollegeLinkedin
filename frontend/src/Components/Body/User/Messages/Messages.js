@@ -136,19 +136,82 @@ export const Messages = () => {
 
   // Initial load - fetch conversations and check URL for selected user
   useEffect(() => {
-    fetchConversations();
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        console.log('Fetching conversations...');
+        const response = await getAllConversationsHandler(
+          { page: 1, limit: pagination.limit },
+          setIsLoading,
+          setError
+        );
+        
+        if (response && response.success) {
+          console.log('Conversations fetched:', response.data.conversations);
+          setConversations(response.data.conversations);
+          setPagination(response.data.pagination);
+          
+          // Get userId from URL and convert to number
+          const userId = parseInt(searchParams.get("userId"), 10);
+          console.log('URL userId (converted to number):', userId);
+          
+          if (userId) {
+            // Find the user in the conversations
+            const conversation = response.data.conversations.find(
+              conv => conv.user.id === userId
+            );
+            
+            console.log('Found conversation:', conversation);
+            
+            if (conversation) {
+              console.log('Setting selected user:', conversation.user);
+              // Set the selected user
+              setSelectedUser(conversation.user);
+              // Fetch messages for this user
+              console.log('Fetching messages for user:', conversation.user.id);
+              const messages = await fetchMessages(conversation.user.id);
+              if (messages) {
+                console.log('Messages fetched:', messages);
+                markMessagesAsRead(messages, conversation.user.id);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error in fetchData:', error);
+        setError("Error fetching conversations");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  // Handle URL changes
+  // Add a useEffect to watch for conversations changes
   useEffect(() => {
-    const userId = searchParams.get("userId");
-    if (userId && conversations.length > 0 && (!selectedUser || selectedUser.id !== userId)) {
-      const user = conversations.find(conv => conv.user.id === userId);
-      if (user) {
-        handleUserSelect(user.user);
+    const userId = parseInt(searchParams.get("userId"), 10);
+    console.log('Watching conversations change. Current userId:', userId);
+    console.log('Current conversations:', conversations);
+    
+    if (userId && conversations.length > 0) {
+      const conversation = conversations.find(
+        conv => conv.user.id === userId
+      );
+      
+      console.log('Found conversation in watch effect:', conversation);
+      
+      if (conversation && (!selectedUser || selectedUser.id !== userId)) {
+        console.log('Setting selected user in watch effect:', conversation.user);
+        setSelectedUser(conversation.user);
+        fetchMessages(conversation.user.id).then(messages => {
+          if (messages) {
+            markMessagesAsRead(messages, conversation.user.id);
+          }
+        });
       }
     }
-  }, [searchParams, conversations]);
+  }, [conversations, searchParams]);
 
   if (isLoading) {
     return <div className="messages-loading">Loading...</div>;

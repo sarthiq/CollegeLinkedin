@@ -13,6 +13,7 @@ import { Community } from "./Community/Community";
 import { Projects } from "./Projects/Projects";
 import { Internships } from "./Internships/Internships";
 import { Learning } from "./Learning/Learning";
+import { Messages } from "./Messages/Messages";
 
 export const LandingRoutes = () => {
     return (
@@ -30,6 +31,7 @@ export const LandingRoutes = () => {
         <Route path="terms" element={<TermsOfService />} />
         <Route path="privacy" element={<PrivacyPolicy />} />
         <Route path="refund" element={<RefundPolicy />} />
+        <Route path="messages" element={<Messages />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
       <Footer />
