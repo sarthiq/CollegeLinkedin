@@ -28,6 +28,7 @@ export const UserRoutes = () => {
           <Route path="feed/:id" element={<FeedDetails />} />
           <Route path="search" element={<Search />} />
           <Route path="messages" element={<Messages />} />
+          <Route path="messages/:userId" element={<Messages />} />
           <Route path="*" element={<PageNotFound isAdmin={false} />} />
         </Routes>
       </main>

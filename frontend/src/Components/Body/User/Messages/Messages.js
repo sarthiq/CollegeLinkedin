@@ -4,7 +4,8 @@ import {
   getAllConversationsHandler, 
   getConversationHandler, 
   sendMessageHandler,
-  markAsReadHandler 
+  markAsReadHandler,
+  getUserInfoHandler
 } from "./messagesApiHandler";
 import "./Messages.css";
 
@@ -151,8 +152,8 @@ export const Messages = () => {
           setConversations(response.data.conversations);
           setPagination(response.data.pagination);
           
-          // Get userId from URL and convert to number
-          const userId = parseInt(searchParams.get("userId"), 10);
+          // Get userId from URL params or query params
+          const userId = parseInt(searchParams.get("userId") || window.location.pathname.split('/').pop(), 10);
           console.log('URL userId (converted to number):', userId);
           
           if (userId) {
@@ -173,6 +174,33 @@ export const Messages = () => {
               if (messages) {
                 console.log('Messages fetched:', messages);
                 markMessagesAsRead(messages, conversation.user.id);
+              }
+            } else {
+              // If no conversation exists, fetch user info
+              try {
+                const userInfoResponse = await getUserInfoHandler(
+                  { userId },
+                  setIsLoading,
+                  setError
+                );
+                
+                if (userInfoResponse && userInfoResponse.success) {
+                  const userData = userInfoResponse.data;
+                  const newUser = {
+                    id: userId,
+                    name: userData.name,
+                    UserProfile: {
+                      profileUrl: userData.UserProfile?.profileUrl || "/assets/Utils/male.png"
+                    }
+                  };
+                  setSelectedUser(newUser);
+                  setMessages([]);
+                } else {
+                  setError("Could not fetch user information");
+                }
+              } catch (error) {
+                console.error('Error fetching user info:', error);
+                setError("Error fetching user information");
               }
             }
           }

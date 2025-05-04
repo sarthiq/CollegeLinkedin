@@ -97,3 +97,20 @@ export const deleteMessageHandler = async (data, setIsLoading, showAlert) => {
   }
 };
 
+
+export const getUserInfoHandler = async (data, setIsLoading, showAlert) => {
+  const url = `${baseRoutes}/getUserInfo`;
+  const obj = data;
+
+  setIsLoading(true);
+  const token = localStorage.getItem("token");
+  try {
+    const response = await apiRequest(url, obj, token, "post");
+    const data = response.data;
+    return data;
+  } catch (e) {
+    handleErrors(e, showAlert);
+  } finally {
+    setIsLoading(false);
+  }
+};

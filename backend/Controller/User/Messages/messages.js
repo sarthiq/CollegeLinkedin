@@ -387,3 +387,39 @@ exports.deleteMessage = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+exports.getUserInfo = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required"
+      });
+    }
+
+    const user = await User.findByPk(userId, {
+      attributes: ['id', 'name'],
+      include: [{
+        model: UserProfile,
+        attributes: ['profileUrl']
+      }]
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: user.toJSON()
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};

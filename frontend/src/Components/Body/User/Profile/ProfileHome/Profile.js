@@ -200,7 +200,7 @@ export const Profile = () => {
                 </button>
                 <button
                   className="profile-message-button"
-                  onClick={() => navigate("/dashboard/messages")}
+                  onClick={() => navigate(`/dashboard/messages/${userId}`)}
                 >
                   Message
                 </button>
