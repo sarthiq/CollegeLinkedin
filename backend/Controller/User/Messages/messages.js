@@ -66,8 +66,11 @@ exports.sendMessage = async (req, res) => {
       sender: sender,
     };
 
+    // Get room ID for the two users
+    const roomId = global.socketService.getRoomId(senderId, receiverId);
+    
     // Send real-time message using socket
-    //global.socketService.sendMessageToUser(receiverId, messageData);
+    global.socketService.sendMessageToRoom(roomId, messageData);
 
     res.status(201).json({
       success: true,
