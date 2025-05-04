@@ -24,8 +24,11 @@ export const FollowersOrFollowing = () => {
     try {
       setIsLoading(true);
       const handler = type === "followers" ? getFollowersHandler : getFollowingHandler;
+      const requestData = { page, limit: pagination.limit };
+      if (userId) requestData.userId = userId;
+      
       const response = await handler(
-        { userId, page, limit: pagination.limit },
+        requestData,
         setIsLoading,
         setError
       );
@@ -42,7 +45,7 @@ export const FollowersOrFollowing = () => {
   };
 
   useEffect(() => {
-    if (type && userId) {
+    if (type) {
       fetchUsers();
     }
   }, [type, userId]);
@@ -76,8 +79,8 @@ export const FollowersOrFollowing = () => {
     navigate(-1); // Go back to previous page
   };
 
-  if (!type || !userId) {
-    return <div className="error">Invalid parameters</div>;
+  if (!type) {
+    return <div className="error">Type parameter is required</div>;
   }
 
   if (isLoading) {

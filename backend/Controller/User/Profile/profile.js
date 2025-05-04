@@ -87,8 +87,8 @@ exports.getProfile = async (req, res) => {
 
     const following = await Follow.findOne({
       where: {
-        followersId: userId,
-        followingId: req.user.id,
+        followersId: req.user.id,
+        followingId: userId,
       },
     });
 

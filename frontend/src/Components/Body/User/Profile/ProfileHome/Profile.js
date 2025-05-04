@@ -81,7 +81,7 @@ export const Profile = () => {
         setExperience(profileData.data.otherInfo.experience);
         setSkills(profileData.data.otherInfo.skills);
 
-        console.log(profileData.data.otherInfo);
+        //console.log(profileData.data.otherInfo);
       }
 
       // // Fetch interests
@@ -130,11 +130,17 @@ export const Profile = () => {
   };
 
   const handleFollowersClick = () => {
-    navigate(`./followersOrFollowing?userId=${userId}&type=followers`);
+    const queryParams = new URLSearchParams();
+    if (userId) queryParams.set('userId', userId);
+    queryParams.set('type', 'followers');
+    navigate(`./followersOrFollowing?${queryParams.toString()}`);
   };
 
   const handleFollowingClick = () => {
-    navigate(`./followersOrFollowing?userId=${userId}&type=following`);
+    const queryParams = new URLSearchParams();
+    if (userId) queryParams.set('userId', userId);
+    queryParams.set('type', 'following');
+    navigate(`./followersOrFollowing?${queryParams.toString()}`);
   };
 
   if (isLoading) {

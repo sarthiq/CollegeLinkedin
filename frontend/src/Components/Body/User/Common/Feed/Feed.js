@@ -159,7 +159,7 @@ export const Feed = ({
     );
 
     if (response && response.success) {
-      console.log(response.data);
+      //console.log(response.data);
       const { items, pagination: paginationData } = response.data;
 
       // Set the userId from the response
