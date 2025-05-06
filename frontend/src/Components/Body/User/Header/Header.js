@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './Header.css';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setUserAuthToken, userLogOut } from '../../../../Store/User/auth';
+import { socketService } from '../../../../services/socketService';
 
 // New Badge Component
 const NewBadge = () => {
@@ -13,18 +14,62 @@ const NewBadge = () => {
   );
 };
 
+// Message Badge Component
+const MessageBadge = ({ count }) => {
+  if (!count) return null;
+  return (
+    <div className="message-badge">
+      {count}
+    </div>
+  );
+};
+
 export const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [unreadMessageCount, setUnreadMessageCount] = useState(0);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
     const [searchText, setSearchText] = useState('');
+    const token = useSelector(state => state.userAuth.token);
 
     useEffect(() => {
         if (!location.hash.includes('#login')) {
             window.scrollTo(0, 0);
         }
     }, [location]);
+
+    // Socket event handlers for messages
+    useEffect(() => {
+        if (!token) return;
+
+        const handleNewMessage = (message) => {
+            if (location.pathname !== '/dashboard/messages') {
+                setUnreadMessageCount(prev => prev + 1);
+            }
+        };
+
+        const handleNewMessageNotification = (data) => {
+            console.log("New message notification received:", data);
+            if (location.pathname !== '/dashboard/messages') {
+                setUnreadMessageCount(prev => prev + 1);
+            }
+        };
+
+        const handleMessagesRead = () => {
+            setUnreadMessageCount(0);
+        };
+
+        socketService.on('new_message', handleNewMessage);
+        socketService.on('new_message_notification', handleNewMessageNotification);
+        socketService.on('messages_read', handleMessagesRead);
+
+        return () => {
+            socketService.off('new_message', handleNewMessage);
+            socketService.off('new_message_notification', handleNewMessageNotification);
+            socketService.off('messages_read', handleMessagesRead);
+        };
+    }, [token, location.pathname]);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -151,7 +196,7 @@ export const Header = () => {
                         <div className="dashboard-nav-icon-container">
                             <span className="dashboard-nav-icon">💬</span>
                             <span className="dashboard-nav-text">Messages</span>
-                            <NewBadge />
+                            <MessageBadge count={unreadMessageCount} />
                         </div>
                     </Link>
                     <a href="https://career.sarthiq.com" className="dashboard-nav-link" onClick={handleNavClick} target="_blank" rel="noopener noreferrer">

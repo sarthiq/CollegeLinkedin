@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import {
   getAllConversationsHandler,
@@ -7,17 +7,22 @@ import {
   markAsReadHandler,
   getUserInfoHandler,
 } from "./messagesApiHandler";
+import { socketService } from "../../../../services/socketService";
 import "./Messages.css";
 
 export const Messages = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isMessagesLoading, setIsMessagesLoading] = useState(false);
+  const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [error, setError] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
@@ -27,19 +32,108 @@ export const Messages = () => {
     hasPrevPage: false,
   });
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Socket event handlers
+  useEffect(() => {
+    const handleNewMessage = (message) => {
+      // Update messages if we're in the conversation with either sender or receiver
+      if (selectedUser && (message.senderId === selectedUser.id || message.receiverId === selectedUser.id)) {
+        setMessages(prevMessages => [...prevMessages, message]);
+        // Only mark as read if we're the receiver
+        if (message.senderId === selectedUser.id) {
+          markMessagesAsRead([message], selectedUser.id);
+        }
+        // Scroll to bottom when new message arrives
+        setTimeout(scrollToBottom, 100);
+      }
+
+      // Update conversation list with new message
+      setConversations(prevConversations => {
+        const updatedConversations = prevConversations.map(conv => {
+          if (conv.user.id === message.senderId || conv.user.id === message.receiverId) {
+            return {
+              ...conv,
+              lastMessage: message,
+              unreadCount: message.senderId === conv.user.id ? (conv.unreadCount || 0) + 1 : conv.unreadCount
+            };
+          }
+          return conv;
+        });
+        return updatedConversations;
+      });
+    };
+
+    const handleNewMessageNotification = (data) => {
+      // Update conversation list with new message notification
+      setConversations(prevConversations => {
+        const updatedConversations = prevConversations.map(conv => {
+          if (conv.user.id === data.message.sender.id) {
+            return {
+              ...conv,
+              lastMessage: data.message,
+              unreadCount: (conv.unreadCount || 0) + 1
+            };
+          }
+          return conv;
+        });
+        return updatedConversations;
+      });
+    };
+
+    const handleUserJoinedRoom = ({ roomId, userId }) => {
+      if (selectedUser && userId === selectedUser.id) {
+        // User is typing or online status can be handled here
+      }
+    };
+
+    const handleUserLeftRoom = ({ roomId, userId }) => {
+      if (selectedUser && userId === selectedUser.id) {
+        // User is offline or stopped typing can be handled here
+      }
+    };
+
+    // Subscribe to socket events
+    socketService.on('new_message', handleNewMessage);
+    socketService.on('new_message_notification', handleNewMessageNotification);
+    socketService.on('user_joined_room', handleUserJoinedRoom);
+    socketService.on('user_left_room', handleUserLeftRoom);
+
+    return () => {
+      // Cleanup socket listeners
+      socketService.off('new_message', handleNewMessage);
+      socketService.off('new_message_notification', handleNewMessageNotification);
+      socketService.off('user_joined_room', handleUserJoinedRoom);
+      socketService.off('user_left_room', handleUserLeftRoom);
+    };
+  }, [selectedUser]);
+
+  // Join/leave room when selected user changes
+  useEffect(() => {
+    if (selectedUser) {
+      socketService.joinRoom(selectedUser.id);
+    }
+    return () => {
+      if (selectedUser) {
+        socketService.leaveRoom(selectedUser.id);
+      }
+    };
+  }, [selectedUser]);
+
   const fetchConversations = async (page = 1) => {
     try {
-      setIsLoading(true);
+      setIsInitialLoading(true);
       const response = await getAllConversationsHandler(
         { page, limit: pagination.limit },
-        setIsLoading,
+        () => {},
         setError
       );
       if (response && response.success) {
         setConversations(response.data.conversations);
         setPagination(response.data.pagination);
 
-        // After fetching conversations, check if we need to select a user from URL
         const userId = searchParams.get("userId");
         if (userId && !selectedUser) {
           const user = response.data.conversations.find(
@@ -53,28 +147,30 @@ export const Messages = () => {
     } catch (error) {
       setError("Error fetching conversations");
     } finally {
-      setIsLoading(false);
+      setIsInitialLoading(false);
     }
   };
 
   const fetchMessages = async (userId, page = 1) => {
     try {
-      setIsLoading(true);
+      setIsMessagesLoading(true);
       const response = await getConversationHandler(
         { userId, page, limit: 20 },
-        setIsLoading,
+        () => {},
         setError
       );
       if (response && response.success) {
         const reversedMessages = [...response.data.messages].reverse();
         setMessages(reversedMessages);
         setPagination(response.data.pagination);
+        // Scroll to bottom after messages load
+        setTimeout(scrollToBottom, 100);
         return reversedMessages;
       }
     } catch (error) {
       setError("Error fetching messages");
     } finally {
-      setIsLoading(false);
+      setIsMessagesLoading(false);
     }
     return null;
   };
@@ -83,17 +179,21 @@ export const Messages = () => {
     if (!newMessage.trim() || !selectedUser) return;
 
     try {
+      setIsSendingMessage(true);
       const response = await sendMessageHandler(
         { receiverId: selectedUser.id, message: newMessage },
-        setIsLoading,
+        () => {},
         setError
       );
       if (response && response.success) {
         setNewMessage("");
-        setMessages((prevMessages) => [...prevMessages, response.data]);
+        // Don't update messages here as socket will handle it
+        // Don't update conversations here as socket will handle it
       }
     } catch (error) {
       setError("Error sending message");
+    } finally {
+      setIsSendingMessage(false);
     }
   };
 
@@ -107,7 +207,7 @@ export const Messages = () => {
     if (unreadMessages.length > 0) {
       try {
         const messageIds = unreadMessages.map((message) => message.id);
-        await markAsReadHandler({ messageIds }, setIsLoading, setError);
+        await markAsReadHandler({ messageIds }, () => {}, setError);
 
         setMessages((prevMessages) =>
           prevMessages.map((message) =>
@@ -116,6 +216,19 @@ export const Messages = () => {
               : message
           )
         );
+
+        // Update unread count in conversations
+        setConversations(prevConversations => {
+          return prevConversations.map(conv => {
+            if (conv.user.id === userId) {
+              return {
+                ...conv,
+                unreadCount: Math.max(0, conv.unreadCount - unreadMessages.length)
+              };
+            }
+            return conv;
+          });
+        });
       } catch (error) {
         console.error("Error marking messages as read:", error);
       }
@@ -135,120 +248,17 @@ export const Messages = () => {
 
   // Initial load - fetch conversations and check URL for selected user
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const response = await getAllConversationsHandler(
-          { page: 1, limit: pagination.limit },
-          setIsLoading,
-          setError
-        );
-
-        if (response && response.success) {
-          //console.log("Conversations fetched:", response.data.conversations);
-          setConversations(response.data.conversations);
-          setPagination(response.data.pagination);
-
-          // Get userId from URL params or query params
-          const userId = parseInt(
-            searchParams.get("userId") ||
-              window.location.pathname.split("/").pop(),
-            10
-          );
-          //console.log("URL userId (converted to number):", userId);
-
-          if (userId) {
-            // Find the user in the conversations
-            const conversation = response.data.conversations.find(
-              (conv) => conv.user.id === userId
-            );
-
-            //console.log("Found conversation:", conversation);
-
-            if (conversation) {
-              //console.log("Setting selected user:", conversation.user);
-              // Set the selected user
-              setSelectedUser(conversation.user);
-              // Fetch messages for this user
-              //console.log("Fetching messages for user:", conversation.user.id);
-              const messages = await fetchMessages(conversation.user.id);
-              if (messages) {
-                //console.log("Messages fetched:", messages);
-                markMessagesAsRead(messages, conversation.user.id);
-              }
-            } else {
-              // If no conversation exists, fetch user info
-              try {
-                const userInfoResponse = await getUserInfoHandler(
-                  { userId },
-                  setIsLoading,
-                  setError
-                );
-
-                if (userInfoResponse && userInfoResponse.success) {
-                  const userData = userInfoResponse.data;
-                  const newUser = {
-                    id: userId,
-                    name: userData.name,
-                    UserProfile: userData.UserProfile?.profileUrl,
-                  };
-
-                  setSelectedUser(newUser);
-                  setMessages([]);
-                } else {
-                  setError("Could not fetch user information");
-                }
-              } catch (error) {
-                console.error("Error fetching user info:", error);
-                setError("Error fetching user information");
-              }
-            }
-          }
-        }
-      } catch (error) {
-        console.error("Error in fetchData:", error);
-        setError("Error fetching conversations");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchConversations();
   }, []);
 
-  // Add a useEffect to watch for conversations changes
-  useEffect(() => {
-    const userId = parseInt(searchParams.get("userId"), 10);
-    //console.log("Watching conversations change. Current userId:", userId);
-    //console.log("Current conversations:", conversations);
-
-    if (userId && conversations.length > 0) {
-      const conversation = conversations.find(
-        (conv) => conv.user.id === userId
-      );
-
-      //console.log("Found conversation in watch effect:", conversation);
-
-      if (conversation && (!selectedUser || selectedUser.id !== userId)) {
-        
-        setSelectedUser(conversation.user);
-        fetchMessages(conversation.user.id).then((messages) => {
-          if (messages) {
-            markMessagesAsRead(messages, conversation.user.id);
-          }
-        });
-      }
-    }
-  }, [conversations, searchParams]);
-
-  if (isLoading) {
-    return <div className="messages-loading">Loading...</div>;
+  if (isInitialLoading) {
+    return <div className="messages-loading">Loading conversations...</div>;
   }
 
   if (error) {
     return <div className="messages-error">{error}</div>;
   }
-  //console.log(selectedUser);
+
   return (
     <div className="messages-container">
       <div className="messages-side-spacing"></div>
@@ -278,7 +288,9 @@ export const Messages = () => {
                 <div className="conversation-info">
                   <h3>{conversation.user.name}</h3>
                   <p className="last-message">
-                    {conversation.lastMessage.message}
+                    {conversation.lastMessage.message.length > 30
+                      ? `${conversation.lastMessage.message.substring(0, 30)}...`
+                      : conversation.lastMessage.message}
                   </p>
                   {conversation.unreadCount > 0 && (
                     <span className="unread-count">
@@ -307,24 +319,32 @@ export const Messages = () => {
                 <h2>{selectedUser.name}</h2>
               </div>
 
-              <div className="messages-list">
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`message ${
-                      message.senderId === selectedUser.id ? "received" : "sent"
-                    }`}
-                  >
-                    <div className="message-content">
-                      <p>{message.message}</p>
-                      <span className="message-time">
-                        {new Date(message.createdAt).toLocaleTimeString()}
-                        {message.senderId !== selectedUser.id &&
-                          (message.isRead ? " ✓✓" : " ✓")}
-                      </span>
+              <div 
+                className="messages-list"
+                ref={messagesContainerRef}
+              >
+                {isMessagesLoading ? (
+                  <div className="messages-loading-indicator">Loading messages...</div>
+                ) : (
+                  messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`message ${
+                        message.senderId === selectedUser.id ? "received" : "sent"
+                      }`}
+                    >
+                      <div className="message-content">
+                        <p>{message.message}</p>
+                        <span className="message-time">
+                          {new Date(message.createdAt).toLocaleTimeString()}
+                          {message.senderId !== selectedUser.id &&
+                            (message.isRead ? " ✓✓" : " ✓")}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
+                <div ref={messagesEndRef} />
               </div>
 
               <div className="message-input">
@@ -334,8 +354,14 @@ export const Messages = () => {
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Type a message..."
                   onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                  disabled={isSendingMessage}
                 />
-                <button onClick={handleSendMessage}>Send</button>
+                <button 
+                  onClick={handleSendMessage}
+                  disabled={isSendingMessage}
+                >
+                  {isSendingMessage ? "Sending..." : "Send"}
+                </button>
               </div>
             </>
           ) : (

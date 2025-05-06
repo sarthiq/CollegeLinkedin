@@ -73,6 +73,20 @@ exports.sendMessage = async (req, res) => {
     // Send real-time message using socket
     global.socketService.sendMessageToRoom(roomId, messageData);
 
+    // Send direct message notification to receiver if they're online
+    const notificationData = {
+      type: 'new_message_notification',
+      message: {
+        id: newMessage.id,
+        message: message,
+        type: type,
+        createdAt: newMessage.createdAt,
+        sender: sender
+      },
+      roomId: roomId
+    };
+    global.socketService.sendDirectMessage(receiverId, notificationData);
+
     res.status(201).json({
       success: true,
       data: newMessage,

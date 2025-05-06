@@ -13,6 +13,7 @@ const socketService = {
   io: null,
   socketUsers: new Map(),
   userRooms: new Map(), // Map to store user's active rooms
+  userSockets: new Map(), // Map to store all socket IDs for each user
   
   // Message functions
   sendMessageToRoom: (roomId, message) => {
@@ -21,6 +22,18 @@ const socketService = {
     }
   },
 
+  // Send direct message to user
+  sendDirectMessage: (userId, message) => {
+    if (socketService.io) {
+      const userSockets = socketService.userSockets.get(userId);
+      if (userSockets && userSockets.size > 0) {
+        // Send to all user's connected devices
+        userSockets.forEach(socketId => {
+          socketService.io.to(socketId).emit("direct_message", message);
+        });
+      }
+    }
+  },
 
   // Get room ID for two users
   getRoomId: (userId1, userId2) => {
@@ -30,6 +43,11 @@ const socketService = {
   // Get all rooms for a user
   getUserRooms: (userId) => {
     return socketService.userRooms.get(userId) || new Set();
+  },
+
+  // Get all socket IDs for a user
+  getUserSockets: (userId) => {
+    return socketService.userSockets.get(userId) || new Set();
   }
 };
 
@@ -94,8 +112,17 @@ exports.setupSocketIO = (app) => {
         socket.join(`user_${userId}`);
         socketService.socketUsers.set(socket.id, { type: 'user', id: userId });
         
+        // Add socket to user's socket collection
+        if (!socketService.userSockets.has(userId)) {
+          socketService.userSockets.set(userId, new Set());
+        }
+        socketService.userSockets.get(userId).add(socket.id);
+        
         // Notify user's other devices
-        socket.to(`user_${userId}`).emit('user_connected', { userId });
+        socket.to(`user_${userId}`).emit('user_connected', { 
+          userId,
+          activeDevices: socketService.userSockets.get(userId).size
+        });
       });
 
       // Handle joining a chat room
@@ -108,6 +135,15 @@ exports.setupSocketIO = (app) => {
           socketService.userRooms.set(userId, new Set());
         }
         socketService.userRooms.get(userId).add(roomId);
+
+        // Notify other user if they're online
+        const otherUserSockets = socketService.getUserSockets(otherUserId);
+        if (otherUserSockets.size > 0) {
+          socketService.io.to(otherUserId).emit('user_joined_room', {
+            roomId,
+            userId
+          });
+        }
       });
 
       // Handle leaving a chat room
@@ -119,8 +155,16 @@ exports.setupSocketIO = (app) => {
         if (socketService.userRooms.has(userId)) {
           socketService.userRooms.get(userId).delete(roomId);
         }
-      });
 
+        // Notify other user if they're online
+        const otherUserSockets = socketService.getUserSockets(otherUserId);
+        if (otherUserSockets.size > 0) {
+          socketService.io.to(otherUserId).emit('user_left_room', {
+            roomId,
+            userId
+          });
+        }
+      });
 
       // Handle reconnection
       socket.on("reconnect", async () => {
@@ -131,14 +175,32 @@ exports.setupSocketIO = (app) => {
         }
         
         // Notify other devices
-        socket.to(`user_${userId}`).emit('user_reconnected', { userId });
+        socket.to(`user_${userId}`).emit('user_reconnected', { 
+          userId,
+          activeDevices: socketService.userSockets.get(userId).size
+        });
       });
 
       // Handle disconnection
       socket.on("disconnect", () => {
         socketService.socketUsers.delete(socket.id);
+        
+        // Remove socket from user's socket collection
+        if (socketService.userSockets.has(userId)) {
+          socketService.userSockets.get(userId).delete(socket.id);
+          
+          // If this was the last socket, clean up the Set
+          if (socketService.userSockets.get(userId).size === 0) {
+            socketService.userSockets.delete(userId);
+          }
+        }
+        
         // Notify other devices
-        socket.to(`user_${userId}`).emit('user_disconnected', { userId });
+        socket.to(`user_${userId}`).emit('user_disconnected', { 
+          userId,
+          activeDevices: socketService.userSockets.has(userId) ? 
+            socketService.userSockets.get(userId).size : 0
+        });
       });
     });
 
