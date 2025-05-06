@@ -33,6 +33,9 @@ export const Messages = () => {
     hasPrevPage: false,
   });
   const [onlineUsers, setOnlineUsers] = useState(new Set());
+  const [typingUsers, setTypingUsers] = useState(new Set());
+  const typingTimeoutRef = useRef(null);
+  const typingStatusMap = useRef(new Map());
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -40,6 +43,9 @@ export const Messages = () => {
 
   // Socket event handlers
   useEffect(() => {
+    // Notify server that we're entering messages page
+    socketService.emit('enter_messages_page');
+
     const handleNewMessage = (message) => {
       // If we're in the conversation with either sender or receiver
       if (selectedUser && (message.senderId === selectedUser.id || message.receiverId === selectedUser.id)) {
@@ -143,6 +149,58 @@ export const Messages = () => {
       }
     };
 
+    const handleTypingStatus = (data) => {
+      console.log("Typing status:", data);
+      
+      // Handle both single user typing status and multiple users typing status
+      if (data.typingUsers) {
+        // Multiple users typing status update
+        data.typingUsers.forEach(typingUserId => {
+          typingStatusMap.current.set(typingUserId, true);
+        });
+      } else {
+        // Single user typing status update
+        if (data.isTyping) {
+          typingStatusMap.current.set(data.userId, true);
+        } else {
+          typingStatusMap.current.delete(data.userId);
+        }
+      }
+
+      // Update typing users set for the chat view
+      setTypingUsers(prev => {
+        const newSet = new Set(prev);
+        if (data.typingUsers) {
+          data.typingUsers.forEach(userId => newSet.add(userId));
+        } else {
+          if (data.isTyping) {
+            newSet.add(data.userId);
+          } else {
+            newSet.delete(data.userId);
+          }
+        }
+        return newSet;
+      });
+
+      // Update conversation list with typing status
+      setConversations(prevConversations => {
+        return prevConversations.map(conv => {
+          if (data.typingUsers) {
+            return {
+              ...conv,
+              isTyping: data.typingUsers.includes(conv.user.id)
+            };
+          } else if (conv.user.id === data.userId) {
+            return {
+              ...conv,
+              isTyping: data.isTyping
+            };
+          }
+          return conv;
+        });
+      });
+    };
+
     // Subscribe to socket events
     socketService.on('new_message', handleNewMessage);
     socketService.on('new_message_notification', handleNewMessageNotification);
@@ -150,8 +208,12 @@ export const Messages = () => {
     socketService.on('user_left_room', handleUserLeftRoom);
     socketService.on('user_status_change', handleUserStatusChange);
     socketService.on('messages_read', handleMessagesRead);
+    socketService.on('typing_status', handleTypingStatus);
 
     return () => {
+      // Notify server that we're leaving messages page
+      socketService.emit('leave_messages_page');
+      
       // Cleanup socket listeners
       socketService.off('new_message', handleNewMessage);
       socketService.off('new_message_notification', handleNewMessageNotification);
@@ -159,6 +221,7 @@ export const Messages = () => {
       socketService.off('user_left_room', handleUserLeftRoom);
       socketService.off('user_status_change', handleUserStatusChange);
       socketService.off('messages_read', handleMessagesRead);
+      socketService.off('typing_status', handleTypingStatus);
     };
   }, [selectedUser]);
 
@@ -360,6 +423,33 @@ export const Messages = () => {
     fetchConversations();
   }, []);
 
+  // Handle typing status
+  const handleTyping = () => {
+    if (!selectedUser) return;
+
+    // Clear existing timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    // Emit typing started
+    socketService.emitTypingStatus(selectedUser.id, true);
+
+    // Set timeout to stop typing status
+    typingTimeoutRef.current = setTimeout(() => {
+      socketService.emitTypingStatus(selectedUser.id, false);
+    }, 2000);
+  };
+
+  // Cleanup typing timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, []);
+
   if (isInitialLoading) {
     return <div className="messages-loading">Loading conversations...</div>;
   }
@@ -410,9 +500,13 @@ export const Messages = () => {
                     )}
                   </div>
                   <p className="messages-last-message">
-                    {conversation.lastMessage.message.length > 30
-                      ? `${conversation.lastMessage.message.substring(0, 30)}...`
-                      : conversation.lastMessage.message}
+                    {typingStatusMap.current.has(conversation.user.id) ? (
+                      <span className="messages-typing-indicator">typing...</span>
+                    ) : (
+                      conversation.lastMessage.message.length > 30
+                        ? `${conversation.lastMessage.message.substring(0, 30)}...`
+                        : conversation.lastMessage.message
+                    )}
                   </p>
                   {conversation.unreadCount > 0 && (
                     <span className="messages-unread-count">
@@ -445,7 +539,12 @@ export const Messages = () => {
                   alt={selectedUser.name}
                   className="messages-user-avatar"
                 />
-                <h2>{selectedUser.name}</h2>
+                <div className="messages-chat-header-info">
+                  <h2>{selectedUser.name}</h2>
+                  {typingStatusMap.current.has(selectedUser.id) && (
+                    <span className="messages-typing-indicator">typing...</span>
+                  )}
+                </div>
               </div>
 
               <div 
@@ -480,7 +579,10 @@ export const Messages = () => {
                 <input
                   type="text"
                   value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
+                  onChange={(e) => {
+                    setNewMessage(e.target.value);
+                    handleTyping();
+                  }}
                   placeholder="Type a message..."
                   onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                   disabled={isSendingMessage}

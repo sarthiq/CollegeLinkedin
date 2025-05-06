@@ -77,6 +77,14 @@ class SocketService {
         }
       }
     });
+
+    // Handle typing status
+    this.socket.on('typing_status', (data) => {
+      const listeners = this.listeners.get('typing_status');
+      if (listeners) {
+        listeners.forEach(callback => callback(data));
+      }
+    });
   }
 
   joinRoom(otherUserId) {
@@ -130,6 +138,13 @@ class SocketService {
   emitMessageRead(messageIds, otherUserId) {
     if (this.socket && this.isConnected) {
       this.socket.emit('mark_messages_read', { messageIds, otherUserId });
+    }
+  }
+
+  // Emit typing status
+  emitTypingStatus(otherUserId, isTyping) {
+    if (this.socket && this.isConnected) {
+      this.socket.emit('typing', { otherUserId, isTyping });
     }
   }
 }

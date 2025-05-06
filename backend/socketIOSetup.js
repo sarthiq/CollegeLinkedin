@@ -17,6 +17,8 @@ const socketService = {
   userRooms: new Map(), // Map to store user's active rooms
   userSockets: new Map(), // Map to store all socket IDs for each user
   userStatus: new Map(), // Map to store user online status
+  typingUsers: new Map(), // Map to store typing status for each room
+  messagesPageUsers: new Set(), // Set to store users who are on messages page
   
   // Message functions
   sendMessageToRoom: (roomId, message) => {
@@ -47,6 +49,22 @@ const socketService = {
         timestamp: new Date()
       });
     }
+  },
+
+  // Get typing status for a room
+  getTypingStatus: (roomId) => {
+    return socketService.typingUsers.get(roomId) || new Set();
+  },
+
+  // Get all typing statuses for a user
+  getAllTypingStatuses: (userId) => {
+    const allTypingStatuses = new Map();
+    socketService.typingUsers.forEach((typingUsers, roomId) => {
+      if (typingUsers.size > 0) {
+        allTypingStatuses.set(roomId, Array.from(typingUsers));
+      }
+    });
+    return allTypingStatuses;
   },
 
   // Broadcast user status to all connected users
@@ -198,6 +216,91 @@ exports.setupSocketIO = (app) => {
         socketService.sendMessageReadStatus(roomId, userId, messageIds);
       });
 
+      // Handle entering messages page
+      socket.on("enter_messages_page", async () => {
+        // Join messages page room
+        socket.join(`messages_page_${userId}`);
+        socketService.messagesPageUsers.add(userId);
+
+        // Get all conversations for this user
+        const Message = require("./Models/Relationships/messages");
+        const { Op } = require("sequelize");
+
+        const conversations = await Message.findAll({
+          attributes: ['senderId', 'receiverId'],
+          where: {
+            [Op.or]: [
+              { senderId: userId },
+              { receiverId: userId }
+            ]
+          },
+          raw: true
+        });
+
+        // Get unique user IDs who have chatted with this user
+        const uniqueUserIds = new Set();
+        conversations.forEach(chat => {
+          if (chat.senderId !== userId) uniqueUserIds.add(chat.senderId);
+          if (chat.receiverId !== userId) uniqueUserIds.add(chat.receiverId);
+        });
+
+        // Send current typing status for all conversations
+        uniqueUserIds.forEach(otherUserId => {
+          const roomId = socketService.getRoomId(userId, otherUserId);
+          const typingUsers = socketService.getTypingStatus(roomId);
+          if (typingUsers.size > 0) {
+            socket.emit("typing_status", {
+              roomId,
+              typingUsers: Array.from(typingUsers),
+              timestamp: new Date()
+            });
+          }
+        });
+      });
+
+      // Handle leaving messages page
+      socket.on("leave_messages_page", () => {
+        socket.leave(`messages_page_${userId}`);
+        socketService.messagesPageUsers.delete(userId);
+      });
+
+      // Handle typing status
+      socket.on("typing", (data) => {
+        const { otherUserId, isTyping } = data;
+        const roomId = socketService.getRoomId(userId, otherUserId);
+        
+        // Update typing status
+        if (!socketService.typingUsers.has(roomId)) {
+          socketService.typingUsers.set(roomId, new Set());
+        }
+
+        if (isTyping) {
+          socketService.typingUsers.get(roomId).add(userId);
+        } else {
+          socketService.typingUsers.get(roomId).delete(userId);
+          // Clean up empty sets
+          if (socketService.typingUsers.get(roomId).size === 0) {
+            socketService.typingUsers.delete(roomId);
+          }
+        }
+
+        // Broadcast typing status to room and messages page
+        const typingData = {
+          roomId,
+          userId,
+          isTyping,
+          timestamp: new Date()
+        };
+
+        // Send to room
+        socket.to(roomId).emit("typing_status", typingData);
+
+        // Send to other user's messages page if they're on it
+        if (socketService.messagesPageUsers.has(otherUserId)) {
+          socket.to(`messages_page_${otherUserId}`).emit("typing_status", typingData);
+        }
+      });
+
       // Handle joining a chat room
       socket.on("join-room", (otherUserId) => {
         const roomId = socketService.getRoomId(userId, otherUserId);
@@ -209,10 +312,20 @@ exports.setupSocketIO = (app) => {
         }
         socketService.userRooms.get(userId).add(roomId);
 
+        // Get current typing status for the room
+        const typingUsers = socketService.getTypingStatus(roomId);
+        if (typingUsers.size > 0) {
+          socket.emit("typing_status", {
+            roomId,
+            typingUsers: Array.from(typingUsers),
+            timestamp: new Date()
+          });
+        }
+
         // Notify other user if they're online
         const otherUserSockets = socketService.getUserSockets(otherUserId);
         if (otherUserSockets.size > 0) {
-          socketService.io.to(otherUserId).emit('user_joined_room', {
+          socket.to(otherUserId).emit('user_joined_room', {
             roomId,
             userId
           });
@@ -229,10 +342,25 @@ exports.setupSocketIO = (app) => {
           socketService.userRooms.get(userId).delete(roomId);
         }
 
+        // Clear typing status when leaving room
+        if (socketService.typingUsers.has(roomId)) {
+          socketService.typingUsers.get(roomId).delete(userId);
+          if (socketService.typingUsers.get(roomId).size === 0) {
+            socketService.typingUsers.delete(roomId);
+          }
+          // Broadcast typing stopped
+          socket.to(roomId).emit("typing_status", {
+            roomId,
+            userId,
+            isTyping: false,
+            timestamp: new Date()
+          });
+        }
+
         // Notify other user if they're online
         const otherUserSockets = socketService.getUserSockets(otherUserId);
         if (otherUserSockets.size > 0) {
-          socketService.io.to(otherUserId).emit('user_left_room', {
+          socket.to(otherUserId).emit('user_left_room', {
             roomId,
             userId
           });
