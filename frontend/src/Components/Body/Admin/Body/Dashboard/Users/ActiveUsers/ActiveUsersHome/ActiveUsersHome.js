@@ -164,9 +164,9 @@ export const ActiveUsersHome = () => {
   return (
     <div className="admin-users-container">
       <div className="admin-users-header">
-        <button className="admin-users-back-button" onClick={handleBack}>
+        {/* <button className="admin-users-back-button" onClick={handleBack}>
           <i className="bi bi-arrow-left"></i> Back
-        </button>
+        </button> */}
         <h2>Active Users</h2>
       </div>
 

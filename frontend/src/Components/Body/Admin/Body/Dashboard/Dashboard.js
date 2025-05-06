@@ -8,6 +8,7 @@ import { UserRoutes } from "./Users/UserRoutes";
 import { PageNotFound } from "./PageNotFound/PageNotFound";
 export const DashboardPage = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [usersDropdownOpen, setUsersDropdownOpen] = useState(false);
 
   const toggleSidebar = () => {
     setCollapsed(!collapsed);
@@ -29,16 +30,46 @@ export const DashboardPage = () => {
             </NavLink>
           </li>
           
-          <li>
-            <NavLink
-              to="./users"
-              className={({ isActive }) =>
-                isActive ? "dashboard-tab-link dashboard-active-tab" : "dashboard-tab-link"
-              }
-            >
+          <li 
+            className="dashboard-dropdown"
+            onMouseEnter={() => !collapsed && setUsersDropdownOpen(true)}
+            onMouseLeave={() => setUsersDropdownOpen(false)}
+          >
+            <div className="dashboard-tab-link">
               <i className="dashboard-tab-icon bi bi-people"></i>
-              {!collapsed && <span>Users</span>}
-            </NavLink>
+              {!collapsed && (
+                <>
+                  <span>Users</span>
+                  <i className={`bi ${usersDropdownOpen ? 'bi-chevron-up' : 'bi-chevron-down'} dashboard-dropdown-icon`}></i>
+                </>
+              )}
+            </div>
+            {!collapsed && usersDropdownOpen && (
+              <ul className="dashboard-dropdown-menu">
+                <li>
+                  <NavLink
+                    to="./users"
+                    className={({ isActive }) =>
+                      isActive ? "dashboard-dropdown-link dashboard-active-tab" : "dashboard-dropdown-link"
+                    }
+                  >
+                    <i className="bi bi-list-ul"></i>
+                    <span>Users List</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="./users/active-users"
+                    className={({ isActive }) =>
+                      isActive ? "dashboard-dropdown-link dashboard-active-tab" : "dashboard-dropdown-link"
+                    }
+                  >
+                    <i className="bi bi-activity"></i>
+                    <span>Active Users</span>
+                  </NavLink>
+                </li>
+              </ul>
+            )}
           </li>
         </ul>
 

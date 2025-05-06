@@ -29,20 +29,22 @@
 .dashboard-tab-link {
   display: flex;
   align-items: center;
-  padding: 15px;
+  padding: 12px 20px;
+  color: #e2e8f0;
   text-decoration: none;
-  color: #ccc;
-  transition: background 0.3s, color 0.3s;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  gap: 10px;
 }
 
 .dashboard-tab-link:hover {
-  background-color: #495057;
+  background-color: rgba(255, 255, 255, 0.1);
   color: #fff;
 }
 
-.dashboard-active-tab {
-  background-color: #495057;
-  color: #00bfff;
+.dashboard-tab-link.dashboard-active-tab {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
 .dashboard-tab-icon {
@@ -116,20 +118,22 @@
 .dashboard-tab-link {
   display: flex;
   align-items: center;
-  padding: 15px;
+  padding: 12px 20px;
+  color: #e2e8f0;
   text-decoration: none;
-  color: #ccc;
-  transition: background 0.3s, color 0.3s;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  gap: 10px;
 }
 
 .dashboard-tab-link:hover {
-  background-color: #495057;
+  background-color: rgba(255, 255, 255, 0.1);
   color: #fff;
 }
 
-.dashboard-active-tab {
-  background-color: #495057;
-  color: #00bfff;
+.dashboard-tab-link.dashboard-active-tab {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
 .dashboard-tab-icon {
@@ -161,6 +165,80 @@
 .dashboard-toggle-button:hover {
   background-color: #00bfff;
   color: #fff;
+}
+
+.dashboard-dropdown {
+  position: relative;
+}
+
+.dashboard-dropdown-icon {
+  margin-left: auto;
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.dashboard-dropdown-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform-origin: top;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  /* Add padding to create hover area */
+  padding-top: 4px;
+  margin-top: -4px;
+}
+
+.dashboard-dropdown:hover .dashboard-dropdown-menu {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.dashboard-dropdown-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px 12px 48px;
+  color: #e2e8f0;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.dashboard-dropdown-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.dashboard-dropdown-link.dashboard-active-tab {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.dashboard-dropdown-link i {
+  font-size: 16px;
+}
+
+/* Add a pseudo-element to create a seamless hover area */
+.dashboard-dropdown::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 4px;
+  background: transparent;
 }
 
 

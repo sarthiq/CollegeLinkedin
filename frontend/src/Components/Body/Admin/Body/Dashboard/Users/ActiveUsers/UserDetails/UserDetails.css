@@ -1,8 +1,5 @@
 .admin-users-container {
-  padding: 0;
-  width: 100vw;
-  max-width: 100vw;
-  box-sizing: border-box;
+  padding: 20px;
 }
 
 .admin-users-header {
@@ -124,13 +121,14 @@
 /* Chart Container */
 .admin-users-chart-container {
   background-color: white;
-  padding: 0;
-  margin-bottom: 0;
-  width: 100vw;
-  max-width: 100vw;
-  box-sizing: border-box;
-  border-radius: 0;
-  box-shadow: none;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .admin-users-chart-container h3 {
@@ -142,12 +140,11 @@
 
 .admin-users-chart {
   background-color: #f8f9fa;
-  border-radius: 0;
-  padding: 0;
-  height: 500px;
-  width: 100vw;
-  max-width: 100vw;
-  box-sizing: border-box;
+  border-radius: 8px;
+  padding: 20px;
+  height: 400px;
+  width: 100%;
+  position: relative;
 }
 
 /* Activity Table */
@@ -253,7 +250,6 @@
   }
 
   .admin-users-chart {
-    height: 400px;
-    padding: 10px;
+    height: 300px;
   }
 } 

@@ -102,15 +102,21 @@
   left: 12px;
   color: #64748b;
   font-size: 18px;
+  z-index: 1;
 }
 
 .admin-users-search-input input {
-  padding: 10px 12px 10px 38px;
+  padding: 10px 12px 10px 40px;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   width: 300px;
   font-size: 14px;
   transition: all 0.2s ease;
+  background-color: white;
+}
+
+.admin-users-search-input input::placeholder {
+  color: #94a3b8;
 }
 
 .admin-users-search-input input:focus {
