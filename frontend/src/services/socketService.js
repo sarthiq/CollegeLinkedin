@@ -55,7 +55,11 @@ class SocketService {
     this.socket.on('direct_message', (data) => {
       console.log("Direct message notification received:", data);
       if (data.type === 'new_message_notification') {
-        this.emit('new_message_notification', data);
+        // Notify all listeners of this event
+        const listeners = this.listeners.get('new_message_notification');
+        if (listeners) {
+          listeners.forEach(callback => callback(data));
+        }
       }
     });
   }

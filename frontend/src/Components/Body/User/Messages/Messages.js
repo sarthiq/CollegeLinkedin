@@ -189,9 +189,27 @@ export const Messages = () => {
         setError
       );
       if (response && response.success) {
+        // Add the message to the current conversation immediately
+        const sentMessage = response.data;
+        setMessages(prevMessages => [...prevMessages, sentMessage]);
+        
+        // Update conversation list with the new message
+        setConversations(prevConversations => {
+          const updatedConversations = prevConversations.map(conv => {
+            if (conv.user.id === selectedUser.id) {
+              return {
+                ...conv,
+                lastMessage: sentMessage
+              };
+            }
+            return conv;
+          });
+          return updatedConversations;
+        });
+
         setNewMessage("");
-        // Don't update messages here as socket will handle it
-        // Don't update conversations here as socket will handle it
+        // Scroll to bottom after sending
+        setTimeout(scrollToBottom, 100);
       }
     } catch (error) {
       setError("Error sending message");
