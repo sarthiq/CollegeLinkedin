@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import {
   getAllConversationsHandler,
   getConversationHandler,
@@ -13,6 +13,7 @@ import "./Messages.css";
 export const Messages = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { userId: routeUserId } = useParams();
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
@@ -272,7 +273,38 @@ export const Messages = () => {
     setSearchParams({});
   };
 
-  // Initial load - fetch conversations and check URL for selected user
+  // Add new function to fetch user info
+  const fetchUserInfo = async (userId) => {
+    try {
+      const response = await getUserInfoHandler(
+        { userId },
+        () => {},
+        setError
+      );
+      if (response && response.success) {
+        return response.data;
+      }
+    } catch (error) {
+      setError("Error fetching user info");
+      return null;
+    }
+  };
+
+  // Handle route parameter separately from conversations
+  useEffect(() => {
+    const initializeConversation = async () => {
+      if (routeUserId && !selectedUser) {
+        const userInfo = await fetchUserInfo(routeUserId);
+        if (userInfo) {
+          handleUserSelect(userInfo);
+        }
+      }
+    };
+
+    initializeConversation();
+  }, [routeUserId]); // Only depend on routeUserId
+
+  // Initial load - fetch conversations
   useEffect(() => {
     fetchConversations();
   }, []);
