@@ -267,6 +267,11 @@ export const Messages = () => {
     }
   };
 
+  const handleBackClick = () => {
+    setSelectedUser(null);
+    setSearchParams({});
+  };
+
   // Initial load - fetch conversations and check URL for selected user
   useEffect(() => {
     fetchConversations();
@@ -284,15 +289,15 @@ export const Messages = () => {
     <div className="messages-container">
       <div className="messages-side-spacing"></div>
       <div className="messages-content">
-        <div className="conversations-list">
+        <div className="messages-conversations-list">
           <h2>Conversations</h2>
           {conversations.length === 0 ? (
-            <div className="no-conversations">No conversations yet</div>
+            <div className="messages-no-conversations">No conversations yet</div>
           ) : (
             conversations.map((conversation) => (
               <div
                 key={conversation.user.id}
-                className={`conversation-item ${
+                className={`messages-conversation-item ${
                   selectedUser?.id === conversation.user.id ? "selected" : ""
                 }`}
                 onClick={() => handleUserSelect(conversation.user)}
@@ -304,17 +309,17 @@ export const Messages = () => {
                       : "/assets/Utils/male.png"
                   }
                   alt={conversation.user.name}
-                  className="user-avatar"
+                  className="messages-user-avatar"
                 />
-                <div className="conversation-info">
+                <div className="messages-conversation-info">
                   <h3>{conversation.user.name}</h3>
-                  <p className="last-message">
+                  <p className="messages-last-message">
                     {conversation.lastMessage.message.length > 30
                       ? `${conversation.lastMessage.message.substring(0, 30)}...`
                       : conversation.lastMessage.message}
                   </p>
                   {conversation.unreadCount > 0 && (
-                    <span className="unread-count">
+                    <span className="messages-unread-count">
                       {conversation.unreadCount}
                     </span>
                   )}
@@ -324,10 +329,17 @@ export const Messages = () => {
           )}
         </div>
 
-        <div className="messages-view">
+        <div className={`messages-chat-view ${selectedUser ? 'active' : ''}`}>
           {selectedUser ? (
             <>
-              <div className="messages-header">
+              <div className="messages-chat-header">
+                <button 
+                  className="messages-mobile-back-button"
+                  onClick={handleBackClick}
+                  aria-label="Back to conversations"
+                >
+                  ←
+                </button>
                 <img
                   src={
                     selectedUser.UserProfile?.profileUrl
@@ -335,13 +347,13 @@ export const Messages = () => {
                       : "/assets/Utils/male.png"
                   }
                   alt={selectedUser.name}
-                  className="user-avatar"
+                  className="messages-user-avatar"
                 />
                 <h2>{selectedUser.name}</h2>
               </div>
 
               <div 
-                className="messages-list"
+                className="messages-chat-list"
                 ref={messagesContainerRef}
               >
                 {isMessagesLoading ? (
@@ -350,13 +362,13 @@ export const Messages = () => {
                   messages.map((message) => (
                     <div
                       key={message.id}
-                      className={`message ${
+                      className={`messages-chat-message ${
                         message.senderId === selectedUser.id ? "received" : "sent"
                       }`}
                     >
-                      <div className="message-content">
+                      <div className="messages-chat-message-content">
                         <p>{message.message}</p>
-                        <span className="message-time">
+                        <span className="messages-chat-message-time">
                           {new Date(message.createdAt).toLocaleTimeString()}
                           {message.senderId !== selectedUser.id &&
                             (message.isRead ? " ✓✓" : " ✓")}
@@ -368,7 +380,7 @@ export const Messages = () => {
                 <div ref={messagesEndRef} />
               </div>
 
-              <div className="message-input">
+              <div className="messages-chat-input">
                 <input
                   type="text"
                   value={newMessage}
@@ -386,7 +398,7 @@ export const Messages = () => {
               </div>
             </>
           ) : (
-            <div className="no-selection">
+            <div className="messages-no-selection">
               <p>Select a conversation to start messaging</p>
             </div>
           )}
