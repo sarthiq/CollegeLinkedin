@@ -70,3 +70,58 @@ export const updateUserDetailsHandler = async (data, setIsLoading, showAlert) =>
     setIsLoading(false);
   }
 };
+
+
+//getDailyActiveUsers
+export const getDailyActiveUsersHandler = async (data, setIsLoading, showAlert) => {
+  const url = `${baseRoutes}/getDailyActiveUsers`;
+  setIsLoading(true);
+  const obj=data
+  const adminToken = localStorage.getItem("adminToken");
+  try {
+    const result = await apiRequest(url, obj, adminToken, "post");
+    const data = result.data;
+    return data;
+  } catch (e) {
+    handleErrors(e, showAlert);
+  } finally {
+    setIsLoading(false);
+  }
+};  
+
+
+//getDailyActiveUsersStats
+export const getDailyActiveUsersStatsHandler = async (data, setIsLoading, showAlert) => {
+  const url = `${baseRoutes}/getDailyActiveUsersStats`;
+  setIsLoading(true);
+  const obj=data
+  const adminToken = localStorage.getItem("adminToken");
+  try {
+    const result = await apiRequest(url, obj, adminToken, "post");
+    const data = result.data;
+    return data;
+  } catch (e) {
+    handleErrors(e, showAlert);
+  } finally {
+    setIsLoading(false);
+  } 
+};
+
+//getUserActivityStats
+export const getUserActivityStatsHandler = async (data, setIsLoading, showAlert) => {
+  const url = `${baseRoutes}/getUserActivityStats`;
+  setIsLoading(true);
+  const obj=data
+  const adminToken = localStorage.getItem("adminToken");
+  try {
+    const result = await apiRequest(url, obj, adminToken, "post");
+    const data = result.data;
+    return data;
+  } catch (e) {
+    handleErrors(e, showAlert);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+

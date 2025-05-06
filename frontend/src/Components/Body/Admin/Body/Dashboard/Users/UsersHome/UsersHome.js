@@ -126,20 +126,28 @@ export const UsersHome = () => {
       <div className="admin-users-content">
         <div className="admin-users-header">
           <h2>User Management</h2>
-          <form onSubmit={handleSearch} className="admin-users-search-form">
-            <div className="admin-users-search-input">
-              <i className="bi bi-search"></i>
-              <input
-                type="text"
-                placeholder="Search users..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <button type="submit" className="admin-users-search-button">
-              Search
+          <div className="admin-users-header-actions">
+            <button 
+              className="admin-users-action-button active-users"
+              onClick={() => navigate('active-users')}
+            >
+              <i className="bi bi-activity"></i> Active Users
             </button>
-          </form>
+            <form onSubmit={handleSearch} className="admin-users-search-form">
+              <div className="admin-users-search-input">
+                <i className="bi bi-search"></i>
+                <input
+                  type="text"
+                  placeholder="Search users..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <button type="submit" className="admin-users-search-button">
+                Search
+              </button>
+            </form>
+          </div>
         </div>
 
         {isLoading ? (

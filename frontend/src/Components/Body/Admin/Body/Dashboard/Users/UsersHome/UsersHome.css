@@ -70,12 +70,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.admin-users-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .admin-users-header h2 {
@@ -214,6 +215,23 @@
 
 .admin-users-action-button:hover.view i {
   color: white;
+}
+
+.admin-users-action-button.active-users {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.admin-users-action-button.active-users:hover {
+  background-color: #218838;
 }
 
 /* User Info */
