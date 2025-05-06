@@ -39,7 +39,7 @@ export const Messages = () => {
   // Socket event handlers
   useEffect(() => {
     const handleNewMessage = (message) => {
-      // Update messages if we're in the conversation with either sender or receiver
+      // If we're in the conversation with either sender or receiver
       if (selectedUser && (message.senderId === selectedUser.id || message.receiverId === selectedUser.id)) {
         setMessages(prevMessages => [...prevMessages, message]);
         // Only mark as read if we're the receiver
@@ -48,39 +48,42 @@ export const Messages = () => {
         }
         // Scroll to bottom when new message arrives
         setTimeout(scrollToBottom, 100);
-      }
-
-      // Update conversation list with new message
-      setConversations(prevConversations => {
-        const updatedConversations = prevConversations.map(conv => {
-          if (conv.user.id === message.senderId || conv.user.id === message.receiverId) {
-            return {
-              ...conv,
-              lastMessage: message,
-              unreadCount: message.senderId === conv.user.id ? (conv.unreadCount || 0) + 1 : conv.unreadCount
-            };
-          }
-          return conv;
+      } else {
+        // If we're in messages section but not in this conversation, update conversation list
+        setConversations(prevConversations => {
+          const updatedConversations = prevConversations.map(conv => {
+            if (conv.user.id === message.senderId || conv.user.id === message.receiverId) {
+              return {
+                ...conv,
+                lastMessage: message,
+                unreadCount: message.senderId === conv.user.id ? (conv.unreadCount || 0) + 1 : conv.unreadCount
+              };
+            }
+            return conv;
+          });
+          return updatedConversations;
         });
-        return updatedConversations;
-      });
+      }
     };
 
     const handleNewMessageNotification = (data) => {
-      // Update conversation list with new message notification
-      setConversations(prevConversations => {
-        const updatedConversations = prevConversations.map(conv => {
-          if (conv.user.id === data.message.sender.id) {
-            return {
-              ...conv,
-              lastMessage: data.message,
-              unreadCount: (conv.unreadCount || 0) + 1
-            };
-          }
-          return conv;
+      console.log("New message notification received in Messages:", data);
+      // Only update if we're not in the conversation with this sender
+      if (!selectedUser || selectedUser.id !== data.message.sender.id) {
+        setConversations(prevConversations => {
+          const updatedConversations = prevConversations.map(conv => {
+            if (conv.user.id === data.message.sender.id) {
+              return {
+                ...conv,
+                lastMessage: data.message,
+                unreadCount: (conv.unreadCount || 0) + 1
+              };
+            }
+            return conv;
+          });
+          return updatedConversations;
         });
-        return updatedConversations;
-      });
+      }
     };
 
     const handleUserJoinedRoom = ({ roomId, userId }) => {

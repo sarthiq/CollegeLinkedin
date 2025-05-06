@@ -53,6 +53,7 @@ class SocketService {
 
     // Handle direct message notifications
     this.socket.on('direct_message', (data) => {
+      console.log("Direct message notification received:", data);
       if (data.type === 'new_message_notification') {
         this.emit('new_message_notification', data);
       }
