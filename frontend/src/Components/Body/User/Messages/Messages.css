@@ -53,11 +53,27 @@
   background-color: #e3f2fd;
 }
 
+.messages-avatar-container {
+  position: relative;
+  margin-right: 1rem;
+}
+
+.messages-online-indicator {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background-color: #4CAF50;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
 .messages-user-avatar {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  margin-right: 1rem;
   object-fit: cover;
 }
 
@@ -66,8 +82,36 @@
   min-width: 0; /* Enable text truncation */
 }
 
+.messages-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.messages-online-status {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.messages-online-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #4CAF50;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.messages-online-text {
+  font-size: 0.75rem;
+  color: #4CAF50;
+  font-weight: 500;
+}
+
 .messages-conversation-info h3 {
-  margin: 0 0 0.25rem 0;
+  margin: 0;
   font-size: 1rem;
   color: #333;
 }

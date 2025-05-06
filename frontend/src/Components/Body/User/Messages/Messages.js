@@ -32,6 +32,7 @@ export const Messages = () => {
     hasNextPage: false,
     hasPrevPage: false,
   });
+  const [onlineUsers, setOnlineUsers] = useState(new Set());
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -99,11 +100,56 @@ export const Messages = () => {
       }
     };
 
+    const handleUserStatusChange = (data) => {
+      console.log("User status change:", data);
+      setOnlineUsers(prev => {
+        const newSet = new Set(prev);
+        if (data.status === 'online') {
+          newSet.add(data.userId);
+        } else {
+          newSet.delete(data.userId);
+        }
+        return newSet;
+      });
+
+      // Update conversation list with new status
+      setConversations(prevConversations => {
+        return prevConversations.map(conv => {
+          if (conv.user.id === data.userId) {
+            return {
+              ...conv,
+              user: {
+                ...conv.user,
+                isOnline: data.status === 'online'
+              }
+            };
+          }
+          return conv;
+        });
+      });
+    };
+
+    const handleMessagesRead = (data) => {
+      console.log("Messages read:", data);
+      if (selectedUser && data.userId === selectedUser.id) {
+        setMessages(prevMessages => {
+          return prevMessages.map(message => {
+            if (data.messageIds.includes(message.id)) {
+              return { ...message, isRead: true };
+            }
+            return message;
+          });
+        });
+      }
+    };
+
     // Subscribe to socket events
     socketService.on('new_message', handleNewMessage);
     socketService.on('new_message_notification', handleNewMessageNotification);
     socketService.on('user_joined_room', handleUserJoinedRoom);
     socketService.on('user_left_room', handleUserLeftRoom);
+    socketService.on('user_status_change', handleUserStatusChange);
+    socketService.on('messages_read', handleMessagesRead);
 
     return () => {
       // Cleanup socket listeners
@@ -111,6 +157,8 @@ export const Messages = () => {
       socketService.off('new_message_notification', handleNewMessageNotification);
       socketService.off('user_joined_room', handleUserJoinedRoom);
       socketService.off('user_left_room', handleUserLeftRoom);
+      socketService.off('user_status_change', handleUserStatusChange);
+      socketService.off('messages_read', handleMessagesRead);
     };
   }, [selectedUser]);
 
@@ -229,7 +277,10 @@ export const Messages = () => {
     if (unreadMessages.length > 0) {
       try {
         const messageIds = unreadMessages.map((message) => message.id);
-        await markAsReadHandler({ messageIds }, () => {}, setError);
+        await markAsReadHandler({ messageIds, senderId: userId }, () => {}, setError);
+
+        // Emit socket event for message read status
+        socketService.emitMessageRead(messageIds, userId);
 
         setMessages((prevMessages) =>
           prevMessages.map((message) =>
@@ -334,17 +385,30 @@ export const Messages = () => {
                 }`}
                 onClick={() => handleUserSelect(conversation.user)}
               >
-                <img
-                  src={
-                    conversation.user.UserProfile?.profileUrl
-                      ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${conversation.user.UserProfile.profileUrl}`
-                      : "/assets/Utils/male.png"
-                  }
-                  alt={conversation.user.name}
-                  className="messages-user-avatar"
-                />
+                <div className="messages-avatar-container">
+                  <img
+                    src={
+                      conversation.user.UserProfile?.profileUrl
+                        ? `${process.env.REACT_APP_REMOTE_ADDRESS}/${conversation.user.UserProfile.profileUrl}`
+                        : "/assets/Utils/male.png"
+                    }
+                    alt={conversation.user.name}
+                    className="messages-user-avatar"
+                  />
+                  {conversation.user.isOnline && (
+                    <span className="messages-online-indicator"></span>
+                  )}
+                </div>
                 <div className="messages-conversation-info">
-                  <h3>{conversation.user.name}</h3>
+                  <div className="messages-user-info">
+                    <h3>{conversation.user.name}</h3>
+                    {conversation.user.isOnline && (
+                      <div className="messages-online-status">
+                        <span className="messages-online-dot"></span>
+                        <span className="messages-online-text">Online</span>
+                      </div>
+                    )}
+                  </div>
                   <p className="messages-last-message">
                     {conversation.lastMessage.message.length > 30
                       ? `${conversation.lastMessage.message.substring(0, 30)}...`

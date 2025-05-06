@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserAuthToken, userLogOut } from '../../../../Store/User/auth';
 import { socketService } from '../../../../services/socketService';
+import { getUnreadMessagesCountHandler } from '../Messages/messagesApiHandler';
 
 // New Badge Component
 const NewBadge = () => {
@@ -32,6 +33,29 @@ export const Header = () => {
     const location = useLocation();
     const [searchText, setSearchText] = useState('');
     const token = useSelector(state => state.userAuth.token);
+
+    // Fetch initial unread messages count
+    useEffect(() => {
+        const fetchUnreadCount = async () => {
+            if (!token) return;
+            
+            try {
+                const response = await getUnreadMessagesCountHandler(
+                    {},
+                    () => {},
+                    (error) => console.error('Error fetching unread count:', error)
+                );
+                
+                if (response && response.success) {
+                    setUnreadMessageCount(response.data.totalUnreadCount);
+                }
+            } catch (error) {
+                console.error('Error fetching unread messages count:', error);
+            }
+        };
+
+        fetchUnreadCount();
+    }, [token]);
 
     useEffect(() => {
         if (!location.hash.includes('#login')) {

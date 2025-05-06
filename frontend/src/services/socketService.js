@@ -51,11 +51,26 @@ class SocketService {
       this.emit('connection_status', { status: 'reconnected' });
     });
 
+    // Handle user status changes
+    this.socket.on('user_status_change', (data) => {
+      const listeners = this.listeners.get('user_status_change');
+      if (listeners) {
+        listeners.forEach(callback => callback(data));
+      }
+    });
+
+    // Handle message read status
+    this.socket.on('messages_read', (data) => {
+      const listeners = this.listeners.get('messages_read');
+      if (listeners) {
+        listeners.forEach(callback => callback(data));
+      }
+    });
+
     // Handle direct message notifications
     this.socket.on('direct_message', (data) => {
       console.log("Direct message notification received:", data);
       if (data.type === 'new_message_notification') {
-        // Notify all listeners of this event
         const listeners = this.listeners.get('new_message_notification');
         if (listeners) {
           listeners.forEach(callback => callback(data));
@@ -108,6 +123,13 @@ class SocketService {
       this.socket.disconnect();
       this.socket = null;
       this.isConnected = false;
+    }
+  }
+
+  // Emit message read status
+  emitMessageRead(messageIds, otherUserId) {
+    if (this.socket && this.isConnected) {
+      this.socket.emit('mark_messages_read', { messageIds, otherUserId });
     }
   }
 }

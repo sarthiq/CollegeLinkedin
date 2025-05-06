@@ -5,6 +5,8 @@ const socketIO = require("socket.io");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET_KEY } = require("./importantInfo");
 const User = require("./Models/User/users");
+const Message = require("./Models/Relationships/messages");
+const { Op } = require("sequelize");
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -14,6 +16,7 @@ const socketService = {
   socketUsers: new Map(),
   userRooms: new Map(), // Map to store user's active rooms
   userSockets: new Map(), // Map to store all socket IDs for each user
+  userStatus: new Map(), // Map to store user online status
   
   // Message functions
   sendMessageToRoom: (roomId, message) => {
@@ -35,6 +38,59 @@ const socketService = {
     }
   },
 
+  // Send message read status
+  sendMessageReadStatus: (roomId, userId, messageIds) => {
+    if (socketService.io) {
+      socketService.io.to(roomId).emit("messages_read", {
+        userId,
+        messageIds,
+        timestamp: new Date()
+      });
+    }
+  },
+
+  // Broadcast user status to all connected users
+  broadcastUserStatus: async (userId, status) => {
+    if (socketService.io) {
+      // Update user status
+      socketService.userStatus.set(userId, status);
+
+     
+
+      const chatUsers = await Message.findAll({
+        attributes: ['senderId', 'receiverId'],
+        where: {
+          [Op.or]: [
+            { senderId: userId },
+            { receiverId: userId }
+          ]
+        },
+        raw: true
+      });
+
+      // Get unique user IDs who have chatted with this user
+      const uniqueUserIds = new Set();
+      chatUsers.forEach(chat => {
+        if (chat.senderId !== userId) uniqueUserIds.add(chat.senderId);
+        if (chat.receiverId !== userId) uniqueUserIds.add(chat.receiverId);
+      });
+
+      // Broadcast status to all relevant users
+      uniqueUserIds.forEach(targetUserId => {
+        const userSockets = socketService.getUserSockets(targetUserId);
+        if (userSockets && userSockets.size > 0) {
+          userSockets.forEach(socketId => {
+            socketService.io.to(socketId).emit("user_status_change", {
+              userId,
+              status,
+              timestamp: new Date()
+            });
+          });
+        }
+      });
+    }
+  },
+
   // Get room ID for two users
   getRoomId: (userId1, userId2) => {
     return [userId1, userId2].sort().join('_');
@@ -48,6 +104,11 @@ const socketService = {
   // Get all socket IDs for a user
   getUserSockets: (userId) => {
     return socketService.userSockets.get(userId) || new Set();
+  },
+
+  // Get user's online status
+  getUserStatus: (userId) => {
+    return socketService.userStatus.get(userId) || 'offline';
   }
 };
 
@@ -118,11 +179,23 @@ exports.setupSocketIO = (app) => {
         }
         socketService.userSockets.get(userId).add(socket.id);
         
+        // Set user as online and broadcast status
+        await socketService.broadcastUserStatus(userId, 'online');
+        
         // Notify user's other devices
         socket.to(`user_${userId}`).emit('user_connected', { 
           userId,
           activeDevices: socketService.userSockets.get(userId).size
         });
+      });
+
+      // Handle message read status
+      socket.on("mark_messages_read", async (data) => {
+        const { messageIds, otherUserId } = data;
+        const roomId = socketService.getRoomId(userId, otherUserId);
+        
+        // Send read status through socket
+        socketService.sendMessageReadStatus(roomId, userId, messageIds);
       });
 
       // Handle joining a chat room
@@ -182,16 +255,17 @@ exports.setupSocketIO = (app) => {
       });
 
       // Handle disconnection
-      socket.on("disconnect", () => {
+      socket.on("disconnect", async () => {
         socketService.socketUsers.delete(socket.id);
         
         // Remove socket from user's socket collection
         if (socketService.userSockets.has(userId)) {
           socketService.userSockets.get(userId).delete(socket.id);
           
-          // If this was the last socket, clean up the Set
+          // If this was the last socket, update status to offline
           if (socketService.userSockets.get(userId).size === 0) {
             socketService.userSockets.delete(userId);
+            await socketService.broadcastUserStatus(userId, 'offline');
           }
         }
         

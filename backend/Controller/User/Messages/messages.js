@@ -273,6 +273,12 @@ exports.getAllConversations = async (req, res) => {
         }
       });
 
+      // Get user's online status
+      const isOnline = global.socketService.getUserStatus(otherUserId) === 'online';
+      
+      // Get user's active devices count
+      const activeDevices = global.socketService.getUserSockets(otherUserId).size;
+
       return {
         lastMessage: {
           id: message.id,
@@ -282,7 +288,12 @@ exports.getAllConversations = async (req, res) => {
           senderId: message.senderId,
           receiverId: message.receiverId
         },
-        user: user.toJSON(),
+        user: {
+          ...user.toJSON(),
+          isOnline,
+          activeDevices,
+          lastSeen: isOnline ? new Date() : null // You might want to store and retrieve actual last seen time
+        },
         unreadCount
       };
     }));
@@ -315,13 +326,20 @@ exports.getAllConversations = async (req, res) => {
 exports.markAsRead = async (req, res) => {
   let transaction;
   try {
-    const { messageIds } = req.body;
+    const { messageIds, senderId } = req.body;
     const currentUserId = req.user.id;
 
     if (!messageIds || !Array.isArray(messageIds)) {
       return res.status(400).json({
         success: false,
         message: "Message IDs array is required",
+      });
+    }
+
+    if (!senderId) {
+      return res.status(400).json({
+        success: false,
+        message: "Sender ID is required",
       });
     }
 
@@ -341,6 +359,10 @@ exports.markAsRead = async (req, res) => {
     );
 
     await transaction.commit();
+
+    // Send real-time read status through socket
+    const roomId = global.socketService.getRoomId(currentUserId, senderId);
+    global.socketService.sendMessageReadStatus(roomId, currentUserId, messageIds);
 
     res.status(200).json({
       success: true,
@@ -435,5 +457,81 @@ exports.getUserInfo = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+exports.getUnreadMessagesCount = async (req, res) => {
+  try {
+    const currentUserId = req.user.id;
+
+    // First, get all unread messages grouped by sender
+    const unreadMessages = await Message.findAll({
+      attributes: [
+        'senderId',
+        [sequelize.fn('COUNT', sequelize.col('id')), 'unreadCount']
+      ],
+      where: {
+        receiverId: currentUserId,
+        isRead: false
+      },
+      group: ['senderId'],
+      raw: true
+    });
+
+    // Calculate total unread count
+    const totalUnreadCount = unreadMessages.reduce((total, item) => {
+      return total + parseInt(item.unreadCount);
+    }, 0);
+
+    // Get unique sender IDs
+    const senderIds = unreadMessages.map(item => item.senderId);
+
+    // Get user details for all senders in one query
+    const users = await User.findAll({
+      where: {
+        id: {
+          [Op.in]: senderIds
+        }
+      },
+      attributes: ['id', 'name'],
+      include: [{
+        model: UserProfile,
+        attributes: ['profileUrl']
+      }]
+    });
+
+    // Create a map of user details for quick lookup
+    const userMap = new Map(users.map(user => [user.id, user]));
+
+    // Format the response with user details and online status
+    const formattedResponse = unreadMessages.map(item => {
+      const user = userMap.get(item.senderId);
+      const isOnline = global.socketService.getUserStatus(item.senderId) === 'online';
+      const activeDevices = global.socketService.getUserSockets(item.senderId).size;
+
+      return {
+        sender: {
+          ...user.toJSON(),
+          isOnline,
+          activeDevices,
+          lastSeen: isOnline ? new Date() : null
+        },
+        unreadCount: parseInt(item.unreadCount)
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalUnreadCount,
+        unreadBySender: formattedResponse
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
   }
 };
