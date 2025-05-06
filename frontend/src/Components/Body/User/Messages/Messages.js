@@ -38,7 +38,12 @@ export const Messages = () => {
   const typingStatusMap = useRef(new Map());
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: "smooth"
+      });
+    }
   };
 
   // Socket event handlers
@@ -55,7 +60,9 @@ export const Messages = () => {
           markMessagesAsRead([message], selectedUser.id);
         }
         // Scroll to bottom when new message arrives
-        setTimeout(scrollToBottom, 100);
+        requestAnimationFrame(() => {
+          scrollToBottom();
+        });
       } else {
         // If we're in messages section but not in this conversation, update conversation list
         setConversations(prevConversations => {
@@ -279,7 +286,9 @@ export const Messages = () => {
         setMessages(reversedMessages);
         setPagination(response.data.pagination);
         // Scroll to bottom after messages load
-        setTimeout(scrollToBottom, 100);
+        requestAnimationFrame(() => {
+          scrollToBottom();
+        });
         return reversedMessages;
       }
     } catch (error) {
@@ -301,27 +310,11 @@ export const Messages = () => {
         setError
       );
       if (response && response.success) {
-        // // Add the message to the current conversation immediately
-        // const sentMessage = response.data;
-        // setMessages(prevMessages => [...prevMessages, sentMessage]);
-        
-        // // Update conversation list with the new message
-        // setConversations(prevConversations => {
-        //   const updatedConversations = prevConversations.map(conv => {
-        //     if (conv.user.id === selectedUser.id) {
-        //       return {
-        //         ...conv,
-        //         lastMessage: sentMessage
-        //       };
-        //     }
-        //     return conv;
-        //   });
-        //   return updatedConversations;
-        // });
-
-         setNewMessage("");
-        // // Scroll to bottom after sending
-        // setTimeout(scrollToBottom, 100);
+        setNewMessage("");
+        // Scroll to bottom after sending
+        requestAnimationFrame(() => {
+          scrollToBottom();
+        });
       }
     } catch (error) {
       setError("Error sending message");
@@ -572,7 +565,6 @@ export const Messages = () => {
                     </div>
                   ))
                 )}
-                <div ref={messagesEndRef} />
               </div>
 
               <div className="messages-chat-input">
