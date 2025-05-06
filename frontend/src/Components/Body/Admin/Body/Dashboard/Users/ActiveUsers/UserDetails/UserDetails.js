@@ -57,7 +57,7 @@ export const UserDetails = () => {
   };
 
   const handleBack = () => {
-    navigate('/admin/dashboard/users/active-users');
+    navigate('/admin/users/active-users');
   };
 
   const chartData = {
