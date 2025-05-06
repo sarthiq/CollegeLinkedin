@@ -20,6 +20,9 @@ const AppliedInternship = require("./Basic/appliedInternship");
 const ProjectFeedback = require("./User/projectFeedback");
 const Follow = require("./Relationships/follows");
 const Message = require("./Relationships/messages");
+const ActiveUser = require("./User/activeUsers");
+
+
 
 exports.setupModels = async () => {
   // Define associations
@@ -31,6 +34,9 @@ exports.setupModels = async () => {
 
   User.hasMany(UserActivity);
   UserActivity.belongsTo(User);
+
+  User.hasMany(ActiveUser);
+  ActiveUser.belongsTo(User);
 
   User.belongsToMany(Pages, { through: Followers });
   Pages.belongsToMany(User, { through: Followers });

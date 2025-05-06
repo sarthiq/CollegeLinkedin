@@ -2,6 +2,9 @@ const jwt = require("jsonwebtoken");
 const Admin = require("../Models/User/admins");
 const { JWT_SECRET_KEY, DEVELOPER_USERNAME } = require("../importantInfo");
 const User = require("../Models/User/users");
+const ActiveUser = require("../Models/User/activeUsers");
+const { sequelize } = require("../importantInfo");
+
 
 
 //adminAuthentication 
@@ -121,7 +124,7 @@ exports.developerAuthentication = async (req, res, next) => {
 
 // User Authentication Middleware
 exports.userAuthentication = async (req, res, next) => {
-  
+  let transaction;
   try {
     // Get token from header
     const token = req.header("Authorization");
@@ -154,11 +157,43 @@ exports.userAuthentication = async (req, res, next) => {
       });
     }
 
+    // Track user activity
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of day
+    transaction = await sequelize.transaction();
+    // Find or create activity record for today
+    const [activityRecord, created] = await ActiveUser.findOrCreate({
+      where: {
+        UserId: user.id,
+        date: today
+      },
+      defaults: {
+        requestCount: 1,
+        lastActive: new Date()
+      },
+      transaction
+    });
+
+
+
+    // If record exists, update it
+    if (!created) {
+      await activityRecord.update({
+        requestCount: activityRecord.requestCount + 1,
+        lastActive: new Date()
+      }, { transaction });
+    }
+
+    await transaction.commit();
+
     // Attach user to request
     req.user = user;
     next();
   } catch (error) {
     
+    if (transaction) {
+      await transaction.rollback();
+    }
     res.status(503).json({
       success: false,
       message: "Invalid token",
