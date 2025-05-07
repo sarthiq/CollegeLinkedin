@@ -203,6 +203,7 @@ export const LandingHome = () => {
       {/* Hero Section */}
       <section className="sarthiq-hero-section">
         <div className="sarthiq-hero-content">
+          {/* Left Section - Welcome Text + Auth Form */}
           <div className="sarthiq-hero-left">
             <div className="sarthiq-welcome-text">
               <h1 className="sarthiq-welcome-title">
@@ -224,61 +225,7 @@ export const LandingHome = () => {
                 <span className="word">and</span>
                 <span className="word">Grow.</span>
               </p>
-              <div className="sarthiq-features-grid">
-                <div className="sarthiq-feature-item">
-                  <div className="sarthiq-feature-icon">
-                    <i className="fas fa-users"></i>
-                  </div>
-                  <div className="sarthiq-feature-content">
-                    <h3>Connect with Peers</h3>
-                    <p>Join a vibrant community of students from across the country</p>
-                  </div>
-                </div>
-                <div className="sarthiq-feature-item">
-                  <div className="sarthiq-feature-icon">
-                    <i className="fas fa-graduation-cap"></i>
-                  </div>
-                  <div className="sarthiq-feature-content">
-                    <h3>Learn & Grow</h3>
-                    <p>Access resources and opportunities to enhance your skills</p>
-                  </div>
-                </div>
-                <div className="sarthiq-feature-item">
-                  <div className="sarthiq-feature-icon">
-                    <i className="fas fa-briefcase"></i>
-                  </div>
-                  <div className="sarthiq-feature-content">
-                    <h3>Career Opportunities</h3>
-                    <p>Discover internships and job opportunities tailored for students</p>
-                  </div>
-                </div>
-                <div className="sarthiq-feature-item">
-                  <div className="sarthiq-feature-icon">
-                    <i className="fas fa-project-diagram"></i>
-                  </div>
-                  <div className="sarthiq-feature-content">
-                    <h3>Collaborative Projects</h3>
-                    <p>Work on real-world projects with peers and industry experts</p>
-                  </div>
-                </div>
-              </div>
-              {/* <div className="sarthiq-stats-container">
-                <div className="sarthiq-stat-item">
-                  <span className="sarthiq-stat-number">10K+</span>
-                  <span className="sarthiq-stat-label">Active Students</span>
-                </div>
-                <div className="sarthiq-stat-item">
-                  <span className="sarthiq-stat-number">500+</span>
-                  <span className="sarthiq-stat-label">Universities</span>
-                </div>
-                <div className="sarthiq-stat-item">
-                  <span className="sarthiq-stat-number">1000+</span>
-                  <span className="sarthiq-stat-label">Opportunities</span>
-                </div>
-              </div> */}
             </div>
-          </div>
-          <div className="sarthiq-hero-right">
             <div className="sarthiq-auth-container">
               <div className="sarthiq-auth-form">
                 {isJoinForm ? (
@@ -479,6 +426,48 @@ export const LandingHome = () => {
                     </div>
                   </form>
                 )}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Section - Features Grid */}
+          <div className="sarthiq-hero-right">
+            <div className="sarthiq-features-grid">
+              <div className="sarthiq-feature-item">
+                <div className="sarthiq-feature-icon">
+                  <i className="fas fa-users"></i>
+                </div>
+                <div className="sarthiq-feature-content">
+                  <h3>Connect with Peers</h3>
+                  <p>Join a vibrant community of students from across the country</p>
+                </div>
+              </div>
+              <div className="sarthiq-feature-item">
+                <div className="sarthiq-feature-icon">
+                  <i className="fas fa-graduation-cap"></i>
+                </div>
+                <div className="sarthiq-feature-content">
+                  <h3>Learn & Grow</h3>
+                  <p>Access resources and opportunities to enhance your skills</p>
+                </div>
+              </div>
+              <div className="sarthiq-feature-item">
+                <div className="sarthiq-feature-icon">
+                  <i className="fas fa-briefcase"></i>
+                </div>
+                <div className="sarthiq-feature-content">
+                  <h3>Career Opportunities</h3>
+                  <p>Discover internships and job opportunities tailored for students</p>
+                </div>
+              </div>
+              <div className="sarthiq-feature-item">
+                <div className="sarthiq-feature-icon">
+                  <i className="fas fa-project-diagram"></i>
+                </div>
+                <div className="sarthiq-feature-content">
+                  <h3>Collaborative Projects</h3>
+                  <p>Work on real-world projects with peers and industry experts</p>
+                </div>
               </div>
             </div>
           </div>

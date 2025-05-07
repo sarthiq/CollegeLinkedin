@@ -694,25 +694,23 @@
 
 .sarthiq-hero-left {
   flex: 1;
-  padding-right: var(--spacing-xl);
   max-width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
 }
 
 .sarthiq-hero-right {
   flex: 1;
   max-width: 50%;
-  display: flex;
-  justify-content: center;
+}
+
+.sarthiq-welcome-text {
+  margin-bottom: 0;
 }
 
 .sarthiq-auth-container {
   width: 100%;
-  max-width: 1200px;
-  padding: var(--spacing-md);
-}
-
-.sarthiq-welcome-text {
-  margin-bottom: var(--spacing-xl);
 }
 
 .sarthiq-welcome-title,
@@ -970,15 +968,6 @@
   margin: 0 auto;
 }
 
-/* Auth Form Styles */
-.sarthiq-auth-form {
-  background: var(--background-light);
-  padding: var(--spacing-xl);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-lg);
-  width: 100%;
-  max-width: 1000px;
-}
 
 .sarthiq-form-group {
   margin-bottom: var(--spacing-md);
@@ -1017,39 +1006,32 @@
 @media (max-width: 992px) {
   .sarthiq-hero-content {
     flex-direction: column;
-    padding: var(--spacing-xl) var(--spacing-md);
+    gap: var(--spacing-lg);
+    align-items: flex-start;
   }
 
   .sarthiq-hero-left,
   .sarthiq-hero-right {
     max-width: 100%;
-    padding-right: 0;
-  }
-
-  .sarthiq-auth-container {
-    max-width: 900px;
   }
 
   .sarthiq-welcome-text {
     text-align: center;
   }
 
-  .sarthiq-welcome-title::after {
-    left: 50%;
-    transform: translateX(-50%) scaleX(0);
-    animation: lineGrowCenter 1s ease-out 0.5s forwards;
-  }
-
-  @keyframes lineGrowCenter {
-    to {
-      transform: translateX(-50%) scaleX(1);
-    }
+  .sarthiq-auth-container {
+    max-width: 600px;
+    margin: 0 auto;
   }
 }
 
 @media (max-width: 768px) {
   .sarthiq-hero-section {
-    padding: var(--spacing-lg) var(--spacing-sm);
+    padding: 20px;
+  }
+
+  .sarthiq-hero-content {
+    gap: var(--spacing-md);
   }
 
   .sarthiq-welcome-title {
@@ -1057,16 +1039,21 @@
   }
 
   .sarthiq-welcome-subtitle {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .sarthiq-auth-form {
-    max-width: 100%;
-    padding: var(--spacing-lg);
+    padding: 20px;
   }
 
-  .sarthiq-auth-container {
-    padding: var(--spacing-sm);
+  .sarthiq-features-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .sarthiq-feature-item {
+    padding: 20px;
   }
 }
 
@@ -1075,8 +1062,16 @@
     font-size: 28px;
   }
 
+  .sarthiq-welcome-subtitle {
+    font-size: 16px;
+  }
+
   .sarthiq-auth-form {
-    padding: var(--spacing-md);
+    padding: 15px;
+  }
+
+  .sarthiq-feature-item {
+    padding: 15px;
   }
 }
 
