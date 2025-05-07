@@ -1,4 +1,4 @@
-.landing-main {
+.sarthiq-landing-main {
     padding-top: 76px;
     background: linear-gradient(135deg, #f3f2ef 0%, #ffffff 100%);
     min-height: calc(100vh - 76px);
@@ -6,7 +6,7 @@
     position: relative;
 }
 
-.landing-main::before {
+.sarthiq-landing-main::before {
     content: '';
     position: absolute;
     top: 0;
@@ -18,7 +18,7 @@
     pointer-events: none;
 }
 
-.landing-content {
+.sarthiq-landing-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 60px 20px;
@@ -34,7 +34,7 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-.landing-left {
+.sarthiq-landing-left {
     flex: 1;
     max-width: 50%;
     padding-right: 20px;
@@ -47,7 +47,7 @@
     to { transform: translateX(0); opacity: 1; }
 }
 
-.landing-title {
+.sarthiq-landing-title {
     color: #0a66c2;
     font-size: 48px;
     font-weight: 800;
@@ -74,18 +74,18 @@
 }
 
 @media (min-width: 1200px) {
-    .landing-title {
+    .sarthiq-landing-title {
         font-size: 48px;
     }
 }
 
 @media (min-width: 1600px) {
-    .landing-title {
+    .sarthiq-landing-title {
         font-size: 56px;
     }
 }
 
-.landing-subtitle {
+.sarthiq-landing-subtitle {
     color: rgba(0, 0, 0, 0.8);
     font-size: 24px;
     font-weight: 400;
@@ -96,7 +96,7 @@
     padding-left: 20px;
 }
 
-.landing-subtitle::before {
+.sarthiq-landing-subtitle::before {
     content: '';
     position: absolute;
     left: 0;
@@ -108,7 +108,7 @@
     border-radius: 2px;
 }
 
-.auth-form {
+.sarthiq-auth-form {
     max-width: 420px;
     margin-bottom: 24px;
     background: white;
@@ -120,7 +120,7 @@
     overflow: hidden;
 }
 
-.auth-form::before {
+.sarthiq-auth-form::before {
     content: '';
     position: absolute;
     top: 0;
@@ -130,12 +130,12 @@
     background: linear-gradient(to right, #0a66c2, #004182);
 }
 
-.form-group {
+.sarthiq-form-group {
     margin-bottom: 20px;
     position: relative;
 }
 
-.form-group input {
+.sarthiq-form-group input {
     width: 100%;
     padding: 16px 18px;
     border: 2px solid rgba(0, 0, 0, 0.08);
@@ -147,18 +147,18 @@
     background: white;
 }
 
-.form-group input:focus {
+.sarthiq-form-group input:focus {
     outline: none;
     border-color: #0a66c2;
     box-shadow: 0 0 0 4px rgba(10, 102, 194, 0.1);
     transform: translateY(-1px);
 }
 
-.form-group input::placeholder {
+.sarthiq-form-group input::placeholder {
     color: rgba(0, 0, 0, 0.4);
 }
 
-.error-message {
+.sarthiq-error-message {
     color: #d11124;
     font-size: 13px;
     margin-top: 8px;
@@ -174,8 +174,8 @@
 }
 
 /* API Error and Success Messages */
-.api-error-message,
-.api-success-message {
+.sarthiq-api-error-message,
+.sarthiq-api-success-message {
     padding: 14px 18px;
     border-radius: 12px;
     margin-bottom: 20px;
@@ -190,25 +190,25 @@
     to { transform: translateY(0); opacity: 1; }
 }
 
-.api-error-message {
+.sarthiq-api-error-message {
     background-color: #fff2f0;
     border: 1px solid #ffccc7;
     color: #d11124;
 }
 
-.api-success-message {
+.sarthiq-api-success-message {
     background-color: #f6ffed;
     border: 1px solid #b7eb8f;
     color: #52c41a;
 }
 
-.sign-in-toggle {
+.sarthiq-sign-in-toggle {
     display: flex;
     gap: 12px;
     margin-bottom: 24px;
 }
 
-.toggle-btn {
+.sarthiq-toggle-btn {
     flex: 1;
     padding: 12px 20px;
     border: 2px solid #0a66c2;
@@ -221,19 +221,19 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.toggle-btn.active {
+.sarthiq-toggle-btn.active {
     background: #0a66c2;
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(10, 102, 194, 0.2);
 }
 
-.toggle-btn:hover:not(.active) {
+.sarthiq-toggle-btn:hover:not(.active) {
     background: rgba(10, 102, 194, 0.1);
     transform: translateY(-2px);
 }
 
-.sign-in-button {
+.sarthiq-sign-in-button {
     width: 100%;
     padding: 16px 24px;
     background: linear-gradient(45deg, #0a66c2, #004182);
@@ -249,7 +249,7 @@
     overflow: hidden;
 }
 
-.sign-in-button::before {
+.sarthiq-sign-in-button::before {
     content: '';
     position: absolute;
     top: 0;
@@ -265,20 +265,20 @@
     transition: 0.5s;
 }
 
-.sign-in-button:hover {
+.sarthiq-sign-in-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(10, 102, 194, 0.2);
 }
 
-.sign-in-button:hover::before {
+.sarthiq-sign-in-button:hover::before {
     left: 100%;
 }
 
-.sign-in-button:active {
+.sarthiq-sign-in-button:active {
     transform: translateY(0);
 }
 
-.form-footer {
+.sarthiq-form-footer {
     margin-top: 24px;
     text-align: center;
     font-size: 14px;
@@ -286,7 +286,7 @@
     position: relative;
 }
 
-.form-footer::before {
+.sarthiq-form-footer::before {
     content: '';
     position: absolute;
     top: -12px;
@@ -298,7 +298,7 @@
     border-radius: 1px;
 }
 
-.form-footer a {
+.sarthiq-form-footer a {
     color: #0a66c2;
     text-decoration: none;
     font-weight: 600;
@@ -306,7 +306,7 @@
     position: relative;
 }
 
-.form-footer a::after {
+.sarthiq-form-footer a::after {
     content: '';
     position: absolute;
     bottom: -2px;
@@ -319,12 +319,12 @@
     transition: transform 0.3s ease;
 }
 
-.form-footer a:hover::after {
+.sarthiq-form-footer a:hover::after {
     transform: scaleX(1);
     transform-origin: left;
 }
 
-.landing-agreement {
+.sarthiq-landing-agreement {
     font-size: 12px;
     color: rgba(0, 0, 0, 0.6);
     margin: 20px 0;
@@ -332,14 +332,14 @@
     text-align: center;
 }
 
-.landing-agreement a {
+.sarthiq-landing-agreement a {
     color: #0a66c2;
     text-decoration: none;
     font-weight: 600;
     position: relative;
 }
 
-.landing-agreement a::after {
+.sarthiq-landing-agreement a::after {
     content: '';
     position: absolute;
     bottom: -1px;
@@ -352,27 +352,27 @@
     transition: transform 0.3s ease;
 }
 
-.landing-agreement a:hover::after {
+.sarthiq-landing-agreement a:hover::after {
     transform: scaleX(1);
     transform-origin: left;
 }
 
-.join-now {
+.sarthiq-join-now {
     margin-top: 24px;
     font-size: 16px;
 }
 
-.join-now a {
+.sarthiq-join-now a {
     color: #0a66c2;
     text-decoration: none;
     font-weight: 600;
 }
 
-.join-now a:hover {
+.sarthiq-join-now a:hover {
     text-decoration: underline;
 }
 
-.landing-right {
+.sarthiq-landing-right {
     flex: 1;
     max-width: 50%;
     animation: slideInRight 1s ease-out;
@@ -384,7 +384,7 @@
     to { transform: translateX(0); opacity: 1; }
 }
 
-.hero-image-container {
+.sarthiq-hero-image-container {
     position: relative;
     border-radius: 20px;
     overflow: hidden;
@@ -392,7 +392,7 @@
     transition: all 0.4s ease;
 }
 
-.hero-image-container::before {
+.sarthiq-hero-image-container::before {
     content: '';
     position: absolute;
     top: 0;
@@ -409,98 +409,98 @@
     transition: opacity 0.4s ease;
 }
 
-.hero-image-container:hover::before {
+.sarthiq-hero-image-container:hover::before {
     opacity: 1;
 }
 
-.hero-image {
+.sarthiq-hero-image {
     width: 100%;
     height: auto;
     display: block;
     transition: transform 0.4s ease;
 }
 
-.hero-image-container:hover {
+.sarthiq-hero-image-container:hover {
     transform: translateY(-8px);
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
 }
 
-.hero-image-container:hover .hero-image {
+.sarthiq-hero-image-container:hover .sarthiq-hero-image {
     transform: scale(1.03);
 }
 
 @media (max-width: 992px) {
-    .landing-content {
+    .sarthiq-landing-content {
         flex-direction: column;
         padding: 40px 20px;
         gap: 50px;
     }
 
-    .landing-left,
-    .landing-right {
+    .sarthiq-landing-left,
+    .sarthiq-landing-right {
         max-width: 100%;
         padding-right: 0;
     }
 
-    .landing-title {
+    .sarthiq-landing-title {
         font-size: 40px;
     }
 
-    .landing-subtitle {
+    .sarthiq-landing-subtitle {
         font-size: 20px;
     }
 
-    .auth-form {
+    .sarthiq-auth-form {
         max-width: 100%;
     }
 }
 
 @media (max-width: 768px) {
-    .landing-main {
+    .sarthiq-landing-main {
         padding-top: 60px;
     }
 
-    .landing-content {
+    .sarthiq-landing-content {
         padding: 30px 16px;
     }
 
-    .landing-title {
+    .sarthiq-landing-title {
         font-size: 36px;
     }
 
-    .landing-subtitle {
+    .sarthiq-landing-subtitle {
         font-size: 18px;
         margin-bottom: 30px;
     }
 
-    .auth-form {
+    .sarthiq-auth-form {
         padding: 28px;
     }
 
-    .form-group input {
+    .sarthiq-form-group input {
         padding: 14px 16px;
         font-size: 14px;
     }
 
-    .sign-in-button {
+    .sarthiq-sign-in-button {
         padding: 14px 20px;
         font-size: 15px;
     }
 }
 
 /* New Section Styles */
-.landing-section {
+.sarthiq-landing-section {
     padding: 60px 20px;
     background: white;
     position: relative;
     overflow: hidden;
 }
 
-.landing-section:nth-child(even) {
+.sarthiq-landing-section:nth-child(even) {
     background: #f8f9fa;
 }
 
-.section-title {
+.sarthiq-section-title {
     font-size: 42px;
     font-weight: 700;
     color: #0a66c2;
@@ -515,7 +515,7 @@
     to { transform: translateY(0); opacity: 1; }
 }
 
-.section-description {
+.sarthiq-section-description {
     font-size: 20px;
     color: rgba(0, 0, 0, 0.7);
     text-align: center;
@@ -529,7 +529,7 @@
     to { transform: translateY(0); opacity: 1; }
 }
 
-.feature-cards {
+.sarthiq-feature-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
@@ -537,7 +537,7 @@
     margin: 0 auto;
 }
 
-.feature-card {
+.sarthiq-feature-card {
     background: white;
     padding: 32px;
     border-radius: 16px;
@@ -553,12 +553,12 @@
     to { transform: translateY(0); opacity: 1; }
 }
 
-.feature-card:hover {
+.sarthiq-feature-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
-.feature-card h3 {
+.sarthiq-feature-card h3 {
     font-size: 22px;
     color: #0a66c2;
     margin-bottom: 12px;
@@ -566,7 +566,7 @@
     padding-left: 32px;
 }
 
-.feature-card h3::before {
+.sarthiq-feature-card h3::before {
     content: '→';
     position: absolute;
     left: 0;
@@ -575,17 +575,17 @@
     transition: transform 0.3s ease;
 }
 
-.feature-card:hover h3::before {
+.sarthiq-feature-card:hover h3::before {
     transform: translateX(10px);
 }
 
-.feature-card p {
+.sarthiq-feature-card p {
     font-size: 15px;
     line-height: 1.5;
     color: rgba(0, 0, 0, 0.7);
 }
 
-.blogs-coming-soon {
+.sarthiq-blogs-coming-soon {
     text-align: center;
     padding: 40px;
     background: #f3f2ef;
@@ -594,7 +594,7 @@
     margin: 0 auto;
 }
 
-.blogs-coming-soon p {
+.sarthiq-blogs-coming-soon p {
     font-size: 20px;
     color: rgba(0, 0, 0, 0.7);
 } 

@@ -169,30 +169,30 @@ export const LandingHome = () => {
   };
 
   return (
-    <main className="landing-main">
-      <div className="landing-content">
-        <div className="landing-left">
-          <h1 id="landing-title" className="landing-title">
+    <main className="sarthiq-landing-main">
+      <div className="sarthiq-landing-content">
+        <div className="sarthiq-landing-left">
+          <h1 id="sarthiq-landing-title" className="sarthiq-landing-title">
             Welcome to the #Student Community!
           </h1>
-          <h2 className="landing-subtitle">
+          <h2 className="sarthiq-landing-subtitle">
             A platform for students to Learn, Engage, Contribute, and Grow.
           </h2>
-          <div id="login-section" className="auth-form">
+          <div id="sarthiq-login-section" className="sarthiq-auth-form">
             {apiError && (
-              <div className="api-error-message">
+              <div className="sarthiq-api-error-message">
                 <p>{apiError}</p>
               </div>
             )}
             {apiSuccess && (
-              <div className="api-success-message">
+              <div className="sarthiq-api-success-message">
                 <p>{apiSuccess}</p>
               </div>
             )}
 
             {isJoinForm ? (
-              <form onSubmit={handleJoinNow} className="join-form">
-                <div className="form-group">
+              <form onSubmit={handleJoinNow} className="sarthiq-join-form">
+                <div className="sarthiq-form-group">
                   <input
                     type="text"
                     name="fullName"
@@ -202,10 +202,10 @@ export const LandingHome = () => {
                     required
                   />
                   {formErrors.fullName && (
-                    <span className="error-message">{formErrors.fullName}</span>
+                    <span className="sarthiq-error-message">{formErrors.fullName}</span>
                   )}
                 </div>
-                <div className="form-group">
+                <div className="sarthiq-form-group">
                   <input
                     type="email"
                     name="email"
@@ -215,10 +215,10 @@ export const LandingHome = () => {
                     required
                   />
                   {formErrors.email && (
-                    <span className="error-message">{formErrors.email}</span>
+                    <span className="sarthiq-error-message">{formErrors.email}</span>
                   )}
                 </div>
-                <div className="form-group">
+                <div className="sarthiq-form-group">
                   <input
                     type="tel"
                     name="phoneNumber"
@@ -228,10 +228,10 @@ export const LandingHome = () => {
                     required
                   />
                   {formErrors.phoneNumber && (
-                    <span className="error-message">{formErrors.phoneNumber}</span>
+                    <span className="sarthiq-error-message">{formErrors.phoneNumber}</span>
                   )}
                 </div>
-                <div className="form-group">
+                <div className="sarthiq-form-group">
                   <input
                     type="password"
                     name="password"
@@ -242,10 +242,10 @@ export const LandingHome = () => {
                     required
                   />
                   {formErrors.password && (
-                    <span className="error-message">{formErrors.password}</span>
+                    <span className="sarthiq-error-message">{formErrors.password}</span>
                   )}
                 </div>
-                <div className="form-group">
+                <div className="sarthiq-form-group">
                   <input
                     type="password"
                     name="confirmPassword"
@@ -255,19 +255,19 @@ export const LandingHome = () => {
                     required
                   />
                   {formErrors.confirmPassword && (
-                    <span className="error-message">{formErrors.confirmPassword}</span>
+                    <span className="sarthiq-error-message">{formErrors.confirmPassword}</span>
                   )}
                 </div>
-                <button type="submit" className="sign-in-button" disabled={isLoading}>
+                <button type="submit" className="sarthiq-sign-in-button" disabled={isLoading}>
                   {isLoading ? "Creating Account..." : "Create Account"}
                 </button>
-                <div className="form-footer">
+                <div className="sarthiq-form-footer">
                   <p>Already have an account? <a href="#" onClick={toggleForm}>Sign in</a></p>
                 </div>
               </form>
             ) : (
-              <form onSubmit={handleSignIn} className="signin-form">
-                <div className="form-group">
+              <form onSubmit={handleSignIn} className="sarthiq-signin-form">
+                <div className="sarthiq-form-group">
                   <input
                     type="text"
                     name="emailOrPhone"
@@ -277,10 +277,10 @@ export const LandingHome = () => {
                     required
                   />
                   {formErrors.emailOrPhone && (
-                    <span className="error-message">{formErrors.emailOrPhone}</span>
+                    <span className="sarthiq-error-message">{formErrors.emailOrPhone}</span>
                   )}
                 </div>
-                <div className="form-group">
+                <div className="sarthiq-form-group">
                   <input
                     type="password"
                     name="password"
@@ -290,27 +290,27 @@ export const LandingHome = () => {
                     required
                   />
                   {formErrors.password && (
-                    <span className="error-message">{formErrors.password}</span>
+                    <span className="sarthiq-error-message">{formErrors.password}</span>
                   )}
                 </div>
-                <button type="submit" className="sign-in-button" disabled={isLoading}>
+                <button type="submit" className="sarthiq-sign-in-button" disabled={isLoading}>
                   {isLoading ? "Signing in..." : "Sign in"}
                 </button>
-                <div className="form-footer">
+                <div className="sarthiq-form-footer">
                   <p>New to Sarthiq? <a href="#" onClick={toggleForm}>Join now</a></p>
                 </div>
               </form>
             )}
           </div>
-          <p className="landing-agreement">
+          <p className="sarthiq-landing-agreement">
             By clicking Continue to join or sign in, you agree to Sarthiq's{" "}
             <Link to="/landing/terms">Terms of Service</Link>,{" "}
             <Link to="/landing/privacy">Privacy Policy</Link>, and{" "}
             <Link to="/landing/refund">Refund Policy</Link>.
           </p>
         </div>
-        <div className="landing-right">
-          <div className="hero-image-container">
+        <div className="sarthiq-landing-right">
+          <div className="sarthiq-hero-image-container">
             <img
               src={isJoinForm 
                 ? "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg"
@@ -320,7 +320,7 @@ export const LandingHome = () => {
                 ? "Students collaborating and networking"
                 : "Professional workspace with laptop"
               }
-              className="hero-image"
+              className="sarthiq-hero-image"
               onError={(e) => {
                 e.target.onerror = null;
                 e.target.src = "https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg";
@@ -331,27 +331,27 @@ export const LandingHome = () => {
       </div>
 
       {/* Community Section */}
-      <section className="landing-section community">
-        <h2 className="section-title">Community</h2>
-        <p className="section-description">
+      <section className="sarthiq-landing-section community">
+        <h2 className="sarthiq-section-title">Community</h2>
+        <p className="sarthiq-section-description">
           Connect with peers across colleges and domains to grow together
         </p>
-        <div className="feature-cards">
-          <div className="feature-card">
+        <div className="sarthiq-feature-cards">
+          <div className="sarthiq-feature-card">
             <h3>College Network</h3>
             <p>
               Build lasting connections with students from various colleges.
               Create your professional network early.
             </p>
           </div>
-          <div className="feature-card">
+          <div className="sarthiq-feature-card">
             <h3>Interest Groups</h3>
             <p>
               Join communities based on your interests - from coding to arts.
               Collaborate on passion projects.
             </p>
           </div>
-          <div className="feature-card">
+          <div className="sarthiq-feature-card">
             <h3>Startup Collaboration</h3>
             <p>
               Find the perfect team for your startup idea. Connect with
@@ -362,28 +362,28 @@ export const LandingHome = () => {
       </section>
 
       {/* Learning Lab Section */}
-      <section className="landing-section learning-lab">
-        <h2 className="section-title">Learning Lab</h2>
-        <p className="section-description">
+      <section className="sarthiq-landing-section learning-lab">
+        <h2 className="sarthiq-section-title">Learning Lab</h2>
+        <p className="sarthiq-section-description">
           Enhance your academic journey with practical skills and future-ready
           knowledge
         </p>
-        <div className="feature-cards">
-          <div className="feature-card">
+        <div className="sarthiq-feature-cards">
+          <div className="sarthiq-feature-card">
             <h3>AI Literacy</h3>
             <p>
               Master AI tools for design, marketing, coding, and content
               creation. Stay ahead in the digital age.
             </p>
           </div>
-          <div className="feature-card">
+          <div className="sarthiq-feature-card">
             <h3>Communication Skills</h3>
             <p>
               Build your professional identity with expert-guided resume
               building and communication modules.
             </p>
           </div>
-          <div className="feature-card">
+          <div className="sarthiq-feature-card">
             <h3>Industry Projects</h3>
             <p>
               Tackle real-world case studies and assignments to develop
@@ -394,28 +394,28 @@ export const LandingHome = () => {
       </section>
 
       {/* Project Arena Section */}
-      <section className="landing-section project-arena">
-        <h2 className="section-title">Project Arena</h2>
-        <p className="section-description">
+      <section className="sarthiq-landing-section project-arena">
+        <h2 className="sarthiq-section-title">Project Arena</h2>
+        <p className="sarthiq-section-description">
           Transform classroom knowledge into real-world solutions through
           hands-on projects
         </p>
-        <div className="feature-cards">
-          <div className="feature-card">
+        <div className="sarthiq-feature-cards">
+          <div className="sarthiq-feature-card">
             <h3>Industry Collaborations</h3>
             <p>
               Work on live projects with startups and NGOs. Build your portfolio
               while making an impact.
             </p>
           </div>
-          <div className="feature-card">
+          <div className="sarthiq-feature-card">
             <h3>Domain Excellence</h3>
             <p>
               Choose from projects in engineering, business, law, arts, and
               more. Specialize in your field.
             </p>
           </div>
-          <div className="feature-card">
+          <div className="sarthiq-feature-card">
             <h3>Learning Resources</h3>
             <p>
               Access a rich library of past projects and case studies. Learn
@@ -426,28 +426,28 @@ export const LandingHome = () => {
       </section>
 
       {/* Internships Section */}
-      <section className="landing-section internships">
-        <h2 className="section-title">Internships</h2>
-        <p className="section-description">
+      <section className="sarthiq-landing-section internships">
+        <h2 className="sarthiq-section-title">Internships</h2>
+        <p className="sarthiq-section-description">
           Kickstart your career with meaningful internships at innovative
           startups
         </p>
-        <div className="feature-cards">
-          <div className="feature-card">
+        <div className="sarthiq-feature-cards">
+          <div className="sarthiq-feature-card">
             <h3>Startup Experience</h3>
             <p>
               Join dynamic startup teams. Gain hands-on experience in fast-paced
               environments.
             </p>
           </div>
-          <div className="feature-card">
+          <div className="sarthiq-feature-card">
             <h3>Skill Challenges</h3>
             <p>
               Participate in competitions and challenges. Showcase your talents
               to potential employers.
             </p>
           </div>
-          <div className="feature-card">
+          <div className="sarthiq-feature-card">
             <h3>Success Stories</h3>
             <p>
               Learn from successful internship experiences. Build your path to
@@ -458,28 +458,28 @@ export const LandingHome = () => {
       </section>
 
       {/* Blogs Section */}
-      <section className="landing-section blogs">
-        <h2 className="section-title">Blogs</h2>
-        <p className="section-description">
+      <section className="sarthiq-landing-section blogs">
+        <h2 className="sarthiq-section-title">Blogs</h2>
+        <p className="sarthiq-section-description">
           Stay informed with the latest trends in education, industry, and
           campus life
         </p>
-        <div className="feature-cards">
-          <div className="feature-card">
+        <div className="sarthiq-feature-cards">
+          <div className="sarthiq-feature-card">
             <h3>Industry Insights</h3>
             <p>
               Get expert perspectives on career trends and industry
               developments.
             </p>
           </div>
-          <div className="feature-card">
+          <div className="sarthiq-feature-card">
             <h3>Student Stories</h3>
             <p>
               Read inspiring stories from fellow students and their journey to
               success.
             </p>
           </div>
-          <div className="feature-card">
+          <div className="sarthiq-feature-card">
             <h3>Campus Updates</h3>
             <p>
               Stay updated with the latest happenings across college campuses.
