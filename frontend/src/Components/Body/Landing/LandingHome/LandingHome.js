@@ -267,86 +267,90 @@ export const LandingHome = () => {
                         </span>
                       )}
                     </div>
-                    <div className="sarthiq-form-group">
-                      <div className="sarthiq-input-with-icon">
-                        <i className="fas fa-envelope"></i>
-                        <input
-                          type="email"
-                          name="email"
-                          placeholder="Email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          required
-                          className="sarthiq-input"
-                        />
+                    <div className="sarthiq-form-row">
+                      <div className="sarthiq-form-group">
+                        <div className="sarthiq-input-with-icon">
+                          <i className="fas fa-envelope"></i>
+                          <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            required
+                            className="sarthiq-input"
+                          />
+                        </div>
+                        {formErrors.email && (
+                          <span className="sarthiq-error-message">
+                            <i className="fas fa-exclamation-circle"></i>
+                            {formErrors.email}
+                          </span>
+                        )}
                       </div>
-                      {formErrors.email && (
-                        <span className="sarthiq-error-message">
-                          <i className="fas fa-exclamation-circle"></i>
-                          {formErrors.email}
-                        </span>
-                      )}
+                      <div className="sarthiq-form-group">
+                        <div className="sarthiq-input-with-icon">
+                          <i className="fas fa-phone"></i>
+                          <input
+                            type="tel"
+                            name="phoneNumber"
+                            placeholder="Phone Number"
+                            value={formData.phoneNumber}
+                            onChange={handleInputChange}
+                            required
+                            className="sarthiq-input"
+                          />
+                        </div>
+                        {formErrors.phoneNumber && (
+                          <span className="sarthiq-error-message">
+                            <i className="fas fa-exclamation-circle"></i>
+                            {formErrors.phoneNumber}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <div className="sarthiq-form-group">
-                      <div className="sarthiq-input-with-icon">
-                        <i className="fas fa-phone"></i>
-                        <input
-                          type="tel"
-                          name="phoneNumber"
-                          placeholder="Phone Number"
-                          value={formData.phoneNumber}
-                          onChange={handleInputChange}
-                          required
-                          className="sarthiq-input"
-                        />
+                    <div className="sarthiq-form-row">
+                      <div className="sarthiq-form-group">
+                        <div className="sarthiq-input-with-icon">
+                          <i className="fas fa-lock"></i>
+                          <input
+                            type="password"
+                            name="password"
+                            placeholder="Create Password"
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            minLength="8"
+                            required
+                            className="sarthiq-input"
+                          />
+                        </div>
+                        {formErrors.password && (
+                          <span className="sarthiq-error-message">
+                            <i className="fas fa-exclamation-circle"></i>
+                            {formErrors.password}
+                          </span>
+                        )}
                       </div>
-                      {formErrors.phoneNumber && (
-                        <span className="sarthiq-error-message">
-                          <i className="fas fa-exclamation-circle"></i>
-                          {formErrors.phoneNumber}
-                        </span>
-                      )}
-                    </div>
-                    <div className="sarthiq-form-group">
-                      <div className="sarthiq-input-with-icon">
-                        <i className="fas fa-lock"></i>
-                        <input
-                          type="password"
-                          name="password"
-                          placeholder="Create Password"
-                          value={formData.password}
-                          onChange={handleInputChange}
-                          minLength="8"
-                          required
-                          className="sarthiq-input"
-                        />
+                      <div className="sarthiq-form-group">
+                        <div className="sarthiq-input-with-icon">
+                          <i className="fas fa-lock"></i>
+                          <input
+                            type="password"
+                            name="confirmPassword"
+                            placeholder="Confirm Password"
+                            value={formData.confirmPassword}
+                            onChange={handleInputChange}
+                            required
+                            className="sarthiq-input"
+                          />
+                        </div>
+                        {formErrors.confirmPassword && (
+                          <span className="sarthiq-error-message">
+                            <i className="fas fa-exclamation-circle"></i>
+                            {formErrors.confirmPassword}
+                          </span>
+                        )}
                       </div>
-                      {formErrors.password && (
-                        <span className="sarthiq-error-message">
-                          <i className="fas fa-exclamation-circle"></i>
-                          {formErrors.password}
-                        </span>
-                      )}
-                    </div>
-                    <div className="sarthiq-form-group">
-                      <div className="sarthiq-input-with-icon">
-                        <i className="fas fa-lock"></i>
-                        <input
-                          type="password"
-                          name="confirmPassword"
-                          placeholder="Confirm Password"
-                          value={formData.confirmPassword}
-                          onChange={handleInputChange}
-                          required
-                          className="sarthiq-input"
-                        />
-                      </div>
-                      {formErrors.confirmPassword && (
-                        <span className="sarthiq-error-message">
-                          <i className="fas fa-exclamation-circle"></i>
-                          {formErrors.confirmPassword}
-                        </span>
-                      )}
                     </div>
                     <button type="submit" className="sarthiq-sign-in-button" disabled={isLoading}>
                       <i className="fas fa-user-plus"></i>
