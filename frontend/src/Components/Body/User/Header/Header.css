@@ -77,8 +77,9 @@
   gap: 0.25rem;
 }
 
-.dashboard-nav-icon {
+.dashboard-nav-icon-container i {
   font-size: 1.25rem;
+  color: #666;
 }
 
 .dashboard-nav-text {
@@ -208,12 +209,18 @@
 
   .dashboard-nav-icon-container {
     flex-direction: row;
-    gap: 0.75rem;
+    gap: 0.5rem;
     width: 100%;
+    align-items: center;
+  }
+
+  .dashboard-nav-icon-container i {
+    font-size: 1.1rem;
   }
 
   .dashboard-nav-text {
     font-size: 0.9rem;
+    font-weight: 500;
   }
 
   .dashboard-profile-section {
@@ -534,4 +541,54 @@
   font-weight: bold;
   padding: 0 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-profile-icon i {
+  font-size: 1.25rem;
+  color: #666;
+}
+
+.dashboard-profile-icon .bi-chevron-down {
+  font-size: 0.8rem;
+  transition: transform 0.2s ease;
+}
+
+.dashboard-profile-section:hover .bi-chevron-down {
+  transform: rotate(180deg);
+}
+
+.dashboard-dropdown-item i {
+  font-size: 1rem;
+  color: #666;
+  margin-right: 0.5rem;
+}
+
+.dashboard-logout-btn i {
+  color: #d32f2f;
+}
+
+@media (max-width: 768px) {
+  .dashboard-nav-icon-container {
+    flex-direction: row;
+    gap: 0.5rem;
+    width: 100%;
+    align-items: center;
+  }
+
+  .dashboard-nav-icon-container i {
+    font-size: 1.1rem;
+  }
+
+  .dashboard-nav-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .dashboard-profile-icon i {
+    font-size: 1.1rem;
+  }
+
+  .dashboard-dropdown-item i {
+    font-size: 0.9rem;
+  }
 } 

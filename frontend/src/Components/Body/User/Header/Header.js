@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUserAuthToken, userLogOut } from '../../../../Store/User/auth';
 import { socketService } from '../../../../services/socketService';
 import { getUnreadMessagesCountHandler } from '../Messages/messagesApiHandler';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 // New Badge Component
 const NewBadge = () => {
@@ -185,47 +186,47 @@ export const Header = () => {
                     </Link> */}
                     <Link to="/dashboard/internships" className="dashboard-nav-link" onClick={handleNavClick}>
                         <div className="dashboard-nav-icon-container">
-                            <span className="dashboard-nav-icon">💼</span>
+                            <i className="bi bi-briefcase"></i>
                             <span className="dashboard-nav-text">Internships</span>
                             <NewBadge />
                         </div>
                     </Link>
                     <Link to="/dashboard/projects" className="dashboard-nav-link" onClick={handleNavClick}>
                         <div className="dashboard-nav-icon-container">
-                            <span className="dashboard-nav-icon">💡</span>
+                            <i className="bi bi-lightbulb"></i>
                             <span className="dashboard-nav-text">Projects</span>
                             <NewBadge />
                         </div>
                     </Link>
-                    <Link to="/" className="dashboard-nav-link" onClick={handleNavClick}>
+                    <Link to="/dashboard" className="dashboard-nav-link" onClick={handleNavClick}>
                         <div className="dashboard-nav-icon-container">
-                            <span className="dashboard-nav-icon">👥</span>
+                            <i className="bi bi-people"></i>
                             <span className="dashboard-nav-text">Community</span>
                         </div>
                     </Link>
-                    <Link to="/" className="dashboard-nav-link" onClick={handleNavClick}>
+                    <Link to="/dashboard" className="dashboard-nav-link" onClick={handleNavClick}>
                         <div className="dashboard-nav-icon-container">
-                            <span className="dashboard-nav-icon">📝</span>
+                            <i className="bi bi-pencil-square"></i>
                             <span className="dashboard-nav-text">Blogs</span>
                         </div>
                     </Link>
                     <Link to="./pages" className="dashboard-nav-link" onClick={handleNavClick}>
                         <div className="dashboard-nav-icon-container">
-                            <span className="dashboard-nav-icon">📚</span>
+                            <i className="bi bi-book"></i>
                             <span className="dashboard-nav-text">Pages</span>
                             <NewBadge />
                         </div>
                     </Link>
                     <Link to="/dashboard/messages" className="dashboard-nav-link" onClick={handleNavClick}>
                         <div className="dashboard-nav-icon-container">
-                            <span className="dashboard-nav-icon">💬</span>
+                            <i className="bi bi-chat-dots"></i>
                             <span className="dashboard-nav-text">Messages</span>
                             <MessageBadge count={unreadMessageCount} />
                         </div>
                     </Link>
                     <a href="https://career.sarthiq.com" className="dashboard-nav-link" onClick={handleNavClick} target="_blank" rel="noopener noreferrer">
                         <div className="dashboard-nav-icon-container">
-                            <span className="dashboard-nav-icon">🚀</span>
+                            <i className="bi bi-rocket-takeoff"></i>
                             <span className="dashboard-nav-text">Know Thyself</span>
                         </div>
                     </a>
@@ -233,21 +234,21 @@ export const Header = () => {
                 
                 <div className="dashboard-profile-section">
                     <div className="dashboard-profile-icon">
-                        <span className="dashboard-profile-avatar">👤</span>
+                        <i className="bi bi-person-circle"></i>
                         <span className="dashboard-profile-text">Profile</span>
-                        <span className="dashboard-dropdown-indicator">▼</span>
+                        <i className="bi bi-chevron-down"></i>
                     </div>
                     <div className="dashboard-profile-dropdown">
                         <Link to="./profile" className="dashboard-dropdown-item" onClick={handleNavClick}>
-                            <span className="dashboard-dropdown-icon">👤</span>
+                            <i className="bi bi-person"></i>
                             My Profile
                         </Link>
                         <Link to="./account-settings" className="dashboard-dropdown-item" onClick={handleNavClick}>
-                            <span className="dashboard-dropdown-icon">⚙️</span>
+                            <i className="bi bi-gear"></i>
                             Account Settings
                         </Link>
                         <button onClick={handleLogout} className="dashboard-dropdown-item dashboard-logout-btn">
-                            <span className="dashboard-dropdown-icon">🚪</span>
+                            <i className="bi bi-box-arrow-right"></i>
                             Logout
                         </button>
                     </div>
