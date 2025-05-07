@@ -3,16 +3,30 @@
     background: linear-gradient(135deg, #f3f2ef 0%, #ffffff 100%);
     min-height: calc(100vh - 76px);
     overflow-x: hidden;
+    position: relative;
+}
+
+.landing-main::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: radial-gradient(circle at 0% 0%, rgba(10, 102, 194, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(10, 102, 194, 0.03) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .landing-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 60px 20px;
     display: flex;
     align-items: center;
-    gap: 60px;
+    gap: 80px;
     animation: fadeIn 1s ease-out;
+    position: relative;
 }
 
 @keyframes fadeIn {
@@ -25,6 +39,7 @@
     max-width: 50%;
     padding-right: 20px;
     animation: slideInLeft 1s ease-out;
+    position: relative;
 }
 
 @keyframes slideInLeft {
@@ -34,16 +49,17 @@
 
 .landing-title {
     color: #0a66c2;
-    font-size: 42px;
-    font-weight: 700;
+    font-size: 48px;
+    font-weight: 800;
     line-height: 1.2;
-    margin: 0 0 16px;
+    margin: 0 0 24px;
     position: relative;
     white-space: nowrap;
-    border-right: 2px solid #0a66c2;
+    border-right: 3px solid #0a66c2;
     width: max-content;
     clip-path: inset(0 100% 0 0);
     animation: typing 3s steps(40) forwards, blink-caret 0.75s step-end infinite;
+    text-shadow: 2px 2px 4px rgba(10, 102, 194, 0.1);
 }
 
 @keyframes typing {
@@ -74,64 +90,104 @@
     font-size: 24px;
     font-weight: 400;
     line-height: 1.4;
-    margin: 0 0 32px;
+    margin: 0 0 40px;
     animation: subtitleAnimation 1.5s ease-out 0.3s both;
+    position: relative;
+    padding-left: 20px;
+}
+
+.landing-subtitle::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 70%;
+    background: linear-gradient(to bottom, #0a66c2, #004182);
+    border-radius: 2px;
 }
 
 .auth-form {
-    max-width: 400px;
+    max-width: 420px;
     margin-bottom: 24px;
     background: white;
-    padding: 32px;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    padding: 36px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
     animation: formAnimation 1s ease-out 0.6s both;
+    position: relative;
+    overflow: hidden;
 }
 
-@keyframes formAnimation {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+.auth-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, #0a66c2, #004182);
 }
 
 .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     position: relative;
 }
 
 .form-group input {
     width: 100%;
-    padding: 14px 16px;
-    border: 1.5px solid rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    padding: 16px 18px;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
     font-size: 15px;
     line-height: 1.5;
     color: rgba(0, 0, 0, 0.9);
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     background: white;
 }
 
 .form-group input:focus {
     outline: none;
     border-color: #0a66c2;
-    box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.1);
+    box-shadow: 0 0 0 4px rgba(10, 102, 194, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-group input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
 }
 
 .error-message {
     color: #d11124;
     font-size: 13px;
-    margin-top: 6px;
+    margin-top: 8px;
     display: block;
+    padding-left: 4px;
+    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
 }
 
 /* API Error and Success Messages */
 .api-error-message,
 .api-success-message {
-    padding: 12px 16px;
-    border-radius: 8px;
-    margin-bottom: 16px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 20px;
     font-size: 14px;
     display: flex;
     align-items: center;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .api-error-message {
@@ -179,21 +235,43 @@
 
 .sign-in-button {
     width: 100%;
-    padding: 14px 24px;
-    background: #0a66c2;
+    padding: 16px 24px;
+    background: linear-gradient(45deg, #0a66c2, #004182);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s ease;
-    margin-top: 8px;
+    transition: all 0.3s ease;
+    margin-top: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.sign-in-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: 0.5s;
 }
 
 .sign-in-button:hover {
-    background: #004182;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(10, 102, 194, 0.2);
+}
+
+.sign-in-button:hover::before {
+    left: 100%;
 }
 
 .sign-in-button:active {
@@ -201,10 +279,23 @@
 }
 
 .form-footer {
-    margin-top: 20px;
+    margin-top: 24px;
     text-align: center;
     font-size: 14px;
     color: rgba(0, 0, 0, 0.7);
+    position: relative;
+}
+
+.form-footer::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 2px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 1px;
 }
 
 .form-footer a {
@@ -212,27 +303,58 @@
     text-decoration: none;
     font-weight: 600;
     margin-left: 4px;
+    position: relative;
 }
 
-.form-footer a:hover {
-    text-decoration: underline;
+.form-footer a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #0a66c2;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.form-footer a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
 }
 
 .landing-agreement {
     font-size: 12px;
     color: rgba(0, 0, 0, 0.6);
-    margin: 16px 0;
+    margin: 20px 0;
     line-height: 1.5;
+    text-align: center;
 }
 
 .landing-agreement a {
     color: #0a66c2;
     text-decoration: none;
     font-weight: 600;
+    position: relative;
 }
 
-.landing-agreement a:hover {
-    text-decoration: underline;
+.landing-agreement a::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #0a66c2;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.landing-agreement a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
 }
 
 .join-now {
@@ -254,6 +376,7 @@
     flex: 1;
     max-width: 50%;
     animation: slideInRight 1s ease-out;
+    position: relative;
 }
 
 @keyframes slideInRight {
@@ -263,32 +386,54 @@
 
 .hero-image-container {
     position: relative;
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+    transition: all 0.4s ease;
+}
+
+.hero-image-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        rgba(10, 102, 194, 0.1),
+        rgba(0, 65, 130, 0.1)
+    );
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.hero-image-container:hover::before {
+    opacity: 1;
 }
 
 .hero-image {
     width: 100%;
     height: auto;
     display: block;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease;
 }
 
 .hero-image-container:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
 }
 
 .hero-image-container:hover .hero-image {
-    transform: scale(1.02);
+    transform: scale(1.03);
 }
 
 @media (max-width: 992px) {
     .landing-content {
         flex-direction: column;
-        padding: 20px;
-        gap: 40px;
+        padding: 40px 20px;
+        gap: 50px;
     }
 
     .landing-left,
@@ -298,7 +443,7 @@
     }
 
     .landing-title {
-        font-size: 36px;
+        font-size: 40px;
     }
 
     .landing-subtitle {
@@ -316,29 +461,29 @@
     }
 
     .landing-content {
-        padding: 20px 16px;
+        padding: 30px 16px;
     }
 
     .landing-title {
-        font-size: 32px;
+        font-size: 36px;
     }
 
     .landing-subtitle {
         font-size: 18px;
-        margin-bottom: 24px;
+        margin-bottom: 30px;
     }
 
     .auth-form {
-        padding: 24px;
+        padding: 28px;
     }
 
     .form-group input {
-        padding: 12px 14px;
+        padding: 14px 16px;
         font-size: 14px;
     }
 
     .sign-in-button {
-        padding: 12px 20px;
+        padding: 14px 20px;
         font-size: 15px;
     }
 }
