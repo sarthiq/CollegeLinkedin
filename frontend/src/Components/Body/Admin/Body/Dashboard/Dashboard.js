@@ -68,6 +68,17 @@ export const DashboardPage = () => {
                     <span>Active Users</span>
                   </NavLink>
                 </li>
+                <li>
+                  <NavLink
+                    to="./users/joined-users"
+                    className={({ isActive }) =>
+                      isActive ? "dashboard-dropdown-link dashboard-active-tab" : "dashboard-dropdown-link"
+                    }
+                  >
+                    <i className="bi bi-person-plus"></i>
+                    <span>Joined Users</span>
+                  </NavLink>
+                </li>
               </ul>
             )}
           </li>

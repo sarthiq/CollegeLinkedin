@@ -125,3 +125,19 @@ export const getUserActivityStatsHandler = async (data, setIsLoading, showAlert)
 };
 
 
+//getUserRegistrationStats
+export const getUserRegistrationStatsHandler = async (data, setIsLoading, showAlert) => {
+  const url = `${baseRoutes}/getUserRegistrationStats`;
+  setIsLoading(true);
+  const obj=data
+  const adminToken = localStorage.getItem("adminToken");
+  try {
+    const result = await apiRequest(url, obj, adminToken, "post");
+    const data = result.data;
+    return data;
+  } catch (e) {
+    handleErrors(e, showAlert);
+  } finally {
+    setIsLoading(false);
+  }
+};

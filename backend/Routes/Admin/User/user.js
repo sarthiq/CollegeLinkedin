@@ -2,7 +2,7 @@
 
 
 const express = require("express");
-const { getUserById, getUsers, getUsersStats, updateUserDetails, getDailyActiveUsers, getDailyActiveUsersStats, getUserActivityStats } = require("../../../Controller/Admin/Users/users");
+const { getUserById, getUsers, getUsersStats, updateUserDetails, getDailyActiveUsers, getDailyActiveUsersStats, getUserActivityStats, getUserRegistrationStats } = require("../../../Controller/Admin/Users/users");
 
 const router = express.Router();
 
@@ -13,6 +13,6 @@ router.post("/updateUserDetails", updateUserDetails);
 router.post("/getDailyActiveUsers", getDailyActiveUsers);
 router.post("/getDailyActiveUsersStats", getDailyActiveUsersStats);
 router.post("/getUserActivityStats", getUserActivityStats);
-
+router.post("/getUserRegistrationStats", getUserRegistrationStats);
 
 module.exports = router;

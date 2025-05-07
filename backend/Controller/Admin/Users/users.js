@@ -442,3 +442,112 @@ exports.getUserActivityStats = async (req, res) => {
   }
 };
 
+exports.getUserRegistrationStats = async (req, res) => {
+  try {
+    const { date, days = 30 } = req.body;
+    
+    // If specific date is provided, return users who joined on that date
+    if (date) {
+      const startOfDay = new Date(date);
+      startOfDay.setHours(0, 0, 0, 0);
+      
+      const endOfDay = new Date(date);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const users = await User.findAll({
+        where: {
+          createdAt: {
+            [Op.between]: [startOfDay, endOfDay]
+          }
+        },
+        include: [{
+          model: UserProfile,
+          attributes: ['profileUrl']
+        }],
+        attributes: ['id', 'name','phone', 'email', 'createdAt'],
+        order: [['createdAt', 'ASC']]
+      });
+
+      return res.status(200).json({
+        success: true,
+        date: date,
+        totalUsers: users.length,
+        users: users.map(user => ({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          phone: user.phone,
+          profileUrl: user.UserProfile?.profileUrl,
+          joinedAt: user.createdAt
+        }))
+      });
+    }
+
+    // If no specific date, return daily registration stats for the period
+    const endDate = new Date();
+    endDate.setHours(23, 59, 59, 999);
+    
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+    startDate.setHours(0, 0, 0, 0);
+
+    // Get daily registration counts
+    const registrationStats = await User.findAll({
+      attributes: [
+        [sequelize.fn('DATE', sequelize.col('createdAt')), 'date'],
+        [sequelize.fn('COUNT', sequelize.col('id')), 'count']
+      ],
+      where: {
+        createdAt: {
+          [Op.between]: [startDate, endDate]
+        }
+      },
+      group: [sequelize.fn('DATE', sequelize.col('createdAt'))],
+      order: [[sequelize.fn('DATE', sequelize.col('createdAt')), 'ASC']],
+      raw: true
+    });
+
+    // Create a map of all dates in the range
+    const dateMap = new Map();
+    const currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      const dateStr = currentDate.toISOString().split('T')[0];
+      dateMap.set(dateStr, {
+        date: dateStr,
+        count: 0
+      });
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    // Fill in the actual data
+    registrationStats.forEach(record => {
+      const dateStr = new Date(record.date).toISOString().split('T')[0];
+      dateMap.set(dateStr, {
+        date: dateStr,
+        count: parseInt(record.count) || 0
+      });
+    });
+
+    // Convert map to array
+    const formattedResponse = Array.from(dateMap.values());
+
+    return res.status(200).json({
+      success: true,
+      period: {
+        startDate: startDate.toISOString().split('T')[0],
+        endDate: endDate.toISOString().split('T')[0],
+        days: days
+      },
+      stats: formattedResponse
+    });
+
+  } catch (error) {
+    console.error('Error in getUserRegistrationStats:', error);
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching user registration stats",
+      error: error.message
+    });
+  }
+};
+
