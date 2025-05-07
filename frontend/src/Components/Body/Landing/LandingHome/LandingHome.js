@@ -11,7 +11,6 @@ export const LandingHome = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isJoinForm, setIsJoinForm] = useState(false);
-  const [signInMethod, setSignInMethod] = useState("email"); // 'email' or 'phone'
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
   const [apiSuccess, setApiSuccess] = useState(null);
@@ -20,9 +19,6 @@ export const LandingHome = () => {
     email: "",
     phoneNumber: "",
     emailOrPhone: "",
-    collegeName: "",
-    courseName: "",
-    collegeYear: "",
     password: "",
     confirmPassword: "",
   });
@@ -167,18 +163,9 @@ export const LandingHome = () => {
       email: "",
       phoneNumber: "",
       emailOrPhone: "",
-      collegeName: "",
-      courseName: "",
-      collegeYear: "",
       password: "",
       confirmPassword: "",
     });
-  };
-
-  const toggleSignInMethod = () => {
-    setSignInMethod(signInMethod === "email" ? "phone" : "email");
-    setFormErrors({});
-    clearMessages();
   };
 
   return (
@@ -186,13 +173,12 @@ export const LandingHome = () => {
       <div className="landing-content">
         <div className="landing-left">
           <h1 id="landing-title" className="landing-title">
-            Welcome to the #Student community!
+            Welcome to the #Student Community!
           </h1>
           <h2 className="landing-subtitle">
             A platform for students to Learn, Engage, Contribute, and Grow.
           </h2>
           <div id="login-section" className="auth-form">
-            {/* API Error and Success Messages */}
             {apiError && (
               <div className="api-error-message">
                 <p>{apiError}</p>
@@ -205,12 +191,12 @@ export const LandingHome = () => {
             )}
 
             {isJoinForm ? (
-              <form onSubmit={handleJoinNow}>
+              <form onSubmit={handleJoinNow} className="join-form">
                 <div className="form-group">
                   <input
                     type="text"
                     name="fullName"
-                    placeholder="Enter your full name"
+                    placeholder="Full Name"
                     value={formData.fullName}
                     onChange={handleInputChange}
                     required
@@ -242,17 +228,14 @@ export const LandingHome = () => {
                     required
                   />
                   {formErrors.phoneNumber && (
-                    <span className="error-message">
-                      {formErrors.phoneNumber}
-                    </span>
+                    <span className="error-message">{formErrors.phoneNumber}</span>
                   )}
                 </div>
-
                 <div className="form-group">
                   <input
                     type="password"
                     name="password"
-                    placeholder="Create a password (min. 8 characters)"
+                    placeholder="Create Password"
                     value={formData.password}
                     onChange={handleInputChange}
                     minLength="8"
@@ -272,56 +255,29 @@ export const LandingHome = () => {
                     required
                   />
                   {formErrors.confirmPassword && (
-                    <span className="error-message">
-                      {formErrors.confirmPassword}
-                    </span>
+                    <span className="error-message">{formErrors.confirmPassword}</span>
                   )}
                 </div>
-                <button
-                  type="submit"
-                  className="sign-in-button"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Processing..." : "Join Now"}
+                <button type="submit" className="sign-in-button" disabled={isLoading}>
+                  {isLoading ? "Creating Account..." : "Create Account"}
                 </button>
+                <div className="form-footer">
+                  <p>Already have an account? <a href="#" onClick={toggleForm}>Sign in</a></p>
+                </div>
               </form>
             ) : (
-              <form onSubmit={handleSignIn}>
-                <div className="sign-in-toggle">
-                  <button
-                    type="button"
-                    className={`toggle-btn ${
-                      signInMethod === "email" ? "active" : ""
-                    }`}
-                    onClick={() => setSignInMethod("email")}
-                  >
-                    Sign in with Email
-                  </button>
-                  <button
-                    type="button"
-                    className={`toggle-btn ${
-                      signInMethod === "phone" ? "active" : ""
-                    }`}
-                    onClick={() => setSignInMethod("phone")}
-                  >
-                    Sign in with Phone
-                  </button>
-                </div>
+              <form onSubmit={handleSignIn} className="signin-form">
                 <div className="form-group">
                   <input
-                    type={signInMethod === "email" ? "email" : "tel"}
+                    type="text"
                     name="emailOrPhone"
-                    placeholder={
-                      signInMethod === "email" ? "Email" : "Phone Number"
-                    }
+                    placeholder="Email or Phone Number"
                     value={formData.emailOrPhone}
                     onChange={handleInputChange}
                     required
                   />
                   {formErrors.emailOrPhone && (
-                    <span className="error-message">
-                      {formErrors.emailOrPhone}
-                    </span>
+                    <span className="error-message">{formErrors.emailOrPhone}</span>
                   )}
                 </div>
                 <div className="form-group">
@@ -337,13 +293,12 @@ export const LandingHome = () => {
                     <span className="error-message">{formErrors.password}</span>
                   )}
                 </div>
-                <button
-                  type="submit"
-                  className="sign-in-button"
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Processing..." : "Sign in"}
+                <button type="submit" className="sign-in-button" disabled={isLoading}>
+                  {isLoading ? "Signing in..." : "Sign in"}
                 </button>
+                <div className="form-footer">
+                  <p>New to Sarthiq? <a href="#" onClick={toggleForm}>Join now</a></p>
+                </div>
               </form>
             )}
           </div>
@@ -353,36 +308,22 @@ export const LandingHome = () => {
             <Link to="/landing/privacy">Privacy Policy</Link>, and{" "}
             <Link to="/landing/refund">Refund Policy</Link>.
           </p>
-          <div className="join-now">
-            <p>
-              {isJoinForm ? (
-                <>
-                  Already on Sarthiq?{" "}
-                  <a href="#" onClick={toggleForm}>
-                    Sign in
-                  </a>
-                </>
-              ) : (
-                <>
-                  New to Sarthiq?{" "}
-                  <a href="#" onClick={toggleForm}>
-                    Join now
-                  </a>
-                </>
-              )}
-            </p>
-          </div>
         </div>
         <div className="landing-right">
           <div className="hero-image-container">
             <img
-              src="https://images.pexels.com/photos/3182759/pexels-photo-3182759.jpeg"
-              alt="Students collaborating on a tech project together"
+              src={isJoinForm 
+                ? "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg"
+                : "https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg"
+              }
+              alt={isJoinForm 
+                ? "Students collaborating and networking"
+                : "Professional workspace with laptop"
+              }
               className="hero-image"
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src =
-                  "https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg";
+                e.target.src = "https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg";
               }}
             />
           </div>
