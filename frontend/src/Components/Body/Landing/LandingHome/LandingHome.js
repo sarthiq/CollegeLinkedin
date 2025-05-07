@@ -186,10 +186,10 @@ export const LandingHome = () => {
       <div className="landing-content">
         <div className="landing-left">
           <h1 id="landing-title" className="landing-title">
-            Welcome to the college community!
+            Welcome to the #Student community!
           </h1>
           <h2 className="landing-subtitle">
-            A platform for students to Learn, Engage, Contribute, and Earn.
+            A platform for students to Learn, Engage, Contribute, and Grow.
           </h2>
           <div id="login-section" className="auth-form">
             {/* API Error and Success Messages */}
