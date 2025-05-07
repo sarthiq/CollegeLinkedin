@@ -66,8 +66,6 @@ export const Header = () => {
             </div>
             <div className={`landing-header-right ${isMenuOpen ? 'open' : ''}`}>
                 <nav className="landing-header-nav">
-
-
                     <Link to="/landing/learning" className="landing-nav-link" onClick={handleNavClick}>
                         <div className="landing-nav-icon-container">
                             <span className="landing-nav-icon">🎓</span>
@@ -117,17 +115,15 @@ export const Header = () => {
                         </div>
                     </a>
                     
-                </nav>
-                <nav className="landing-nav-buttons">
                     {isLoggedIn ? (
-                        <Link to="/dashboard" className="landing-nav-btn" onClick={handleNavClick}>
+                        <Link to="/dashboard" className="landing-nav-link" onClick={handleNavClick}>
                             <div className="landing-nav-icon-container">
                                 <span className="landing-nav-icon">🏠</span>
                                 <span className="landing-nav-text">Dashboard</span>
                             </div>
                         </Link>
                     ) : (
-                        <Link to="/landing#login" className="landing-nav-btn" onClick={handleNavClick}>
+                        <Link to="/landing#login" className="landing-nav-link" onClick={handleNavClick}>
                             <div className="landing-nav-icon-container">
                                 <span className="landing-nav-icon">🔑</span>
                                 <span className="landing-nav-text">Login</span>

@@ -10,6 +10,7 @@
     left: 0;
     right: 0;
     z-index: 1000;
+    height: 60px;
 }
 
 .landing-header-left {
@@ -115,31 +116,38 @@
 .landing-hamburger-menu {
     display: none;
     cursor: pointer;
+    padding: 8px;
+    z-index: 1001;
 }
 
 .landing-hamburger-icon {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
+    width: 24px;
+    height: 24px;
+    position: relative;
 }
 
 .landing-hamburger-icon span {
-    width: 24px;
+    width: 100%;
     height: 2px;
     background-color: #333;
-    transition: transform 0.3s;
+    transition: all 0.3s ease;
+    transform-origin: center;
 }
 
 .landing-hamburger-icon.open span:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
+    transform: translateY(8px) rotate(45deg);
 }
 
 .landing-hamburger-icon.open span:nth-child(2) {
     opacity: 0;
+    transform: scale(0);
 }
 
 .landing-hamburger-icon.open span:nth-child(3) {
-    transform: rotate(-45deg) translate(5px, -5px);
+    transform: translateY(-8px) rotate(-45deg);
 }
 
 .landing-menu-overlay {
@@ -156,20 +164,24 @@
 @media (max-width: 768px) {
     .landing-header {
         padding: 0.75rem 1rem;
+        height: 56px;
     }
 
     .landing-header-right {
         position: fixed;
         top: 0;
-        right: -50%;
-        width: 50%;
+        right: -100%;
+        width: 280px;
         height: 100vh;
         background-color: white;
         flex-direction: column;
         justify-content: flex-start;
-        padding-top: 4rem;
+        padding-top: 56px;
         transition: right 0.3s ease-in-out;
         box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        display: flex;
+        z-index: 999;
     }
 
     .landing-header-right.open {
@@ -179,52 +191,77 @@
     .landing-header-nav {
         flex-direction: column;
         width: 100%;
-        padding: 1rem;
-        gap: 1rem;
+        padding: 0.5rem;
+        gap: 0.25rem;
+        overflow-y: auto;
+        height: calc(100vh - 56px);
+        scrollbar-width: thin;
+        scrollbar-color: #ccc transparent;
+        flex: 1;
+        position: relative;
+        z-index: 1000;
+    }
+
+    .landing-header-nav::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .landing-header-nav::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .landing-header-nav::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 2px;
     }
 
     .landing-nav-link {
         width: 100%;
-        padding: 0.75rem;
+        padding: 0.5rem 0.75rem;
         display: flex;
         justify-content: flex-start;
         align-items: center;
+        border-radius: 6px;
+        transition: background-color 0.2s ease;
+    }
+
+    .landing-nav-link:hover {
+        background-color: #f5f5f5;
     }
 
     .landing-nav-icon-container {
         flex-direction: row;
-        gap: 0.75rem;
+        gap: 0.5rem;
         width: 100%;
+        align-items: center;
     }
 
     .landing-nav-text {
         font-size: 0.9rem;
+        font-weight: 500;
     }
 
     .landing-hamburger-menu {
         display: block;
         z-index: 1001;
-    }
-
-    .landing-nav-buttons {
-        width: 100%;
-        padding: 1rem;
-        display: flex;
-        justify-content: center;
-        margin-top: auto;
-        margin-bottom: 1rem;
-    }
-
-    .landing-nav-btn {
-        width: 100%;
-        max-width: 200px;
-        text-align: center;
+        position: relative;
     }
 
     .landing-menu-overlay {
-        display: block;
-        background-color: rgba(0, 0, 0, 0.3);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 998;
         pointer-events: auto;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .landing-menu-overlay.open {
+        opacity: 1;
     }
 }
 
@@ -235,10 +272,16 @@
 
     .landing-header {
         padding: 0.5rem 0.75rem;
+        height: 52px;
     }
 
     .landing-header-right {
-        width: 70%;
-        right: -70%;
+        width: 100%;
+        right: -100%;
+        padding-top: 52px;
+    }
+
+    .landing-header-nav {
+        height: calc(100vh - 52px);
     }
 } 
