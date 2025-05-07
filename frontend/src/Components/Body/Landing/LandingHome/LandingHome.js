@@ -225,24 +225,6 @@ export const LandingHome = () => {
                 <span className="word">Grow.</span>
               </p>
             </div>
-            <div className="sarthiq-strength-section">
-              <h2 className="sarthiq-strength-title">
-                Build on Your Natural Strength
-              </h2>
-              <p className="sarthiq-strength-subtitle">
-                Get free IQ and Personality test. Know your natural strengths and play on it!
-              </p>
-              <div className="sarthiq-strength-cta">
-                <button className="sarthiq-primary-btn">
-                  <span className="btn-text">Know Your Strengths</span>
-                  <span className="btn-icon">→</span>
-                </button>
-                <button className="sarthiq-secondary-btn">
-                  <span className="btn-text">Explore Options</span>
-                  <span className="btn-icon">→</span>
-                </button>
-              </div>
-            </div>
           </div>
           <div className="sarthiq-hero-right">
             <div className="sarthiq-auth-container">
