@@ -34,6 +34,36 @@ export const LandingHome = () => {
     }
   }, [location.hash]);
 
+  // Add intersection observer for scroll animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    // Observe all sections
+    const sections = document.querySelectorAll('.sarthiq-community-section, .sarthiq-learning-section, .sarthiq-opportunities-section, .sarthiq-career-section');
+    sections.forEach(section => {
+      section.classList.add('fade-in');
+      observer.observe(section);
+    });
+
+    return () => {
+      sections.forEach(section => {
+        observer.unobserve(section);
+      });
+    };
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -170,320 +200,349 @@ export const LandingHome = () => {
 
   return (
     <main className="sarthiq-landing-main">
-      <div className="sarthiq-landing-content">
-        <div className="sarthiq-landing-left">
-          <h1 id="sarthiq-landing-title" className="sarthiq-landing-title">
-            Welcome to the #Student Community!
-          </h1>
-          <h2 className="sarthiq-landing-subtitle">
-            A platform for students to Learn, Engage, Contribute, and Grow.
-          </h2>
-          <div id="sarthiq-login-section" className="sarthiq-auth-form">
-            {apiError && (
-              <div className="sarthiq-api-error-message">
-                <p>{apiError}</p>
-              </div>
-            )}
-            {apiSuccess && (
-              <div className="sarthiq-api-success-message">
-                <p>{apiSuccess}</p>
-              </div>
-            )}
-
-            {isJoinForm ? (
-              <form onSubmit={handleJoinNow} className="sarthiq-join-form">
-                <div className="sarthiq-form-group">
-                  <input
-                    type="text"
-                    name="fullName"
-                    placeholder="Full Name"
-                    value={formData.fullName}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  {formErrors.fullName && (
-                    <span className="sarthiq-error-message">{formErrors.fullName}</span>
-                  )}
-                </div>
-                <div className="sarthiq-form-group">
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  {formErrors.email && (
-                    <span className="sarthiq-error-message">{formErrors.email}</span>
-                  )}
-                </div>
-                <div className="sarthiq-form-group">
-                  <input
-                    type="tel"
-                    name="phoneNumber"
-                    placeholder="Phone Number"
-                    value={formData.phoneNumber}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  {formErrors.phoneNumber && (
-                    <span className="sarthiq-error-message">{formErrors.phoneNumber}</span>
-                  )}
-                </div>
-                <div className="sarthiq-form-group">
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="Create Password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    minLength="8"
-                    required
-                  />
-                  {formErrors.password && (
-                    <span className="sarthiq-error-message">{formErrors.password}</span>
-                  )}
-                </div>
-                <div className="sarthiq-form-group">
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="Confirm Password"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  {formErrors.confirmPassword && (
-                    <span className="sarthiq-error-message">{formErrors.confirmPassword}</span>
-                  )}
-                </div>
-                <button type="submit" className="sarthiq-sign-in-button" disabled={isLoading}>
-                  {isLoading ? "Creating Account..." : "Create Account"}
+      {/* Hero Section */}
+      <section className="sarthiq-hero-section">
+        <div className="sarthiq-hero-content">
+          <div className="sarthiq-hero-left">
+            <div className="sarthiq-welcome-text">
+              <h1 className="sarthiq-welcome-title">
+                <span className="word">Welcome</span>
+                <span className="word">to</span>
+                <span className="word">the</span>
+                <span className="word">#Student</span>
+                <span className="word">Community!</span>
+              </h1>
+              <p className="sarthiq-welcome-subtitle">
+                <span className="word">A</span>
+                <span className="word">platform</span>
+                <span className="word">for</span>
+                <span className="word">students</span>
+                <span className="word">to</span>
+                <span className="word">Learn,</span>
+                <span className="word">Engage,</span>
+                <span className="word">Contribute,</span>
+                <span className="word">and</span>
+                <span className="word">Grow.</span>
+              </p>
+            </div>
+            <div className="sarthiq-strength-section">
+              <h2 className="sarthiq-strength-title">
+                Build on Your Natural Strength
+              </h2>
+              <p className="sarthiq-strength-subtitle">
+                Get free IQ and Personality test. Know your natural strengths and play on it!
+              </p>
+              <div className="sarthiq-strength-cta">
+                <button className="sarthiq-primary-btn">
+                  <span className="btn-text">Know Your Strengths</span>
+                  <span className="btn-icon">→</span>
                 </button>
-                <div className="sarthiq-form-footer">
-                  <p>Already have an account? <a href="#" onClick={toggleForm}>Sign in</a></p>
-                </div>
-              </form>
-            ) : (
-              <form onSubmit={handleSignIn} className="sarthiq-signin-form">
-                <div className="sarthiq-form-group">
-                  <input
-                    type="text"
-                    name="emailOrPhone"
-                    placeholder="Email or Phone Number"
-                    value={formData.emailOrPhone}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  {formErrors.emailOrPhone && (
-                    <span className="sarthiq-error-message">{formErrors.emailOrPhone}</span>
-                  )}
-                </div>
-                <div className="sarthiq-form-group">
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
-                  />
-                  {formErrors.password && (
-                    <span className="sarthiq-error-message">{formErrors.password}</span>
-                  )}
-                </div>
-                <button type="submit" className="sarthiq-sign-in-button" disabled={isLoading}>
-                  {isLoading ? "Signing in..." : "Sign in"}
+                <button className="sarthiq-secondary-btn">
+                  <span className="btn-text">Explore Options</span>
+                  <span className="btn-icon">→</span>
                 </button>
-                <div className="sarthiq-form-footer">
-                  <p>New to Sarthiq? <a href="#" onClick={toggleForm}>Join now</a></p>
-                </div>
-              </form>
-            )}
+              </div>
+            </div>
           </div>
-          <p className="sarthiq-landing-agreement">
-            By clicking Continue to join or sign in, you agree to Sarthiq's{" "}
-            <Link to="/landing/terms">Terms of Service</Link>,{" "}
-            <Link to="/landing/privacy">Privacy Policy</Link>, and{" "}
-            <Link to="/landing/refund">Refund Policy</Link>.
-          </p>
-        </div>
-        <div className="sarthiq-landing-right">
-          <div className="sarthiq-hero-image-container">
-            <img
-              src={isJoinForm 
-                ? "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg"
-                : "https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg"
-              }
-              alt={isJoinForm 
-                ? "Students collaborating and networking"
-                : "Professional workspace with laptop"
-              }
-              className="sarthiq-hero-image"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg";
-              }}
-            />
+          <div className="sarthiq-hero-right">
+            <div className="sarthiq-auth-container">
+              <div className="sarthiq-auth-form">
+                {isJoinForm ? (
+                  <form onSubmit={handleJoinNow} className="sarthiq-join-form">
+                    <div className="sarthiq-auth-header">
+                      <h2>Create Your Account</h2>
+                      <p>Join our community of students and start your journey</p>
+                    </div>
+                    {apiError && (
+                      <div className="sarthiq-api-error-message">
+                        <i className="fas fa-exclamation-circle"></i>
+                        <p>{apiError}</p>
+                      </div>
+                    )}
+                    {apiSuccess && (
+                      <div className="sarthiq-api-success-message">
+                        <i className="fas fa-check-circle"></i>
+                        <p>{apiSuccess}</p>
+                      </div>
+                    )}
+                    <div className="sarthiq-form-group">
+                      <div className="sarthiq-input-with-icon">
+                        <i className="fas fa-user"></i>
+                        <input
+                          type="text"
+                          name="fullName"
+                          placeholder="Full Name"
+                          value={formData.fullName}
+                          onChange={handleInputChange}
+                          required
+                          className="sarthiq-input"
+                        />
+                      </div>
+                      {formErrors.fullName && (
+                        <span className="sarthiq-error-message">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {formErrors.fullName}
+                        </span>
+                      )}
+                    </div>
+                    <div className="sarthiq-form-group">
+                      <div className="sarthiq-input-with-icon">
+                        <i className="fas fa-envelope"></i>
+                        <input
+                          type="email"
+                          name="email"
+                          placeholder="Email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          required
+                          className="sarthiq-input"
+                        />
+                      </div>
+                      {formErrors.email && (
+                        <span className="sarthiq-error-message">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {formErrors.email}
+                        </span>
+                      )}
+                    </div>
+                    <div className="sarthiq-form-group">
+                      <div className="sarthiq-input-with-icon">
+                        <i className="fas fa-phone"></i>
+                        <input
+                          type="tel"
+                          name="phoneNumber"
+                          placeholder="Phone Number"
+                          value={formData.phoneNumber}
+                          onChange={handleInputChange}
+                          required
+                          className="sarthiq-input"
+                        />
+                      </div>
+                      {formErrors.phoneNumber && (
+                        <span className="sarthiq-error-message">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {formErrors.phoneNumber}
+                        </span>
+                      )}
+                    </div>
+                    <div className="sarthiq-form-group">
+                      <div className="sarthiq-input-with-icon">
+                        <i className="fas fa-lock"></i>
+                        <input
+                          type="password"
+                          name="password"
+                          placeholder="Create Password"
+                          value={formData.password}
+                          onChange={handleInputChange}
+                          minLength="8"
+                          required
+                          className="sarthiq-input"
+                        />
+                      </div>
+                      {formErrors.password && (
+                        <span className="sarthiq-error-message">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {formErrors.password}
+                        </span>
+                      )}
+                    </div>
+                    <div className="sarthiq-form-group">
+                      <div className="sarthiq-input-with-icon">
+                        <i className="fas fa-lock"></i>
+                        <input
+                          type="password"
+                          name="confirmPassword"
+                          placeholder="Confirm Password"
+                          value={formData.confirmPassword}
+                          onChange={handleInputChange}
+                          required
+                          className="sarthiq-input"
+                        />
+                      </div>
+                      {formErrors.confirmPassword && (
+                        <span className="sarthiq-error-message">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {formErrors.confirmPassword}
+                        </span>
+                      )}
+                    </div>
+                    <button type="submit" className="sarthiq-sign-in-button" disabled={isLoading}>
+                      <i className="fas fa-user-plus"></i>
+                      {isLoading ? "Creating Account..." : "Create Account"}
+                    </button>
+                    <div className="sarthiq-form-footer">
+                      <p>Already have an account? <a href="#" onClick={toggleForm}>Sign in</a></p>
+                    </div>
+                  </form>
+                ) : (
+                  <form onSubmit={handleSignIn} className="sarthiq-signin-form">
+                    <div className="sarthiq-auth-header">
+                      <h2>Welcome Back!</h2>
+                      <p>Sign in to continue your learning journey</p>
+                    </div>
+                    {apiError && (
+                      <div className="sarthiq-api-error-message">
+                        <i className="fas fa-exclamation-circle"></i>
+                        <p>{apiError}</p>
+                      </div>
+                    )}
+                    {apiSuccess && (
+                      <div className="sarthiq-api-success-message">
+                        <i className="fas fa-check-circle"></i>
+                        <p>{apiSuccess}</p>
+                      </div>
+                    )}
+                    <div className="sarthiq-form-group">
+                      <div className="sarthiq-input-with-icon">
+                        <i className="fas fa-envelope"></i>
+                        <input
+                          type="text"
+                          name="emailOrPhone"
+                          placeholder="Email or Phone Number"
+                          value={formData.emailOrPhone}
+                          onChange={handleInputChange}
+                          required
+                          className="sarthiq-input"
+                        />
+                      </div>
+                      {formErrors.emailOrPhone && (
+                        <span className="sarthiq-error-message">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {formErrors.emailOrPhone}
+                        </span>
+                      )}
+                    </div>
+                    <div className="sarthiq-form-group">
+                      <div className="sarthiq-input-with-icon">
+                        <i className="fas fa-lock"></i>
+                        <input
+                          type="password"
+                          name="password"
+                          placeholder="Password"
+                          value={formData.password}
+                          onChange={handleInputChange}
+                          required
+                          className="sarthiq-input"
+                        />
+                      </div>
+                      {formErrors.password && (
+                        <span className="sarthiq-error-message">
+                          <i className="fas fa-exclamation-circle"></i>
+                          {formErrors.password}
+                        </span>
+                      )}
+                    </div>
+                    <button type="submit" className="sarthiq-sign-in-button" disabled={isLoading}>
+                      <i className="fas fa-sign-in-alt"></i>
+                      {isLoading ? "Signing in..." : "Sign in"}
+                    </button>
+                    <div className="sarthiq-form-footer">
+                      <p>New to Sarthiq? <a href="#" onClick={toggleForm}>Join now</a></p>
+                    </div>
+                  </form>
+                )}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Community Section */}
-      <section className="sarthiq-landing-section community">
-        <h2 className="sarthiq-section-title">Community</h2>
-        <p className="sarthiq-section-description">
-          Connect with peers across colleges and domains to grow together
-        </p>
-        <div className="sarthiq-feature-cards">
+      <section className="sarthiq-community-section">
+        <div className="sarthiq-section-header">
+          <h2>Diverse and Vibrant Community</h2>
+          <p>Get access to connect, collaborate and learn with any student across stream and domain.</p>
+        </div>
+        <div className="sarthiq-community-features">
           <div className="sarthiq-feature-card">
-            <h3>College Network</h3>
-            <p>
-              Build lasting connections with students from various colleges.
-              Create your professional network early.
-            </p>
+            <div className="sarthiq-feature-icon">🎓</div>
+            <h3>Students Across Campuses</h3>
+            <p>Connect with students from universities nationwide</p>
           </div>
           <div className="sarthiq-feature-card">
-            <h3>Interest Groups</h3>
-            <p>
-              Join communities based on your interests - from coding to arts.
-              Collaborate on passion projects.
-            </p>
+            <div className="sarthiq-feature-icon">📚</div>
+            <h3>Students from all Streams</h3>
+            <p>Interact with peers from diverse academic backgrounds</p>
           </div>
           <div className="sarthiq-feature-card">
-            <h3>Startup Collaboration</h3>
-            <p>
-              Find the perfect team for your startup idea. Connect with
-              technical and business minds.
-            </p>
+            <div className="sarthiq-feature-icon">🌍</div>
+            <h3>No Geographical Boundary</h3>
+            <p>Connect with students globally without limitations</p>
           </div>
         </div>
       </section>
 
-      {/* Learning Lab Section */}
-      <section className="sarthiq-landing-section learning-lab">
-        <h2 className="sarthiq-section-title">Learning Lab</h2>
-        <p className="sarthiq-section-description">
-          Enhance your academic journey with practical skills and future-ready
-          knowledge
-        </p>
-        <div className="sarthiq-feature-cards">
+      {/* Learning Section */}
+      <section className="sarthiq-learning-section">
+        <div className="sarthiq-section-header">
+          <h2>Learn and Build Together</h2>
+          <p>Be part of an open, innovative and competitive environment.</p>
+        </div>
+        <div className="sarthiq-learning-features">
           <div className="sarthiq-feature-card">
-            <h3>AI Literacy</h3>
-            <p>
-              Master AI tools for design, marketing, coding, and content
-              creation. Stay ahead in the digital age.
-            </p>
+            <div className="sarthiq-feature-icon">💡</div>
+            <h3>Tech-Business-Arts Together</h3>
+            <p>Learn, share and compete with others</p>
           </div>
           <div className="sarthiq-feature-card">
-            <h3>Communication Skills</h3>
-            <p>
-              Build your professional identity with expert-guided resume
-              building and communication modules.
-            </p>
+            <div className="sarthiq-feature-icon">🎨</div>
+            <h3>Vibrant Students Culture</h3>
+            <p>Be part of a unified student's community, explore unique students' culture across the country</p>
           </div>
           <div className="sarthiq-feature-card">
-            <h3>Industry Projects</h3>
-            <p>
-              Tackle real-world case studies and assignments to develop
-              practical expertise in your field.
-            </p>
+            <div className="sarthiq-feature-icon">🚀</div>
+            <h3>Explore Opportunities Built Together</h3>
+            <p>Collaborate on projects and discover new opportunities through collective learning</p>
           </div>
         </div>
       </section>
 
-      {/* Project Arena Section */}
-      <section className="sarthiq-landing-section project-arena">
-        <h2 className="sarthiq-section-title">Project Arena</h2>
-        <p className="sarthiq-section-description">
-          Transform classroom knowledge into real-world solutions through
-          hands-on projects
-        </p>
-        <div className="sarthiq-feature-cards">
+      {/* Opportunities Section */}
+      <section className="sarthiq-opportunities-section">
+        <div className="sarthiq-section-header">
+          <h2>Get Noticed Across Campuses</h2>
+          <p>Get your first chance to showcase your talent and get the right job opportunity.</p>
+        </div>
+        <div className="sarthiq-opportunities-features">
           <div className="sarthiq-feature-card">
-            <h3>Industry Collaborations</h3>
-            <p>
-              Work on live projects with startups and NGOs. Build your portfolio
-              while making an impact.
-            </p>
+            <div className="sarthiq-feature-icon">👥</div>
+            <h3>Connect with Students</h3>
+            <p>Build your professional network</p>
           </div>
           <div className="sarthiq-feature-card">
-            <h3>Domain Excellence</h3>
-            <p>
-              Choose from projects in engineering, business, law, arts, and
-              more. Specialize in your field.
-            </p>
+            <div className="sarthiq-feature-icon">🎯</div>
+            <h3>Get Social-platform for your talent</h3>
+            <p>Showcase your skills and achievements</p>
           </div>
           <div className="sarthiq-feature-card">
-            <h3>Learning Resources</h3>
-            <p>
-              Access a rich library of past projects and case studies. Learn
-              from successful implementations.
-            </p>
+            <div className="sarthiq-feature-icon">💼</div>
+            <h3>Get Opportunities</h3>
+            <p>Access internships and job opportunities</p>
           </div>
         </div>
       </section>
 
-      {/* Internships Section */}
-      <section className="sarthiq-landing-section internships">
-        <h2 className="sarthiq-section-title">Internships</h2>
-        <p className="sarthiq-section-description">
-          Kickstart your career with meaningful internships at innovative
-          startups
-        </p>
-        <div className="sarthiq-feature-cards">
-          <div className="sarthiq-feature-card">
-            <h3>Startup Experience</h3>
-            <p>
-              Join dynamic startup teams. Gain hands-on experience in fast-paced
-              environments.
-            </p>
-          </div>
-          <div className="sarthiq-feature-card">
-            <h3>Skill Challenges</h3>
-            <p>
-              Participate in competitions and challenges. Showcase your talents
-              to potential employers.
-            </p>
-          </div>
-          <div className="sarthiq-feature-card">
-            <h3>Success Stories</h3>
-            <p>
-              Learn from successful internship experiences. Build your path to
-              professional success.
-            </p>
-          </div>
+      {/* Career Section */}
+      <section className="sarthiq-career-section">
+        <div className="sarthiq-section-header">
+          <h2>Start Your Career Journey</h2>
+          <p>Take the first step towards your professional success</p>
         </div>
-      </section>
-
-      {/* Blogs Section */}
-      <section className="sarthiq-landing-section blogs">
-        <h2 className="sarthiq-section-title">Blogs</h2>
-        <p className="sarthiq-section-description">
-          Stay informed with the latest trends in education, industry, and
-          campus life
-        </p>
-        <div className="sarthiq-feature-cards">
+        <div className="sarthiq-career-features">
           <div className="sarthiq-feature-card">
-            <h3>Industry Insights</h3>
-            <p>
-              Get expert perspectives on career trends and industry
-              developments.
-            </p>
+            <div className="sarthiq-feature-icon">🚀</div>
+            <h3>Work on Live Projects</h3>
+            <p>Gain hands-on experience with real-world projects</p>
           </div>
           <div className="sarthiq-feature-card">
-            <h3>Student Stories</h3>
-            <p>
-              Read inspiring stories from fellow students and their journey to
-              success.
-            </p>
+            <div className="sarthiq-feature-icon">🎓</div>
+            <h3>Get Internship Opportunities</h3>
+            <p>Find the perfect internship to kickstart your career</p>
           </div>
           <div className="sarthiq-feature-card">
-            <h3>Campus Updates</h3>
-            <p>
-              Stay updated with the latest happenings across college campuses.
-            </p>
+            <div className="sarthiq-feature-icon">💼</div>
+            <h3>Find the Right Jobs</h3>
+            <p>Discover job opportunities that match your skills</p>
           </div>
         </div>
       </section>
