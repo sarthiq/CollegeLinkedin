@@ -133,7 +133,7 @@ export const Header = () => {
     return (
         <header className="dashboard-header">
             <div className="dashboard-header-left">
-                <Link to="/" className="dashboard-logo-link">
+                <Link to="/dashboard" className="dashboard-logo-link">
                     <h1 className="dashboard-logo">
                         <span className="dashboard-logo-text">Sarthi</span>
                     </h1>
@@ -171,18 +171,18 @@ export const Header = () => {
             </div>
             <div className={`dashboard-header-right ${isMenuOpen ? 'open' : ''}`}>
                 <nav className="dashboard-header-nav">
-                    <Link to="/dashboard" className="dashboard-nav-link" onClick={handleNavClick}>
+                    {/* <Link to="/dashboard" className="dashboard-nav-link" onClick={handleNavClick}>
                         <div className="dashboard-nav-icon-container">
                             <span className="dashboard-nav-icon">🏠</span>
                             <span className="dashboard-nav-text">Dashboard</span>
                         </div>
-                    </Link>
-                    <Link to="/" className="dashboard-nav-link" onClick={handleNavClick}>
+                    </Link> */}
+                    {/* <Link to="/" className="dashboard-nav-link" onClick={handleNavClick}>
                         <div className="dashboard-nav-icon-container">
                             <span className="dashboard-nav-icon">🎓</span>
                             <span className="dashboard-nav-text">Learning</span>
                         </div>
-                    </Link>
+                    </Link> */}
                     <Link to="/dashboard/internships" className="dashboard-nav-link" onClick={handleNavClick}>
                         <div className="dashboard-nav-icon-container">
                             <span className="dashboard-nav-icon">💼</span>
