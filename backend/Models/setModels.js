@@ -23,6 +23,19 @@ const Message = require("./Relationships/messages");
 const ActiveUser = require("./User/activeUsers");
 
 
+const PersonalityQuestion = require("./Personality/personalityQuestion");
+const PersonalityResult = require("./Personality/personalityResult");
+
+
+const IqQuestion = require("./Iq/iqQuestions");
+const IqResult = require("./Iq/iqResult");
+const IqAnswer = require("./Iq/iqAnswers");
+
+
+
+
+
+
 
 exports.setupModels = async () => {
   // Define associations
@@ -96,4 +109,16 @@ exports.setupModels = async () => {
 
   User.hasMany(Internship);
   Internship.belongsTo(User);
+
+  IqQuestion.hasMany(IqAnswer);
+  IqAnswer.belongsTo(IqQuestion);
+  
+  User.hasMany(IqResult);
+  IqResult.belongsTo(User);
+
+  User.hasMany(PersonalityResult);
+  PersonalityResult.belongsTo(User);
+  
+  
+  
 };
