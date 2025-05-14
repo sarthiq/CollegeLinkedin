@@ -10,7 +10,7 @@ exports.createQuestion = async (req, res) => {
   try {
     const { text, type, weight } = req.body;
     const imageFile = req.files && req.files.image ? req.files.image[0] : null;
-
+    
     // Validate input
     if (!text && !imageFile) {
       return res.status(400).json({
