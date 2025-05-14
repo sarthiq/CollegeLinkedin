@@ -452,3 +452,64 @@ exports.updateCorrectAnswer = async (req, res) => {
   }
 };
 
+// Delete all IQ questions and their associated answers and images
+exports.deleteAllQuestions = async (req, res) => {
+  try {
+    // First, find all questions to get their IDs and image URLs
+    const questions = await IqQuestion.findAll();
+    
+    if (questions.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No IQ questions found to delete",
+      });
+    }
+
+    
+    // Find all answers associated with these questions
+    const answers = await IqAnswer.findAll();
+
+    // Delete all answer images
+    for (const answer of answers) {
+      if (answer.imageUrl) {
+        const imagePath = path.join(
+          baseDir,
+          answer.imageUrl.replace("files/", "")
+        );
+        await safeDeleteFile(imagePath);
+      }
+    }
+
+    // Delete all question images
+    for (const question of questions) {
+      if (question.imageUrl) {
+        const imagePath = path.join(
+          baseDir,
+          question.imageUrl.replace("files/", "")
+        );
+        await safeDeleteFile(imagePath);
+      }
+    }
+
+    // Delete all answers first
+    await IqAnswer.destroy({
+      where: {}
+    });
+
+    // Delete all questions
+    await IqQuestion.destroy({
+      where: {}
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: `Successfully deleted ${questions.length} IQ questions and all associated answers`,
+    });
+  } catch (error) {
+    console.error("Error deleting all IQ questions:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+

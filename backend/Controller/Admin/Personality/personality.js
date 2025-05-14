@@ -156,3 +156,44 @@ exports.getQuestions = async (req, res) => {
   }
 };
 
+// Delete all personality questions
+exports.deleteAllQuestions = async (req, res) => {
+  let transaction;
+  try {
+    // First check if there are any questions to delete
+    const count = await PersonalityQuestion.count();
+    
+    if (count === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No personality questions found to delete",
+      });
+    }
+
+    // Begin transaction for database operations
+    transaction = await sequelize.transaction();
+
+    // Delete all questions
+    await PersonalityQuestion.destroy({
+      where: {},  // Empty where clause to delete all records
+      transaction
+    });
+
+    // Commit transaction
+    await transaction.commit();
+
+    return res.status(200).json({
+      success: true,
+      message: `Successfully deleted all personality questions (${count} questions)`,
+    });
+  } catch (error) {
+    if (transaction) {
+      await transaction.rollback();
+    }
+    console.error("Error deleting all personality questions:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+

@@ -11,5 +11,7 @@ router.post("/createAnswer", iqController.createAnswer);
 router.post("/updateAnswer", iqController.updateAnswer);
 router.post("/deleteAnswer", iqController.deleteAnswer);
 router.post("/updateCorrectAnswer", iqController.updateCorrectAnswer);
+router.post("/deleteAllQuestions", iqController.deleteAllQuestions);
+
 module.exports = router;
 
