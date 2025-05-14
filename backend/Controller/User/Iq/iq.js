@@ -14,7 +14,6 @@ exports.getAllQuestions = async (req, res) => {
       include: [
         {
           model: IqAnswer,
-          as: 'Answers',
           attributes: ["id", "text", "imageUrl", "type"],
           where: {
             isActive: true
@@ -59,7 +58,6 @@ exports.getQuestionById = async (req, res) => {
       include: [
         {
           model: IqAnswer,
-          as: 'Answers',
           attributes: ["id", "text", "imageUrl", "type"],
           where: {
             isActive: true
