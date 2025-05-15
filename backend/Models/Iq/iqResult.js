@@ -6,13 +6,29 @@ const IqResult = sequelize.define(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     
-    score: {
-      type: DataTypes.FLOAT,
+    estimatedIQRange: {
+      type: DataTypes.JSON,
       allowNull: false,
       defaultValue: 0
     },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 0
+    },
+
     noOfQuestionAttempted: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    percentile: {
+      type: DataTypes.JSON,
+      allowNull: false,
+      defaultValue: 0
+    },
+    percentage: {
+      type: DataTypes.FLOAT,
       allowNull: false,
       defaultValue: 0
     },

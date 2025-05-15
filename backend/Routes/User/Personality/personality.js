@@ -4,5 +4,8 @@ const personalityController = require("../../../Controller/User/Personality/pers
 
 router.post("/getAllQuestions", personalityController.getAllQuestions);
 router.post("/submitPersonalityTest", personalityController.submitPersonalityTest);
+router.post("/getPersonalityStatsInfo", personalityController.getPersonalityStatsInfo); 
+router.post("/getPersonalityResultHistory", personalityController.getPersonalityResultHistory);
+
 
 module.exports = router;

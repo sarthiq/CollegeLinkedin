@@ -150,12 +150,18 @@ exports.submitIqTest = async (req, res) => {
     // Begin transaction for database operations
     transaction = await sequelize.transaction();
 
+    // Calculate percentage
+    const percentage = questions.length > 0 ? (correctAnswers / questions.length) * 100 : 0;
+
     // Create IQ result record
     const result = await IqResult.create({
-      score,
+      percentile: iqResult.percentile,
+      estimatedIQRange: iqResult.estimated_iq_range,
+      description: iqResult.description,
       noOfQuestionAttempted: attemptedQuestions,
       noOfWrongAnswers: wrongAnswers,
       noOfCorrectAnswers: correctAnswers,
+      percentage: parseFloat(percentage.toFixed(2)),
       label: iqResult.label,
       startTime: startDate,
       endTime: endDate,
@@ -174,7 +180,7 @@ exports.submitIqTest = async (req, res) => {
         correctAnswers,
         wrongAnswers,
         score,
-        percentage: totalWeight > 0 ? ((score / totalWeight) * 100).toFixed(2) : 0,
+        percentage: percentage.toFixed(2),
         iqLevel: iqResult.label,
         estimated_iq_range: iqResult.estimated_iq_range,
         percentile: iqResult.percentile,
@@ -194,4 +200,121 @@ exports.submitIqTest = async (req, res) => {
   }
 };
 
+// Get IQ result history with pagination
+exports.getIqResultHistory = async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.body;
+    const offset = (page - 1) * limit;
+    
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
 
+    const { count, rows: results } = await IqResult.findAndCountAll({
+      where: {
+        UserId: req.user.id
+      },
+      order: [["createdAt", "DESC"]],
+      limit: parseInt(limit),
+      offset: parseInt(offset)
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "IQ result history retrieved successfully",
+      data: {
+        totalResults: count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: parseInt(page),
+        results
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching IQ result history:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+exports.getIqStatsInfo = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    const userId = req.user.id;
+
+    // Get all IQ results for the user
+    const results = await IqResult.findAll({
+      where: {
+        UserId: userId
+      },
+      order: [["createdAt", "DESC"]]
+    });
+
+    if (!results.length) {
+      return res.status(200).json({
+        success: true,
+        message: "No IQ test results found for this user",
+        data: {
+          totalTests: 0,
+          averageIQ: null,
+          bestScore: null,
+          latestResult: null,
+          improvement: null
+        }
+      });
+    }
+
+    // Calculate statistics
+    const totalTests = results.length;
+    const latestResult = results[0];
+    
+    // Calculate average percentage
+    const averagePercentage = results.reduce((sum, result) => sum + result.percentage, 0) / totalTests;
+    
+    // Find best score
+    const bestScore = Math.max(...results.map(result => result.percentage));
+    
+    // Calculate improvement (if more than one test)
+    let improvement = null;
+    if (totalTests > 1) {
+      // Compare latest with the previous test
+      const previousResult = results[1];
+      improvement = latestResult.percentage - previousResult.percentage;
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "IQ statistics retrieved successfully",
+      data: {
+        totalTests,
+        averagePercentage: parseFloat(averagePercentage.toFixed(2)),
+        bestScore,
+        latestResult,
+        improvement: improvement !== null ? parseFloat(improvement.toFixed(2)) : null,
+        allResults: results.map(result => ({
+          id: result.id,
+          date: result.createdAt,
+          percentage: result.percentage,
+          label: result.label,
+          estimatedIQRange: result.estimatedIQRange
+        }))
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching IQ statistics:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
