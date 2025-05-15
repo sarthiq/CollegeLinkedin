@@ -17,7 +17,10 @@ exports.APP_PORT = process.env.APP_PORT;
 exports.sequelize = require("./database");
 
 
-
+exports.SMTP_EMAIL = process.env.SMTP_EMAIL;
+exports.SMTP_PASS = process.env.SMTP_PASS;
+exports.SMTP_HOST = "smtp.hostinger.com";
+exports.SMTP_PORT = 465;
 
 //Developer Credentials
 exports.DEVELOPER_USERNAME = process.env.DEVELOPER_USERNAME;

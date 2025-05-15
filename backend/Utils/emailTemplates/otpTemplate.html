@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification - SarthiQ</title>
+    <style>
+        /* Reset styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Base styles */
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f7fafc;
+            color: #2d3748;
+        }
+
+        /* Container styles */
+        .email-wrapper {
+            background-color: #f7fafc;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* Header styles */
+        .header {
+            background: linear-gradient(135deg, #2c5282 0%, #4299e1 100%);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .header-title {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Content styles */
+        .content {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #2d3748;
+        }
+
+        .message {
+            margin-bottom: 30px;
+            color: #4a5568;
+            font-size: 16px;
+        }
+
+        /* OTP styles */
+        .otp-container {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .otp-label {
+            font-size: 14px;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .otp-code {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: 8px;
+            padding: 20px 30px;
+            background: linear-gradient(135deg, #2c5282 0%, #4299e1 100%);
+            color: white;
+            border-radius: 12px;
+            display: inline-block;
+            box-shadow: 0 4px 6px rgba(44, 82, 130, 0.2);
+        }
+
+        /* Notice box styles */
+        .notice {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #ebf8ff;
+            border-left: 4px solid #4299e1;
+            border-radius: 8px;
+        }
+
+        .notice strong {
+            color: #2c5282;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Footer styles */
+        .footer {
+            background-color: #f8fafc;
+            padding: 30px;
+            text-align: center;
+            border-top: 2px solid #edf2f7;
+        }
+
+        .social-links {
+            margin: 20px 0;
+        }
+
+        .social-links a {
+            color: #4299e1;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 500;
+        }
+
+        .social-links a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-text {
+            color: #718096;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        /* Responsive styles */
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                border-radius: 0;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .otp-code {
+                font-size: 30px;
+                letter-spacing: 6px;
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-container">
+            <div class="header">
+                <img src="https://sarthiq.com/main-logo.png" alt="SarthiQ Logo" class="logo">
+                <h1 class="header-title">Verify Your Email</h1>
+            </div>
+            
+            <div class="content">
+                <p class="greeting">Hello!</p>
+                <p class="message">Thank you for choosing SarthiQ. To ensure the security of your account, please verify your email address using the verification code below:</p>
+                
+                <div class="otp-container">
+                    <div class="otp-label">Your Verification Code</div>
+                    <div class="otp-code">{{otpCode}}</div>
+                </div>
+
+                <div class="notice">
+                    <strong>Important Notice</strong>
+                    <p>This verification code will expire in 5 minutes for security purposes.</p>
+                </div>
+
+                <p class="message">If you didn't request this verification code, please ignore this email or contact our support team immediately.</p>
+                
+                <p class="message">
+                    Best regards,<br>
+                    The SarthiQ Team
+                </p>
+            </div>
+
+            <div class="footer">
+                <div class="social-links">
+                    <a href="https://linkedin.com/company/sarthiq">LinkedIn</a> |
+                    <a href="https://twitter.com/sarthiq">Twitter</a>
+                </div>
+                <p class="footer-text">© {{year}} SarthiQ. All rights reserved.</p>
+                <p class="footer-text">This is an automated message, please do not reply.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

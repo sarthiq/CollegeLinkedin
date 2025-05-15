@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to SarthiQ</title>
+    <style>
+        /* Reset styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Base styles */
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f7fafc;
+            color: #2d3748;
+        }
+
+        /* Container styles */
+        .email-wrapper {
+            background-color: #f7fafc;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* Header styles */
+        .header {
+            position: relative;
+            background: linear-gradient(135deg, #2c5282 0%, #4299e1 100%);
+            padding: 60px 20px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://sarthiq.com/pattern.png') center/cover;
+            opacity: 0.1;
+        }
+
+        .logo {
+            position: relative;
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 30px;
+        }
+
+        .welcome-title {
+            position: relative;
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .welcome-subtitle {
+            position: relative;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+        }
+
+        /* Content styles */
+        .content {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: #2d3748;
+        }
+
+        .message {
+            margin-bottom: 30px;
+            color: #4a5568;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        /* Features section */
+        .features {
+            background-color: #f8fafc;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .features-title {
+            color: #2c5282;
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .feature-item::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4299e1;
+            font-weight: bold;
+        }
+
+        /* Button styles */
+        .button-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 15px 35px;
+            background: linear-gradient(135deg, #2c5282 0%, #4299e1 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(44, 82, 130, 0.2);
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Footer styles */
+        .footer {
+            background-color: #f8fafc;
+            padding: 30px;
+            text-align: center;
+            border-top: 2px solid #edf2f7;
+        }
+
+        .social-links {
+            margin: 20px 0;
+        }
+
+        .social-links a {
+            color: #4299e1;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 500;
+        }
+
+        .social-links a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-text {
+            color: #718096;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        /* Responsive styles */
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                border-radius: 0;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .header {
+                padding: 40px 20px;
+            }
+
+            .welcome-title {
+                font-size: 28px;
+            }
+
+            .features {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-container">
+            <div class="header">
+                <img src="https://sarthiq.com/main-logo.png" alt="SarthiQ Logo" class="logo">
+                <h1 class="welcome-title">Welcome to SarthiQ!</h1>
+                <p class="welcome-subtitle">Your Journey to Innovation Begins Here</p>
+            </div>
+            
+            <div class="content">
+                <p class="greeting">Dear {{userName}},</p>
+                <p class="message">
+                    We're thrilled to welcome you to SarthiQ! You've just joined a community dedicated to innovative software solutions and cutting-edge web development. We're excited to help you bring your ideas to life.
+                </p>
+
+                <div class="features">
+                    <h2 class="features-title">What's in Store for You</h2>
+                    <ul class="feature-list">
+                        <li class="feature-item">Access to cutting-edge web development solutions</li>
+                        <li class="feature-item">Professional software development services</li>
+                        <li class="feature-item">Expert technical support available 24/7</li>
+                        <li class="feature-item">Regular updates and innovative features</li>
+                    </ul>
+                </div>
+
+                <p class="message">
+                    Your account is now ready to use. Click the button below to access your dashboard and start exploring all the features SarthiQ has to offer.
+                </p>
+
+                <div class="button-container">
+                    <a href="https://sarthiq.com/dashboard" class="button">Visit Your Dashboard</a>
+                </div>
+
+                <p class="message">
+                    If you have any questions or need assistance, our support team is always here to help. Feel free to reach out anytime.
+                </p>
+                
+                <p class="message">
+                    Best regards,<br>
+                    The SarthiQ Team
+                </p>
+            </div>
+
+            <div class="footer">
+                <div class="social-links">
+                    <a href="https://linkedin.com/company/sarthiq">LinkedIn</a> |
+                    <a href="https://twitter.com/sarthiq">Twitter</a>
+                </div>
+                <p class="footer-text">© {{year}} SarthiQ. All rights reserved.</p>
+                <p class="footer-text">Follow us on social media to stay updated with our latest news and updates!</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
