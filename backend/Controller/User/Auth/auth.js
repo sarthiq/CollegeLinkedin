@@ -9,6 +9,8 @@ const {
   sequelize,
 } = require("../../../importantInfo");
 const UserProfile = require("../../../Models/User/userProfile");
+const { sendWelcomeEmail } = require("../../../Utils/emailUtils");
+
 
 exports.userSignUp = async (req, res, next) => {
   let transaction;
@@ -63,6 +65,8 @@ exports.userSignUp = async (req, res, next) => {
     await transaction.commit();
 
     res.status(201).json({ message: "User created successfully" });
+
+    sendWelcomeEmail(email, name);
   } catch (err) {
     // If any error occurs, rollback the transaction
     if (transaction) {
@@ -117,5 +121,43 @@ exports.userLogin = async (req, res, next) => {
     return res
       .status(500)
       .json({ error: "Internal server error. Please try again later." });
+  }
+};
+
+exports.forgotPassword = async (req, res, next) => {
+  try {
+    const { password, email } = req.body;
+    const user = await User.findOne({ where: { email } });
+
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        message: "Password is required",
+      });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long",
+      });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Update user's password
+    await user.update({ password: hashedPassword });
+
+    return res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
+  } catch (err) {
+    console.error("Error in forgotPassword:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error. Please try again later.",
+    });
   }
 };

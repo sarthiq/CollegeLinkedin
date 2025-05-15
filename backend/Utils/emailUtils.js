@@ -3,6 +3,8 @@ const fs = require('fs').promises;
 const path = require('path');
 const { SMTP_HOST, SMTP_PORT, SMTP_EMAIL, SMTP_PASS } = require('../importantInfo');
 
+emailOtpStore = {};
+
 const transporter = nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT,
@@ -42,7 +44,7 @@ async function sendOtpEmail(toEmail, otpCode) {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('OTP Email sent: %s', info.messageId);
+    //console.log('OTP Email sent: %s', info.messageId);
     return true;
   } catch (error) {
     console.error('Error sending OTP email:', error);
@@ -66,7 +68,7 @@ async function sendWelcomeEmail(toEmail, userName) {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('Welcome Email sent: %s', info.messageId);
+    //console.log('Welcome Email sent: %s', info.messageId);
     return true;
   } catch (error) {
     console.error('Error sending welcome email:', error);
@@ -76,5 +78,6 @@ async function sendWelcomeEmail(toEmail, userName) {
 
 module.exports = {
   sendOtpEmail,
-  sendWelcomeEmail
+  sendWelcomeEmail,
+  emailOtpStore
 };
