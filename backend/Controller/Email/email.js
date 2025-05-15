@@ -3,9 +3,10 @@ const User = require("../../Models/User/users");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { emailOtpStore, sendOtpEmail } = require("../../Utils/emailUtils");
+const { Op } = require("sequelize");
 
 exports.sendOtp = async (req, res) => {
-  const { email, type = "signup" } = req.body;
+  const { email, type = "signup", phone } = req.body;
 
   try {
     if (!email) {
@@ -14,16 +15,31 @@ exports.sendOtp = async (req, res) => {
         message: "Email is required",
       });
     }
-    if (type !== "signup") {
-      const user = await User.findOne({ where: { email } });
 
+    const user = await User.findOne({
+      where: phone
+        ? {
+            [Op.or]: [{ email }, { phone }],
+          }
+        : { email },
+    });
+
+    if (type !== "signup") {
       if (!user) {
         return res.status(400).json({
           success: false,
           message: "User not found with this email!",
         });
       }
+    } else {
+      if (user) {
+        return res.status(400).json({
+          success: false,
+          message: "User already exists with this email/phone!",
+        });
+      }
     }
+
     const emailOtp = crypto.randomInt(100000, 999999).toString();
 
     emailOtpStore[email] = { otp: emailOtp, count: 4 };
@@ -52,7 +68,7 @@ exports.sendOtp = async (req, res) => {
 };
 
 exports.verifyEmailOtp = async (req, res, next) => {
-  const { email, otp, type = "signup" } = req.body;
+  const { email, phone, otp, type = "signup" } = req.body;
 
   if (!email || !otp) {
     return res.status(400).json({
@@ -61,13 +77,26 @@ exports.verifyEmailOtp = async (req, res, next) => {
     });
   }
 
-  if (type !== "signup") {
-    const user = await User.findOne({ where: { email } });
+  const user = await User.findOne({
+    where: phone
+      ? {
+          [Op.or]: [{ email }, { phone }],
+        }
+      : { email },
+  });
 
+  if (type !== "signup") {
     if (!user) {
       return res.status(400).json({
         success: false,
         message: "User not found with this email!",
+      });
+    }
+  } else {
+    if (user) {
+      return res.status(400).json({
+        success: false,
+        message: "User already exists with this email/phone!",
       });
     }
   }

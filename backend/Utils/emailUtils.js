@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const fs = require('fs').promises;
 const path = require('path');
-const { SMTP_HOST, SMTP_PORT, SMTP_EMAIL, SMTP_PASS } = require('../importantInfo');
+const { SMTP_HOST, SMTP_PORT, SMTP_EMAIL, SMTP_PASS, NODE_ENV } = require('../importantInfo');
 
 emailOtpStore = {};
 
@@ -43,8 +43,9 @@ async function sendOtpEmail(toEmail, otpCode) {
       html
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    //console.log('OTP Email sent: %s', info.messageId);
+    if (NODE_ENV !=='testing') {
+      const info = await transporter.sendMail(mailOptions);
+    }
     return true;
   } catch (error) {
     console.error('Error sending OTP email:', error);
@@ -67,8 +68,9 @@ async function sendWelcomeEmail(toEmail, userName) {
       html
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    //console.log('Welcome Email sent: %s', info.messageId);
+    if (NODE_ENV !=='testing') {
+      const info = await transporter.sendMail(mailOptions);
+    }
     return true;
   } catch (error) {
     console.error('Error sending welcome email:', error);
