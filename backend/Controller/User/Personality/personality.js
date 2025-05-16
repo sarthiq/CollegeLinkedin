@@ -76,11 +76,11 @@ exports.submitPersonalityTest = async (req, res) => {
 
     // Create personality result record
     const result = await PersonalityResult.create({
-      openness: personalityResults.openness,
-      neuroticism: personalityResults.neuroticism,
-      extraversion: personalityResults.extraversion,
-      agreeableness: personalityResults.agreeableness,
-      conscientiousness: personalityResults.conscientiousness,
+      openness: personalityResults.openness.toFixed(2),
+      neuroticism: personalityResults.neuroticism.toFixed(2),
+      extraversion: personalityResults.extraversion.toFixed(2),
+      agreeableness: personalityResults.agreeableness.toFixed(2),
+      conscientiousness: personalityResults.conscientiousness.toFixed(2),
       startTime: startDate,
       endTime: endDate,
       timeTaken: timeTakenSeconds,
