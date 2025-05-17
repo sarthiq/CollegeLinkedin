@@ -64,7 +64,11 @@ exports.userSignUp = async (req, res, next) => {
 
     await transaction.commit();
 
-    res.status(201).json({ message: "User created successfully" });
+    const token = jwt.sign({ name: newUser.name, id: newUser.id }, JWT_SECRET_KEY, {
+      expiresIn: UserTokenExpiresIn,
+    });
+
+    res.status(201).json({ message: "User created successfully", token });
 
     sendWelcomeEmail(email, name);
   } catch (err) {
