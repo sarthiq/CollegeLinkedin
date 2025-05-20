@@ -8,6 +8,7 @@ const activityRouter = require("./Activity/activity");
 const userRouter = require("./User/user");
 const iqRouter = require("./Iq/iq");
 const personalityRouter = require("./Personality/personality");
+const communityRouter = require("./Community/community");
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.use(
 router.use("/users", adminAuthentication, userRouter);
 router.use("/iq", adminAuthentication, iqRouter);
 router.use("/personality", adminAuthentication, personalityRouter);
+router.use("/community", adminAuthentication, communityRouter);
 // Admin api routes start here
 
 module.exports = router;

@@ -14,7 +14,7 @@ const followsRoutes = require("./Follows/follows");
 const messagesRoutes = require("./Messages/messages");
 const iqRoutes = require("./Iq/iq");
 const personalityRoutes = require("./Personality/personality");
-
+const communityRoutes = require("./Community/community");
 
 const router = express.Router();
 
@@ -31,5 +31,5 @@ router.use("/follows", userAuthentication, followsRoutes);
 router.use("/messages", userAuthentication, messagesRoutes);
 router.use("/iq",userAuthentication, iqRoutes);
 router.use("/personality",userAuthentication, personalityRoutes);
-
+router.use("/community",  communityRoutes);
 module.exports = router;

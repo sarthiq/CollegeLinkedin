@@ -21,6 +21,7 @@ const ProjectFeedback = require("./User/projectFeedback");
 const Follow = require("./Relationships/follows");
 const Message = require("./Relationships/messages");
 const ActiveUser = require("./User/activeUsers");
+const Community = require("./Community/community");
 
 
 const PersonalityQuestion = require("./Personality/personalityQuestion");
@@ -54,11 +55,17 @@ exports.setupModels = async () => {
   User.belongsToMany(Pages, { through: Followers });
   Pages.belongsToMany(User, { through: Followers });
 
+  User.belongsToMany(Community, { through: Followers });
+  Community.belongsToMany(User, { through: Followers });
+
   User.hasMany(Feeds);
   Feeds.belongsTo(User);
 
   Pages.hasMany(Feeds);
   Feeds.belongsTo(Pages);
+
+  Community.hasMany(Feeds);
+  Feeds.belongsTo(Community);
 
   Feeds.hasMany(Likes);
   Likes.belongsTo(Feeds);
