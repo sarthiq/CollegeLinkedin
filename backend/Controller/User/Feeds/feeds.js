@@ -78,7 +78,6 @@ exports.getAllFeeds = async (req, res) => {
       page = 1,
       limit = 10,
       usersFeed = false,
-      communityId,
       userId,
       pageId,
     } = req.body;

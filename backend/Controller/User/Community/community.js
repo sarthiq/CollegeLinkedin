@@ -131,6 +131,13 @@ exports.toggleFollowCommunity = async (req, res) => {
     const { id } = req.body;
     const userId = req.user.id;
 
+    if(!id ){
+      return res.status(400).json({
+        success: false,
+        message: "Community ID is required"
+      });
+    }
+
     const community = await Community.findOne({
       where: {
         id,
