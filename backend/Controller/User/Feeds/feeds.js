@@ -10,6 +10,7 @@ const Likes = require("../../../Models/Basic/likes");
 const { baseDir } = require("../../../importantInfo");
 const Internship = require("../../../Models/Basic/internship");
 const Projects = require("../../../Models/User/projects");
+const Community = require("../../../Models/Community/community");
 
 // Create a new feed
 exports.createFeed = async (req, res) => {
@@ -77,6 +78,7 @@ exports.getAllFeeds = async (req, res) => {
       page = 1,
       limit = 10,
       usersFeed = false,
+      communityId,
       userId,
       pageId,
     } = req.body;
@@ -113,6 +115,10 @@ exports.getAllFeeds = async (req, res) => {
         {
           model: Page,
           attributes: ["id", "title", "imageUrl", "description", "adminId"],
+        },
+        {
+          model: Community,
+          attributes: ["id", "name", "imageUrl", "description"],
         },
       ],
     });

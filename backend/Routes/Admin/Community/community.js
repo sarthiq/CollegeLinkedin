@@ -21,7 +21,7 @@ router.post("/getById", getCommunityById);
 router.post("/createFeed",fileHandlerRouter(["image"], 5), createCommunityFeed);
 router.post("/updateFeed",fileHandlerRouter(["image"], 5), updateCommunityFeed);
 router.post("/getAllFeeds", getAllCommunityFeeds);
-router.post("/getByIdFeed", getCommunityFeedById);
+router.post("/getFeedById", getCommunityFeedById);
 router.post("/deleteFeed", deleteCommunityFeed);
 
 
