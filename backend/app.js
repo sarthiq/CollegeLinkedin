@@ -92,7 +92,7 @@ const { server } = setupSocketIO(app);
 
 
 
-db.sync()
+db.sync({alter: true})
   .then(async () => {
     server.listen(process.env.APP_PORT);
     console.log(`Listening to the port : ${process.env.APP_PORT}`);
