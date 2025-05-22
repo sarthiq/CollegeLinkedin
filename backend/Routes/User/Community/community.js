@@ -11,6 +11,7 @@ const {
   updateFeed,
 } = require("../../../Controller/User/Community/community");
 const { userAuthentication } = require("../../../Middleware/auth");
+const { fileHandlerRouter } = require("../../FileHandler/fileHandler");
 
 
 router.post("/getAll",userAuthentication, getAllCommunities);
@@ -18,9 +19,9 @@ router.post("/getById", userAuthentication, getCommunityById);
 router.post("/toggleFollow", userAuthentication, toggleFollowCommunity);
 router.post("/getFeeds", userAuthentication, getCommunityFeeds);
 router.post("/getFollowedCommunitiesFeeds", userAuthentication, getFollowedCommunitiesFeeds);
-router.post("/createFeed", userAuthentication, createFeed);
+router.post("/createFeed",fileHandlerRouter(["image"], 5), userAuthentication, createFeed);
 router.post("/deleteFeed", userAuthentication, deleteFeed);
-router.post("/updateFeed", userAuthentication, updateFeed); 
+router.post("/updateFeed",fileHandlerRouter(["image"], 5), userAuthentication, updateFeed); 
 
 module.exports = router;
 
